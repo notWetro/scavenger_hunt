@@ -1,5 +1,5 @@
 # Einführung Repository `projektarbeit-hsaa`
-Repository für die Projektarbeit "AugmentedReality-Schnitzeljagt" von Lukas und Rosario an der Hochschule Aalen.
+Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und Rosario an der Hochschule Aalen.
 
 # Verzeichnisstruktur
 
