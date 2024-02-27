@@ -1,0 +1,86 @@
+%-----------------------------------------------------------------------
+%----- PROJEKTARBEIT SCHNITZELJAGT              ------------------------
+%----- LUKAS STECKKBAUER, ROSARIO ARANZULLA     ------------------------
+%----- STUDIENGANG IN-ITS / IN-SE               ------------------------
+%-----------------------------------------------------------------------
+\documentclass[oneside]{ausarbeitung}
+\bibliography{latexlit}
+
+\begin{document}
+
+%--- Sprachauswahl (\selectlanguage{english} \selectlanguage{ngerman})
+\selectlanguage{ngerman}
+
+%--- Art + Studiengang (\Praxissemesterbericht \Projektbericht \Bachelorarbeit \Seminararbeit \Masterarbeit, \Informatik \Elektronik \DataScience)
+\Projektbericht
+\Informatik
+
+
+%--- Titel der Arbeit, Autor, Datum
+\title{Projektarbeit AR-Schnitzeljagt}
+\author{Lukas Steckbauer, Rosario Aranzulla}
+\matrikelnr{85836, 85816}
+\date{TODO}
+
+%--- Erstbetreuer + ist Professor? (Erlaubte Werte: \examinerIsAProfessortrue (Ja) / \examinerIsAProfessorfalse (Nein))
+\examinerA{Dr.~Marc~Hermann}
+\examinerIsAProfessorfalse
+
+%-----------------------------------------------------------------------
+%----- TITELSEITE, EIDESSTATTLICHE ERKLÄRUNG ---------------------------
+\maketitle
+\cleardoublepage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\makeaffirmation
+\cleardoublepage
+
+%-----------------------------------------------------------------------
+%----- KURZFASSUNG DER ARBEIT ------------------------------------------
+\begin{abstract}
+\input{chapters/0-abstract}
+\end{abstract}
+
+%-----------------------------------------------------------------------
+%----- INHALT, ABBILDUNG, TABELLEN, CODE, ABKÜRZUNGEN VERZEICHNISSE ----
+\cleardoublepage
+\tableofcontents
+
+\listoffigures
+\listoftables
+\lstlistoflistings
+\listofabbreviations
+\begin{acronym}[Bsp.]
+\input{chapters/1-acronyms}
+\end{acronym}
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+%----------------------------------------------------------------------
+%----- HAUPTTEIL ------------------------------------------------------
+
+\input{chapters/2-introduction}
+
+\input{chapters/3-basics}
+
+\input{chapters/4-state-of-the-art}
+
+\input{chapters/5-solution-concept}
+
+\input{chapters/6-sw-implementation}
+
+\input{chapters/7-sw-installation}
+
+\input{chapters/8-summary}
+
+%-----------------------------------------------------------------------
+%----- LITERATUR & ANHANG ----------------------------------------------
+\appendix
+\printbibliography[heading=bibintoc]
+
+\input{chapters/9-appendix-a}
+
+\input{chapters/10-appendix-b}
+
+\end{document}
