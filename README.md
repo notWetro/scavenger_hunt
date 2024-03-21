@@ -52,7 +52,7 @@ info: Microsoft.Hosting.Lifetime[0]
 info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Development
 info: Microsoft.Hosting.Lifetime[0]
-      Content root path: C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Api
+      Content root path: C:\...\ScavEditor.Api
 warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
       Failed to determine the https port for redirect.
 info: Microsoft.EntityFrameworkCore.Update[30100]
