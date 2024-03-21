@@ -14,6 +14,6 @@ namespace ScavEditor.Api.Models
         public ScavengerHunt? ScavengerHunt { get; set; }
 
         public int IdCurrentTask { get; set; }
-        public Task? CurrentTask { get; set; }
+        public TaskBase? CurrentTask { get; set; }
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ScavEditor.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee14f0c99ada0ccf1ee1cf2d8d87432d163668b4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3498b7b70ba345a679038bf1583aaf0eea4cc101")]
 [assembly: System.Reflection.AssemblyProductAttribute("ScavEditor.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ScavEditor.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

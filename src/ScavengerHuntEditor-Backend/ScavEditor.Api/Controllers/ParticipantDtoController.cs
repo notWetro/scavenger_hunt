@@ -1,43 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScavEditor.Api.DTOs;
 using ScavEditor.Api.Data;
+using AutoMapper;
+using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParticipantDtoesController : ControllerBase
+    public class ParticipantDtoController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
+        private readonly IMapper _mapper;
 
-        public ParticipantDtoesController(ScavEditorApiContext context)
+        public ParticipantDtoController(ScavEditorApiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        // GET: api/ParticipantDtoes
+        // GET: api/ParticipantDto
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetParticipantDto()
         {
-            return await _context.ParticipantDto.ToListAsync();
+            var participants = await _context.Participant.ToListAsync();
+            var participantDtos = _mapper.Map<List<ParticipantDto>>(participants);
+            return participantDtos;
         }
 
-        // GET: api/ParticipantDtoes/5
+        // GET: api/ParticipantDto/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ParticipantDto>> GetParticipantDto(int id)
         {
-            var participantDto = await _context.ParticipantDto.FindAsync(id);
+            var participant = await _context.Participant.FindAsync(id);
+            var participantDto = _mapper.Map<ParticipantDto>(participant);
 
-            if (participantDto == null)
-            {
+            if (participantDto is null)
                 return NotFound();
-            }
 
             return participantDto;
         }
@@ -48,11 +48,14 @@ namespace ScavEditor.Api.Controllers
         public async Task<IActionResult> PutParticipantDto(int id, ParticipantDto participantDto)
         {
             if (id != participantDto.Id)
-            {
                 return BadRequest();
-            }
 
-            _context.Entry(participantDto).State = EntityState.Modified;
+            var participant = await _context.Participant.FindAsync(id);
+
+            if (participant is null)
+                return NotFound();
+
+            _context.Entry(participant).State = EntityState.Modified;
 
             try
             {
@@ -60,14 +63,10 @@ namespace ScavEditor.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ParticipantDtoExists(id))
-                {
+                if (!ParticipantExists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -77,8 +76,8 @@ namespace ScavEditor.Api.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<ParticipantDto>> PostParticipantDto(ParticipantDto participantDto)
-        {
-            _context.ParticipantDto.Add(participantDto);
+        {            
+            _context.Participant.Add(_mapper.Map<Participant>(participantDto));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetParticipantDto", new { id = participantDto.Id }, participantDto);
@@ -88,21 +87,19 @@ namespace ScavEditor.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParticipantDto(int id)
         {
-            var participantDto = await _context.ParticipantDto.FindAsync(id);
-            if (participantDto == null)
-            {
+            var participant = await _context.Participant.FindAsync(id);
+            if (participant is null)
                 return NotFound();
-            }
 
-            _context.ParticipantDto.Remove(participantDto);
+            _context.Participant.Remove(participant);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool ParticipantDtoExists(int id)
+        private bool ParticipantExists(int id)
         {
-            return _context.ParticipantDto.Any(e => e.Id == id);
+            return _context.Participant.Any(e => e.Id == id);
         }
     }
 }

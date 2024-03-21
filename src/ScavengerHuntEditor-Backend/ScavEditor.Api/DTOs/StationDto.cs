@@ -19,13 +19,13 @@ namespace ScavEditor.Api.DTOs
         [JsonProperty("longitude")]
         public double Longitude { get; set; }
 
-        [JsonProperty("tasks")]
-        public List<TaskDto> Tasks { get; set; } = [];
+        //[JsonProperty("tasks")]
+        //public List<TaskBaseDto> Tasks { get; set; } = [];
 
         [JsonProperty("idScavengerHunt")]
         public int IdScavengerHunt { get; set; }
 
-        [JsonProperty("associatedScavengerHunt")]
-        public ScavengerHuntDto? AssociatedScavengerHunt { get; set; }
+        //[JsonProperty("associatedScavengerHunt")]
+        //public ScavengerHuntDto? AssociatedScavengerHunt { get; set; }
     }
 }

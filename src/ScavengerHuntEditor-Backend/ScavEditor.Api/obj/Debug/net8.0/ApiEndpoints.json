@@ -1,8 +1,8 @@
 [
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoController",
     "Method": "GetParticipantDto",
-    "RelativePath": "api/ParticipantDtoes",
+    "RelativePath": "api/ParticipantDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -20,9 +20,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoController",
     "Method": "PostParticipantDto",
-    "RelativePath": "api/ParticipantDtoes",
+    "RelativePath": "api/ParticipantDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -46,9 +46,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoController",
     "Method": "GetParticipantDto",
-    "RelativePath": "api/ParticipantDtoes/{id}",
+    "RelativePath": "api/ParticipantDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -72,9 +72,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoController",
     "Method": "PutParticipantDto",
-    "RelativePath": "api/ParticipantDtoes/{id}",
+    "RelativePath": "api/ParticipantDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -93,9 +93,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipantDtoController",
     "Method": "DeleteParticipantDto",
-    "RelativePath": "api/ParticipantDtoes/{id}",
+    "RelativePath": "api/ParticipantDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -109,9 +109,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoController",
     "Method": "GetParticipationDto",
-    "RelativePath": "api/ParticipationDtoes",
+    "RelativePath": "api/ParticipationDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -129,9 +129,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoController",
     "Method": "PostParticipationDto",
-    "RelativePath": "api/ParticipationDtoes",
+    "RelativePath": "api/ParticipationDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -155,9 +155,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoController",
     "Method": "GetParticipationDto",
-    "RelativePath": "api/ParticipationDtoes/{id}",
+    "RelativePath": "api/ParticipationDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -181,9 +181,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoController",
     "Method": "PutParticipationDto",
-    "RelativePath": "api/ParticipationDtoes/{id}",
+    "RelativePath": "api/ParticipationDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -202,9 +202,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ParticipationDtoController",
     "Method": "DeleteParticipationDto",
-    "RelativePath": "api/ParticipationDtoes/{id}",
+    "RelativePath": "api/ParticipationDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -218,9 +218,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoController",
     "Method": "GetScavengerHuntDto",
-    "RelativePath": "api/ScavengerHuntDtoes",
+    "RelativePath": "api/ScavengerHuntDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -238,9 +238,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoController",
     "Method": "PostScavengerHuntDto",
-    "RelativePath": "api/ScavengerHuntDtoes",
+    "RelativePath": "api/ScavengerHuntDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -264,9 +264,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoController",
     "Method": "GetScavengerHuntDto",
-    "RelativePath": "api/ScavengerHuntDtoes/{id}",
+    "RelativePath": "api/ScavengerHuntDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -290,9 +290,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoController",
     "Method": "PutScavengerHuntDto",
-    "RelativePath": "api/ScavengerHuntDtoes/{id}",
+    "RelativePath": "api/ScavengerHuntDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -311,9 +311,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.ScavengerHuntDtoController",
     "Method": "DeleteScavengerHuntDto",
-    "RelativePath": "api/ScavengerHuntDtoes/{id}",
+    "RelativePath": "api/ScavengerHuntDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -327,9 +327,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.StationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.StationDtoController",
     "Method": "GetStationDto",
-    "RelativePath": "api/StationDtoes",
+    "RelativePath": "api/StationDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -347,9 +347,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.StationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.StationDtoController",
     "Method": "PostStationDto",
-    "RelativePath": "api/StationDtoes",
+    "RelativePath": "api/StationDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -373,9 +373,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.StationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.StationDtoController",
     "Method": "GetStationDto",
-    "RelativePath": "api/StationDtoes/{id}",
+    "RelativePath": "api/StationDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -399,9 +399,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.StationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.StationDtoController",
     "Method": "PutStationDto",
-    "RelativePath": "api/StationDtoes/{id}",
+    "RelativePath": "api/StationDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -420,9 +420,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.StationDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.StationDtoController",
     "Method": "DeleteStationDto",
-    "RelativePath": "api/StationDtoes/{id}",
+    "RelativePath": "api/StationDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -436,118 +436,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskDtoesController",
-    "Method": "GetTaskDto",
-    "RelativePath": "api/TaskDtoes",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[ScavEditor.Api.DTOs.TaskDto, ScavEditor.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskDtoesController",
-    "Method": "PostTaskDto",
-    "RelativePath": "api/TaskDtoes",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "taskDto",
-        "Type": "ScavEditor.Api.DTOs.TaskDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ScavEditor.Api.DTOs.TaskDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskDtoesController",
-    "Method": "GetTaskDto",
-    "RelativePath": "api/TaskDtoes/{id}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "ScavEditor.Api.DTOs.TaskDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskDtoesController",
-    "Method": "PutTaskDto",
-    "RelativePath": "api/TaskDtoes/{id}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "taskDto",
-        "Type": "ScavEditor.Api.DTOs.TaskDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskDtoesController",
-    "Method": "DeleteTaskDto",
-    "RelativePath": "api/TaskDtoes/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoController",
     "Method": "GetTaskQuestionAnswerDto",
-    "RelativePath": "api/TaskQuestionAnswerDtoes",
+    "RelativePath": "api/TaskQuestionAnswerDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -565,9 +456,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoController",
     "Method": "PostTaskQuestionAnswerDto",
-    "RelativePath": "api/TaskQuestionAnswerDtoes",
+    "RelativePath": "api/TaskQuestionAnswerDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -591,9 +482,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoController",
     "Method": "GetTaskQuestionAnswerDto",
-    "RelativePath": "api/TaskQuestionAnswerDtoes/{id}",
+    "RelativePath": "api/TaskQuestionAnswerDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -617,9 +508,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoController",
     "Method": "PutTaskQuestionAnswerDto",
-    "RelativePath": "api/TaskQuestionAnswerDtoes/{id}",
+    "RelativePath": "api/TaskQuestionAnswerDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -638,9 +529,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskQuestionAnswerDtoController",
     "Method": "DeleteTaskQuestionAnswerDto",
-    "RelativePath": "api/TaskQuestionAnswerDtoes/{id}",
+    "RelativePath": "api/TaskQuestionAnswerDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -654,9 +545,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoController",
     "Method": "GetTaskTextDto",
-    "RelativePath": "api/TaskTextDtoes",
+    "RelativePath": "api/TaskTextDto",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -674,9 +565,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoController",
     "Method": "PostTaskTextDto",
-    "RelativePath": "api/TaskTextDtoes",
+    "RelativePath": "api/TaskTextDto",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -700,9 +591,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoController",
     "Method": "GetTaskTextDto",
-    "RelativePath": "api/TaskTextDtoes/{id}",
+    "RelativePath": "api/TaskTextDto/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -726,9 +617,9 @@
     ]
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoController",
     "Method": "PutTaskTextDto",
-    "RelativePath": "api/TaskTextDtoes/{id}",
+    "RelativePath": "api/TaskTextDto/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -747,9 +638,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoesController",
+    "ContainingType": "ScavEditor.Api.Controllers.TaskTextDtoController",
     "Method": "DeleteTaskTextDto",
-    "RelativePath": "api/TaskTextDtoes/{id}",
+    "RelativePath": "api/TaskTextDto/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,

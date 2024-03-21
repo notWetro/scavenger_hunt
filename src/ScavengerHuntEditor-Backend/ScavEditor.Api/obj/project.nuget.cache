@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "TpQ/8SC5e2ladGuUldXH2G20Tf0FARumyDA7VQiHwZ8DpuoW/+aQcJFh4+bw+nXX0w6seaTgxhoCCRf5XZ6H5w==",
+  "dgSpecHash": "+akDdpCetPeHT/D/atd1t85/d+wS6n5OxFC3HAWDROGIQ42gLpWl4qQQvAq5Gj+FauhBzeKXcIZirJHwDeaoOw==",
   "success": true,
   "projectFilePath": "C:\\Repositories\\projektarbeit-hsaa\\src\\ScavengerHuntEditor-Backend\\ScavEditor.Api\\ScavEditor.Api.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\aranz\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\aranz\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\aranz\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\aranz\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

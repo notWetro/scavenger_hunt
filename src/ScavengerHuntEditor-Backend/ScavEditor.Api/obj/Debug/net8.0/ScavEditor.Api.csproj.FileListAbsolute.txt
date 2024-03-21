@@ -252,3 +252,4 @@ C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Ap
 C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Api\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Api\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
 C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Api\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Repositories\projektarbeit-hsaa\src\ScavengerHuntEditor-Backend\ScavEditor.Api\bin\Debug\net8.0\AutoMapper.dll

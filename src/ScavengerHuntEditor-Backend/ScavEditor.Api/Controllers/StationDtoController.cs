@@ -1,43 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScavEditor.Api.DTOs;
 using ScavEditor.Api.Data;
+using AutoMapper;
+using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StationDtoesController : ControllerBase
+    public class StationDtoController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
+        private readonly IMapper _mapper;
 
-        public StationDtoesController(ScavEditorApiContext context)
+        public StationDtoController(ScavEditorApiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/StationDtoes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StationDto>>> GetStationDto()
         {
-            return await _context.StationDto.ToListAsync();
+            var stations = await _context.Station.ToListAsync();
+            var stationsDto = _mapper.Map<List<StationDto>>(stations);
+            return stationsDto;
         }
 
         // GET: api/StationDtoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<StationDto>> GetStationDto(int id)
         {
-            var stationDto = await _context.StationDto.FindAsync(id);
+            var station = await _context.Station.FindAsync(id);
+            var stationDto = _mapper.Map<StationDto>(station);
 
-            if (stationDto == null)
-            {
+            if (station is null)
                 return NotFound();
-            }
 
             return stationDto;
         }
@@ -48,11 +48,14 @@ namespace ScavEditor.Api.Controllers
         public async Task<IActionResult> PutStationDto(int id, StationDto stationDto)
         {
             if (id != stationDto.Id)
-            {
                 return BadRequest();
-            }
 
-            _context.Entry(stationDto).State = EntityState.Modified;
+            var station = await _context.Station.FindAsync(id);
+
+            if(station is null)
+                return NotFound();
+
+            _context.Entry(station).State = EntityState.Modified;
 
             try
             {
@@ -60,14 +63,10 @@ namespace ScavEditor.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!StationDtoExists(id))
-                {
+                if (!StationExists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -78,7 +77,7 @@ namespace ScavEditor.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<StationDto>> PostStationDto(StationDto stationDto)
         {
-            _context.StationDto.Add(stationDto);
+            _context.Station.Add(_mapper.Map<Station>(stationDto));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetStationDto", new { id = stationDto.Id }, stationDto);
@@ -88,21 +87,19 @@ namespace ScavEditor.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStationDto(int id)
         {
-            var stationDto = await _context.StationDto.FindAsync(id);
+            var stationDto = await _context.Station.FindAsync(id);
             if (stationDto == null)
-            {
                 return NotFound();
-            }
 
-            _context.StationDto.Remove(stationDto);
+            _context.Station.Remove(stationDto);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool StationDtoExists(int id)
+        private bool StationExists(int id)
         {
-            return _context.StationDto.Any(e => e.Id == id);
+            return _context.Station.Any(e => e.Id == id);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ScavEditor.Api.Models
 {
-    public abstract class Task
+    public abstract class TaskBase
     {
         public int Id { get; set; }
 

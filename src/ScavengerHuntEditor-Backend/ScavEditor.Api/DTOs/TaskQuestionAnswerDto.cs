@@ -2,7 +2,7 @@
 
 namespace ScavEditor.Api.DTOs
 {
-    public sealed class TaskQuestionAnswerDto : TaskDto
+    public sealed class TaskQuestionAnswerDto : TaskBaseDto
     {
         [JsonProperty("question")]
         public string Question { get; set; } = string.Empty;

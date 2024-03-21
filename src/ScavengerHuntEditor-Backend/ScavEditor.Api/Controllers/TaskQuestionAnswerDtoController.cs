@@ -1,45 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScavEditor.Api.DTOs;
 using ScavEditor.Api.Data;
+using AutoMapper;
+using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskQuestionAnswerDtoesController : ControllerBase
+    public class TaskQuestionAnswerDtoController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
+        private readonly IMapper _mapper;
 
-        public TaskQuestionAnswerDtoesController(ScavEditorApiContext context)
+        public TaskQuestionAnswerDtoController(ScavEditorApiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/TaskQuestionAnswerDtoes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskQuestionAnswerDto>>> GetTaskQuestionAnswerDto()
         {
-            return await _context.TaskQuestionAnswerDto.ToListAsync();
+            var tasks = await _context.TaskQuestionAnswer.ToListAsync();
+            var taskDtos = _mapper.Map<List<TaskQuestionAnswerDto>>(tasks);
+            return taskDtos;
         }
 
         // GET: api/TaskQuestionAnswerDtoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskQuestionAnswerDto>> GetTaskQuestionAnswerDto(int id)
         {
-            var taskQuestionAnswerDto = await _context.TaskQuestionAnswerDto.FindAsync(id);
+            var task = await _context.TaskQuestionAnswer.FindAsync(id);
+            var taskDto = _mapper.Map<TaskQuestionAnswerDto>(task);
 
-            if (taskQuestionAnswerDto == null)
-            {
+            if (taskDto is null)
                 return NotFound();
-            }
 
-            return taskQuestionAnswerDto;
+            return taskDto;
         }
 
         // PUT: api/TaskQuestionAnswerDtoes/5
@@ -48,11 +48,14 @@ namespace ScavEditor.Api.Controllers
         public async Task<IActionResult> PutTaskQuestionAnswerDto(int id, TaskQuestionAnswerDto taskQuestionAnswerDto)
         {
             if (id != taskQuestionAnswerDto.Id)
-            {
                 return BadRequest();
-            }
 
-            _context.Entry(taskQuestionAnswerDto).State = EntityState.Modified;
+            var task = await _context.TaskQuestionAnswer.FindAsync(id);
+
+            if (task is null)
+                return NotFound();
+
+            _context.Entry(task).State = EntityState.Modified;
 
             try
             {
@@ -60,14 +63,10 @@ namespace ScavEditor.Api.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TaskQuestionAnswerDtoExists(id))
-                {
+                if (!TaskQuestionAnswerExists(id))
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -78,7 +77,7 @@ namespace ScavEditor.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskQuestionAnswerDto>> PostTaskQuestionAnswerDto(TaskQuestionAnswerDto taskQuestionAnswerDto)
         {
-            _context.TaskQuestionAnswerDto.Add(taskQuestionAnswerDto);
+            _context.TaskQuestionAnswer.Add(_mapper.Map<TaskQuestionAnswer>(taskQuestionAnswerDto));
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTaskQuestionAnswerDto", new { id = taskQuestionAnswerDto.Id }, taskQuestionAnswerDto);
@@ -88,21 +87,19 @@ namespace ScavEditor.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskQuestionAnswerDto(int id)
         {
-            var taskQuestionAnswerDto = await _context.TaskQuestionAnswerDto.FindAsync(id);
-            if (taskQuestionAnswerDto == null)
-            {
+            var taskQuestionAnswerDto = await _context.TaskQuestionAnswer.FindAsync(id);
+            if (taskQuestionAnswerDto is null)
                 return NotFound();
-            }
 
-            _context.TaskQuestionAnswerDto.Remove(taskQuestionAnswerDto);
+            _context.TaskQuestionAnswer.Remove(taskQuestionAnswerDto);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool TaskQuestionAnswerDtoExists(int id)
+        private bool TaskQuestionAnswerExists(int id)
         {
-            return _context.TaskQuestionAnswerDto.Any(e => e.Id == id);
+            return _context.TaskQuestionAnswer.Any(e => e.Id == id);
         }
     }
 }

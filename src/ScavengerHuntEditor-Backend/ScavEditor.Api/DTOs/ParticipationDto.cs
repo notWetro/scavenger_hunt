@@ -14,19 +14,19 @@ namespace ScavEditor.Api.DTOs
         [JsonProperty("idParticipant")]
         public int IdParticipant { get; set; }
 
-        [JsonProperty("participant")]
-        public ParticipantDto? Participant { get; set; }
+        //[JsonProperty("participant")]
+        //public ParticipantDto? Participant { get; set; }
 
         [JsonProperty("idScavengerHunt")]
         public int IdScavengerHunt { get; set; }
 
-        [JsonProperty("scavengerHunt")]
-        public ScavengerHuntDto? ScavengerHunt { get; set; }
+        //[JsonProperty("scavengerHunt")]
+        //public ScavengerHuntDto? ScavengerHunt { get; set; }
 
         [JsonProperty("idCurrentTask")]
         public int IdCurrentTask { get; set; }
 
-        [JsonProperty("currentTask")]
-        public TaskDto? CurrentTask { get; set; }
+        //[JsonProperty("currentTask")]
+        //public TaskBaseDto? CurrentTask { get; set; }
     }
 }

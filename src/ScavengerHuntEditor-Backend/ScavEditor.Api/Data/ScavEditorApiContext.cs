@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Data
 {
@@ -9,12 +10,12 @@ namespace ScavEditor.Api.Data
         {
         }
 
-        public DbSet<DTOs.TaskQuestionAnswerDto> TaskQuestionAnswerDto { get; set; } = default!;
-        public DbSet<DTOs.TaskTextDto> TaskTextDto { get; set; } = default!;
-        public DbSet<DTOs.TaskDto> TaskDto { get; set; } = default!;
-        public DbSet<DTOs.ParticipationDto> ParticipationDto { get; set; } = default!;
-        public DbSet<DTOs.ParticipantDto> ParticipantDto { get; set; } = default!;
-        public DbSet<DTOs.StationDto> StationDto { get; set; } = default!;
-        public DbSet<DTOs.ScavengerHuntDto> ScavengerHuntDto { get; set; } = default!;
+        public DbSet<TaskQuestionAnswer> TaskQuestionAnswer { get; set; } = default!;
+        public DbSet<TaskText> TaskText { get; set; } = default!;
+        public DbSet<TaskBase> Task { get; set; } = default!;
+        public DbSet<Participation> Participation { get; set; } = default!;
+        public DbSet<Participant> Participant { get; set; } = default!;
+        public DbSet<Station> Station { get; set; } = default!;
+        public DbSet<ScavengerHunt> ScavengerHunt { get; set; } = default!;
     }
 }

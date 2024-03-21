@@ -10,7 +10,7 @@ namespace ScavEditor.Api.DTOs
         [JsonProperty("username")]
         public string Username { get; set; } = string.Empty;
 
-        [JsonProperty("participations")]
-        public List<ParticipationDto> Participations { get; set; } = [];
+        //[JsonProperty("participations")]
+        //public List<ParticipationDto> Participations { get; set; } = [];
     }
 }
