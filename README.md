@@ -1,15 +1,22 @@
-# Einführung Repository `projektarbeit-hsaa`
+# Einführung
+
 Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und Rosario an der Hochschule Aalen.
 
 # Verzeichnisstruktur
 
-- `.\docs\` beinhaltet Dokumente, wie beispielsweise die Dokumentation der Projektarbeit, Literatur, etc.
-- `.\libs\` beinhaltet Bibliotheken, die im Projekt Verwendung finden, wie beispielsweise `.dll` Dateien
-- `.\src` beinhaltet den Source-Code des Projekts, wie etwa C# Code, etc.
+- `-\demos\`: Beispiel-Anwendungen um die Verwendung verschiedener Technologien zu testen. Der hier enthaltene Source-Code dient lediglich zum austesten.
+- `.\docs\`: Dokumentation der Projektarbeit und eventuelle Literatur.
+- `.\libs\`: Bibliotheken, die im Projekt verwendung finden. Beispielsweise `.dll`-Dateien.
+- `.\src\`: Projekt-Source-Code für den Schnitzeljagd-Editor bzw. die AR-Mobile-App.
+- `.\utils\`: Nützliche Tools die im Rahmen des Projekts Verwendung finden / gefunden haben.
 
 # Inbetriebnahme der Anwendung(en)
 
-### Testen der REST-APi / Schnittstelle
+### Generieren von QR-Codes mit dem _qrcode-generator_
+
+Für das Testen (und für die Erstellung des QR-Code-Generators innerhalb des Projekts) wurde eine Utility erstellt, die mittels Kommandozeilen-Aufruf einen QR-Code basierend auf einen Input-String erstellt. Der resultierende QR-Code wird im `Downloads` Verzeichnis des Benutzers angelegt und ist über einen Timestamp identifizierbar (bspw. `QRCode_20240323113550.png`).
+
+### Testen der REST-API / Schnittstelle
 
 #### Anleitung
 
@@ -76,15 +83,3 @@ info: Microsoft.EntityFrameworkCore.Update[30100]
 info: Microsoft.EntityFrameworkCore.Update[30100]
       Saved 1 entities to in-memory store.
 ```
-
-### Inbetriebnahme Anwendung 1 TODO
-
-1) Todo.
-1) Todo.
-1) Todo.
-
-### Inbetriebnahme Anwendung 2 TODO
-
-1) Todo.
-1) Todo.
-1) Todo.
