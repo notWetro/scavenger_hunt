@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "App.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "-t \"This is a hint\""
+    }
+  }
+}
