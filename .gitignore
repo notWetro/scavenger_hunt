@@ -34,7 +34,6 @@ ExportedObj/
 .consulo/
 *.csproj
 *.unityproj
-*.sln
 *.suo
 *.tmp
 *.user
@@ -78,7 +77,6 @@ crashlytics-build.properties
 # User-specific files
 *.suo
 *.user
-*.sln.docstates
 
 # Build results
 
