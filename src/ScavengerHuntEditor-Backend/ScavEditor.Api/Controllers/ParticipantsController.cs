@@ -1,34 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScavEditor.Api.Data;
 using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
+    /// <summary>
+    /// ParticipantsController.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ParticipantsController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParticipantsController"/> class.
+        /// </summary>
+        /// <param name="context">Database context.</param>
         public ParticipantsController(ScavEditorApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Participants
+        /// <summary>
+        /// Gets a list of participants.
+        /// </summary>
+        /// <returns>List of Participants.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Participant>>> GetParticipant()
         {
             return await _context.Participant.ToListAsync();
         }
 
-        // GET: api/Participants/5
+        /// <summary>
+        /// Gets a participant by ID.
+        /// </summary>
+        /// <param name="id">Participant Id.</param>
+        /// <returns>Participant.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Participant>> GetParticipant(int id)
         {
@@ -42,7 +50,12 @@ namespace ScavEditor.Api.Controllers
             return participant;
         }
 
-        // PUT: api/Participants/5
+        /// <summary>
+        /// Updates a participant.
+        /// </summary>
+        /// <param name="id">Id of Participant.</param>
+        /// <param name="participant">Participant Update Details.</param>
+        /// <returns>Updated Participant.</returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutParticipant(int id, Participant participant)
@@ -73,7 +86,11 @@ namespace ScavEditor.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Participants
+        /// <summary>
+        /// Creates a new participant.
+        /// </summary>
+        /// <param name="participant"></param>
+        /// <returns>Participant.</returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Participant>> PostParticipant(Participant participant)
@@ -84,7 +101,11 @@ namespace ScavEditor.Api.Controllers
             return CreatedAtAction("GetParticipant", new { id = participant.Id }, participant);
         }
 
-        // DELETE: api/Participants/5
+        /// <summary>
+        /// Deletes a participant.
+        /// </summary>
+        /// <param name="id">Id of Participant to delete.</param>
+        /// <returns>NoContentResult.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParticipant(int id)
         {
@@ -99,7 +120,12 @@ namespace ScavEditor.Api.Controllers
 
             return NoContent();
         }
-
+        
+        /// <summary>
+        /// Checks if a participant exists.
+        /// </summary>
+        /// <param name="id">Id of participant to check.</param>
+        /// <returns>True if participant exists.</returns>
         private bool ParticipantExists(int id)
         {
             return _context.Participant.Any(e => e.Id == id);

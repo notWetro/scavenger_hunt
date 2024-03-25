@@ -1,34 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScavEditor.Api.Data;
 using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
+    /// <summary>
+    /// ParticipationsController.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ParticipationsController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
-
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParticipationsController"/> class.
+        /// </summary>
+        /// <param name="context">Database context.</param>
         public ParticipationsController(ScavEditorApiContext context)
         {
             _context = context;
         }
 
-        // GET: api/Participations
+        /// <summary>
+        /// Gets a list of participations.
+        /// </summary>
+        /// <returns>list of participations.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Participation>>> GetParticipation()
         {
             return await _context.Participation.ToListAsync();
         }
 
-        // GET: api/Participations/5
+        /// <summary>
+        /// Gets a participation by ID.
+        /// </summary>
+        /// <param name="id">Id of participation.</param>
+        /// <returns>Participation.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Participation>> GetParticipation(int id)
         {
@@ -42,7 +51,12 @@ namespace ScavEditor.Api.Controllers
             return participation;
         }
 
-        // PUT: api/Participations/5
+        /// <summary>
+        /// Updates a participation.
+        /// </summary>
+        /// <param name="id">Id of participation to update.</param>
+        /// <param name="participation">Participation Update details.</param>
+        /// <returns>Updated Participation.</returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutParticipation(int id, Participation participation)
@@ -73,7 +87,11 @@ namespace ScavEditor.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Participations
+        /// <summary>
+        /// Creates a new participation.
+        /// </summary>
+        /// <param name="participation">Participation to create.</param>
+        /// <returns>Participation.</returns>
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Participation>> PostParticipation(Participation participation)
@@ -84,7 +102,11 @@ namespace ScavEditor.Api.Controllers
             return CreatedAtAction("GetParticipation", new { id = participation.Id }, participation);
         }
 
-        // DELETE: api/Participations/5
+        /// <summary>
+        /// Deletes a participation.
+        /// </summary>
+        /// <param name="id">Id of participation to delete.</param>
+        /// <returns>NoContentResult.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParticipation(int id)
         {
@@ -99,7 +121,12 @@ namespace ScavEditor.Api.Controllers
 
             return NoContent();
         }
-
+        
+        /// <summary>
+        /// Checks if a participation exists.
+        /// </summary>
+        /// <param name="id">Id of participation to check.</param>
+        /// <returns>True if participation exists.</returns>
         private bool ParticipationExists(int id)
         {
             return _context.Participation.Any(e => e.Id == id);
