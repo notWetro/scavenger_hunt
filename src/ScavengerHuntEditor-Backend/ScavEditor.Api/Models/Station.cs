@@ -10,9 +10,9 @@
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public List<TaskBase> Tasks { get; set; } = [];
+        //public List<TaskBase> Tasks { get; set; } = [];
 
         public int IdScavengerHunt { get; set; }
-        public ScavengerHunt? AssociatedScavengerHunt { get; set; }
+        //public ScavengerHunt? AssociatedScavengerHunt { get; set; }
     }
 }

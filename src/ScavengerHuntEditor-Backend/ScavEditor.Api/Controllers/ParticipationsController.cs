@@ -5,60 +5,52 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ScavEditor.Api.DTOs;
 using ScavEditor.Api.Data;
-using AutoMapper;
 using ScavEditor.Api.Models;
 
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParticipationDtoController : ControllerBase
+    public class ParticipationsController : ControllerBase
     {
         private readonly ScavEditorApiContext _context;
-        private readonly IMapper _mapper;
 
-        public ParticipationDtoController(ScavEditorApiContext context, IMapper mapper)
+        public ParticipationsController(ScavEditorApiContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        // GET: api/ParticipationDtoes
+        // GET: api/Participations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParticipationDto>>> GetParticipationDto()
+        public async Task<ActionResult<IEnumerable<Participation>>> GetParticipation()
         {
-            var participations = await _context.Participation.ToListAsync();
-            var participationsDto = _mapper.Map<List<ParticipationDto>>(participations);
-            return participationsDto;
+            return await _context.Participation.ToListAsync();
         }
 
-        // GET: api/ParticipationDtoes/5
+        // GET: api/Participations/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ParticipationDto>> GetParticipationDto(int id)
+        public async Task<ActionResult<Participation>> GetParticipation(int id)
         {
             var participation = await _context.Participation.FindAsync(id);
-            var participationDto = _mapper.Map<ParticipationDto>(participation);
 
-            if (participationDto is null)
+            if (participation == null)
+            {
                 return NotFound();
+            }
 
-            return participationDto;
+            return participation;
         }
 
-        // PUT: api/ParticipationDtoes/5
+        // PUT: api/Participations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutParticipationDto(int id, ParticipationDto participationDto)
+        public async Task<IActionResult> PutParticipation(int id, Participation participation)
         {
-            if (id != participationDto.Id)
+            if (id != participation.Id)
+            {
                 return BadRequest();
-
-            var participation = await _context.Participation.FindAsync(id);
-
-            if(participation is null)
-                return NotFound();
+            }
 
             _context.Entry(participation).State = EntityState.Modified;
 
@@ -69,32 +61,38 @@ namespace ScavEditor.Api.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!ParticipationExists(id))
+                {
                     return NotFound();
+                }
                 else
+                {
                     throw;
+                }
             }
 
             return NoContent();
         }
 
-        // POST: api/ParticipationDtoes
+        // POST: api/Participations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ParticipationDto>> PostParticipationDto(ParticipationDto participationDto)
+        public async Task<ActionResult<Participation>> PostParticipation(Participation participation)
         {
-            _context.Participation.Add(_mapper.Map<Participation>(participationDto));
+            _context.Participation.Add(participation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetParticipationDto", new { id = participationDto.Id }, participationDto);
+            return CreatedAtAction("GetParticipation", new { id = participation.Id }, participation);
         }
 
-        // DELETE: api/ParticipationDtoes/5
+        // DELETE: api/Participations/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteParticipationDto(int id)
+        public async Task<IActionResult> DeleteParticipation(int id)
         {
             var participation = await _context.Participation.FindAsync(id);
-            if (participation is null)
+            if (participation == null)
+            {
                 return NotFound();
+            }
 
             _context.Participation.Remove(participation);
             await _context.SaveChangesAsync();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using ScavEditor.Api.DTOs;
+using ScavEditor.Api;
 using ScavEditor.Api.Models;
 using System;
 using System.Net.Http;
@@ -28,7 +28,7 @@ using (var httpClient = new HttpClient())
 
 static void AddUsers(HttpClient httpClient, string baseUrl)
 {
-    List<ParticipantDto> participants = [];
+    List<Participant> participants = [];
 
     for(int i = 1; i <= 10; i++)
     {
@@ -46,7 +46,7 @@ static void AddUsers(HttpClient httpClient, string baseUrl)
 
         try
         {
-            var response = httpClient.PostAsync(baseUrl + "/api/ParticipantDto/", httpContent).Result;
+            var response = httpClient.PostAsync(baseUrl + "/api/Participant/", httpContent).Result;
             ValidateResponse(response, nameof(AddUsers));
 
         }
