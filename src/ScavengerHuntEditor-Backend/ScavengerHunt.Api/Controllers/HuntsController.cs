@@ -3,7 +3,6 @@ using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Domain.Repositories;
 using ScavengerHunt.Infrastructure;
 
-
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -21,7 +20,8 @@ namespace ScavEditor.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hunt>>> GetScavengerHunt()
         {
-            throw new NotImplementedException();
+            var hunts = await _huntRepository.GetAll();
+            return Ok(hunts);
         }
 
         // GET: api/Hunts/5
@@ -43,13 +43,18 @@ namespace ScavEditor.Api.Controllers
         {
             if (id != scavengerHunt.Id)
                 return BadRequest();
+            
+            var hunt = await _huntRepository.GetByIdAsync(id);
 
-            throw new NotImplementedException();
-            //// RETURN IF NOT EXISTS
-            //if (!ScavengerHuntExists(id))
-            //    return NotFound();
-            //// RETURN IF EXISTS
-            //return NoContent();
+            if(hunt is null)
+                return NotFound();
+
+            var res = await _huntRepository.UpdateAsync(scavengerHunt);
+
+            if(res)
+                return Ok(res);
+            
+            return BadRequest();
         }
 
         // POST: api/Hunts
@@ -57,27 +62,29 @@ namespace ScavEditor.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Hunt>> PostScavengerHunt(Hunt scavengerHunt)
         {
-            await _huntRepository.Add(scavengerHunt);
-            return CreatedAtAction("GetHunt", new { id = scavengerHunt.Id }, scavengerHunt);
+            var id = await _huntRepository.AddAsync(scavengerHunt);
+
+            if(id <= 0)
+                return BadRequest();
+            return CreatedAtAction(nameof(PostScavengerHunt), new { id = scavengerHunt.Id }, scavengerHunt.Title);
         }
 
         // DELETE: api/Hunts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScavengerHunt(int id)
         {
-            throw new NotImplementedException();
-            //var scavengerHunt = await _context.ScavengerHunt.FindAsync(id);
-            //if (scavengerHunt == null)
-            //    return NotFound();
-            //_context.ScavengerHunt.Remove(scavengerHunt);
-            //await _context.SaveChangesAsync();
-            //return NoContent();
+            var hunt = await _huntRepository.DeleteByIdAsync(id);
+            
+            if (hunt is null)
+                return NotFound();
+
+            return Ok(hunt);
         }
 
         private bool ScavengerHuntExists(int id)
         {
-            throw new NotImplementedException();
-            //return _context.ScavengerHunt.Any(e => e.Id == id);
+            var hunt = _huntRepository.GetByIdAsync(id);
+            return hunt is not null;
         }
     }
 }

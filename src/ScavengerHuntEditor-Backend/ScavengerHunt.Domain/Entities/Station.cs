@@ -3,6 +3,7 @@ namespace ScavengerHunt.Domain.Entities
 {
     public sealed class Station
     {
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
 
         // Note: Instead of Latitude and Longitude we might use Points from
@@ -21,7 +22,7 @@ namespace ScavengerHunt.Domain.Entities
 
         public static Station NewStation() => new() { _isDraft = true };
 
-        private Station()
+        public Station()
         {
             _isDraft = false;
             _textTasks = [];

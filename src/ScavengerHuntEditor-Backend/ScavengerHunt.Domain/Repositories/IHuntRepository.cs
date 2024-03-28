@@ -1,15 +1,16 @@
 ﻿using ScavengerHunt.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ScavengerHunt.Domain.Repositories
 {
     public interface IHuntRepository
     {
         public Task<Hunt?> GetByIdAsync(int id);
-        public Task Add(Hunt hunt);
+        public Task<IEnumerable<Hunt>> GetAll();
+
+        public Task<int> AddAsync(Hunt hunt);
+        public Task<int[]> AddRangeAsync(IEnumerable<Hunt> hunts);
+
+        public Task<bool> UpdateAsync(Hunt hunt);
+        public Task<Hunt?> DeleteByIdAsync(int id);
     }
 }

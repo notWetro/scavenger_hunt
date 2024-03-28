@@ -1,12 +1,9 @@
 using ScavengerHunt.Domain.Repositories;
 using ScavengerHunt.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using ScavengerStation.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 ConfigureServices(builder);
 
 var app = builder.Build();
@@ -18,6 +15,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
 app.Run();
 
 static void ConfigureServices(WebApplicationBuilder builder)
@@ -26,11 +29,14 @@ static void ConfigureServices(WebApplicationBuilder builder)
 
     // Add services
     services.AddScoped<IHuntRepository, EFHuntRepository>();
+    services.AddScoped<IStationRepository, EFStationRepository>();
+    services.AddScoped<ITaskRepository, EFTaskRepository>();
+
     // Add other repositories, DbContext, etc.
 
-    services.AddDbContext<ScavHuntDbContext>(options => options.
-        UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ??
-            throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found.")));
+    services.AddDbContext<ScavHuntDbContext>(options => options
+        .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."), 
+        b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
 
     services.AddControllers();
 
