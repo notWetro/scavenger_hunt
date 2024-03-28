@@ -1,0 +1,10 @@
+<div class="layout-topbar">
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'scav-hunt-logo' : 'scav-hunt-logo-white'}}.svg" alt="logo">
+        <span>Scavenger Hunt Editor</span>
+    </a>
+
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+</div>
