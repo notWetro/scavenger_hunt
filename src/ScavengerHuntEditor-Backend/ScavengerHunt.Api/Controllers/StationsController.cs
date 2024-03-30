@@ -32,7 +32,7 @@ namespace ScavengerHunt.Api.Controllers
             if (station is null)
                 return NotFound();
 
-            return station;
+            return Ok(station);
         }
 
         // PUT: api/Stations/5

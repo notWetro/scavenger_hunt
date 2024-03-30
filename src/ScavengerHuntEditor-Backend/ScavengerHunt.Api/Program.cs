@@ -35,6 +35,7 @@ static void ConfigureServices(WebApplicationBuilder builder)
     // Add other repositories, DbContext, etc.
 
     services.AddDbContext<ScavHuntDbContext>(options => options
+        .EnableSensitiveDataLogging()
         .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."), 
         b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
 

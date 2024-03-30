@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavEditor.Api", "ScavEditor.Api\ScavEditor.Api.csproj", "{2A8BBC9E-8A69-47C5-B48C-624129A9D34C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hunts", "Hunts", "{F19DCBDD-65BE-462E-90A6-C6727384BA43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScavengerHunt.Api", "ScavengerHunt.Api\ScavengerHunt.Api.csproj", "{DC84237D-E885-4C12-884B-DB21712A0BAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Api", "ScavengerHunt.Api\ScavengerHunt.Api.csproj", "{DC84237D-E885-4C12-884B-DB21712A0BAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScavengerHunt.Domain", "ScavengerHunt.Domain\ScavengerHunt.Domain.csproj", "{0808F895-197E-4964-89A2-F189FCF1D71A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Domain", "ScavengerHunt.Domain\ScavengerHunt.Domain.csproj", "{0808F895-197E-4964-89A2-F189FCF1D71A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScavengerHunt.Infrastructure", "ScavengerHunt.Infrastructure\ScavengerHunt.Infrastructure.csproj", "{4BB549D1-61E6-4F4A-B4D1-357A1037A607}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Infrastructure", "ScavengerHunt.Infrastructure\ScavengerHunt.Infrastructure.csproj", "{4BB549D1-61E6-4F4A-B4D1-357A1037A607}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Participations", "Participations", "{BA6EE61F-BCD7-4543-A88E-A1463AA0837A}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,10 +33,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2A8BBC9E-8A69-47C5-B48C-624129A9D34C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A8BBC9E-8A69-47C5-B48C-624129A9D34C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A8BBC9E-8A69-47C5-B48C-624129A9D34C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A8BBC9E-8A69-47C5-B48C-624129A9D34C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC84237D-E885-4C12-884B-DB21712A0BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC84237D-E885-4C12-884B-DB21712A0BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC84237D-E885-4C12-884B-DB21712A0BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU

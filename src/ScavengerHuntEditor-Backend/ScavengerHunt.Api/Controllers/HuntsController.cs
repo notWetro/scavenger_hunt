@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Domain.Repositories;
-using ScavengerHunt.Infrastructure;
 
 namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HuntsController : ControllerBase
+    public sealed class HuntsController(IHuntRepository repository) : ControllerBase
     {
-        private readonly IHuntRepository _huntRepository;
+        private readonly IHuntRepository _huntRepository = repository;
 
-        public HuntsController(IHuntRepository repository)
-        {
-            _huntRepository = repository;
-        }
+        #region HTTP GETs
 
-        // GET: api/Hunts
+        /// <summary>
+        /// Format: GET: api/Hunts
+        /// Get all scavenger hunts.
+        /// </summary>
+        /// <returns>List of scavenger hunts.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hunt>>> GetScavengerHunt()
         {
@@ -24,7 +24,11 @@ namespace ScavEditor.Api.Controllers
             return Ok(hunts);
         }
 
-        // GET: api/Hunts/5
+        /// <summary>
+        /// Format: GET: api/Hunts/5
+        /// </summary>
+        /// <param name="id">Id of desired scavenger hunt.</param>
+        /// <returns>Requested scavenger hunt if it exists.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Hunt>> GetScavengerHunt(int id)
         {
@@ -33,11 +37,20 @@ namespace ScavEditor.Api.Controllers
             if (scavengerHunt is null)
                 return NotFound();
 
-            return scavengerHunt;
+            return Ok(scavengerHunt);
         }
 
-        // PUT: api/Hunts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        #endregion
+
+        #region HTTP PUTs
+
+        /// <summary>
+        /// Format: PUT: api/Hunts/5
+        /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// </summary>
+        /// <param name="id">Id of scavenger hunt to be edited.</param>
+        /// <param name="scavengerHunt">Updated scavenger hunt object.</param>
+        /// <returns>Ok-Code 200 if request was fulfilled.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutScavengerHunt(int id, Hunt scavengerHunt)
         {
@@ -57,8 +70,16 @@ namespace ScavEditor.Api.Controllers
             return BadRequest();
         }
 
-        // POST: api/Hunts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        #endregion
+
+        #region HTTP POSTs
+
+        /// <summary>
+        /// Format: POST: api/Hunts
+        /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// </summary>
+        /// <param name="scavengerHunt">New scavenger hunt object to be added.</param>
+        /// <returns>Ok-Code 201 and title of scavenger hunt on success.</returns>
         [HttpPost]
         public async Task<ActionResult<Hunt>> PostScavengerHunt(Hunt scavengerHunt)
         {
@@ -69,7 +90,15 @@ namespace ScavEditor.Api.Controllers
             return CreatedAtAction(nameof(PostScavengerHunt), new { id = scavengerHunt.Id }, scavengerHunt.Title);
         }
 
-        // DELETE: api/Hunts/5
+        #endregion
+
+        #region HTTP DELETEs
+
+        /// <summary>
+        /// Format: DELETE: api/Hunts/5
+        /// </summary>
+        /// <param name="id">Id of desired scavenger hunt to be deleted.</param>
+        /// <returns>The scavenger hunt object if request was fulfilled.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteScavengerHunt(int id)
         {
@@ -80,6 +109,8 @@ namespace ScavEditor.Api.Controllers
 
             return Ok(hunt);
         }
+
+        #endregion
 
         private bool ScavengerHuntExists(int id)
         {
