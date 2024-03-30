@@ -4,14 +4,9 @@ using ScavengerHunt.Infrastructure;
 
 namespace ScavengerHunt.Domain.Repositories
 {
-    public sealed class EFTaskRepository : ITaskRepository
+    public sealed class EFTaskRepository(ScavHuntDbContext dbContext) : ITaskRepository
     {
-        private ScavHuntDbContext _context;
-
-        public EFTaskRepository(ScavHuntDbContext dbContext)
-        {
-            _context = dbContext;
-        }
+        private readonly ScavHuntDbContext _context = dbContext;
 
         public Task<TaskQuestionAnswer?> GetQuestionAnswerByIdAsync(int id)
         {

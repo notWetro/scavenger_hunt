@@ -1,20 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Infrastructure;
-using System.Linq;
 
 namespace ScavengerHunt.Domain.Repositories
 {
-    public sealed class EFHuntRepository : IHuntRepository
+    public sealed class EFHuntRepository(ScavHuntDbContext dbContext) : IHuntRepository
     {
-        private ScavHuntDbContext _context;
-
-        // TODO: Logging
-
-        public EFHuntRepository(ScavHuntDbContext dbContext)
-        {
-            _context = dbContext;
-        }
+        private readonly ScavHuntDbContext _context = dbContext;
 
         public async Task<Hunt?> GetByIdAsync(int id)
         {
@@ -34,19 +26,6 @@ namespace ScavengerHunt.Domain.Repositories
             try
             {
                 return await _context.ScavengerHunts.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _ = ex.Message;
-                return [];
-            }
-        }
-
-        public async Task<IEnumerable<Station>> GetStationsByHuntId(int id)
-        {
-            try
-            {
-                return await _context.Stations.ToListAsync();
             }
             catch (Exception ex)
             {

@@ -10,7 +10,13 @@ namespace ScavengerHunt.Api.Controllers
     {
         private readonly ITaskRepository _taskRepository = repository;
 
-        // GET: api/Tasks/5
+        #region HTTP GETs
+
+        /// <summary>
+        /// Format: GET: api/Tasks/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/{id}")]
         public async Task<ActionResult<TaskText>> GetTask(int id)
         {
@@ -21,8 +27,17 @@ namespace ScavengerHunt.Api.Controllers
             return NotFound();
         }
 
-        // PUT: api/Tasks/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        #endregion
+
+        #region HTTP PUTs
+
+        /// <summary>
+        /// Format: PUT: api/Tasks/5
+        /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="task"></param>
+        /// <returns></returns>
         [HttpPut("/{id}")]
         public async Task<IActionResult> PutTask(int id, TaskText task)
         {
@@ -38,8 +53,16 @@ namespace ScavengerHunt.Api.Controllers
             return NotFound();
         }
 
-        // POST: api/Tasks
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        #endregion
+
+        #region HTTP POSTs
+
+        /// <summary>
+        /// Format: POST: api/Tasks
+        /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<TaskText>> PostTaskText(TaskText task)
         {
@@ -51,7 +74,15 @@ namespace ScavengerHunt.Api.Controllers
             return CreatedAtAction(nameof(PostTaskText), new { id = task.Id });
         }
 
-        // DELETE: api/Tasks/5
+        #endregion
+
+        #region HTTP DELETEs
+
+        /// <summary>
+        /// Format: DELETE: api/Tasks/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
@@ -62,5 +93,7 @@ namespace ScavengerHunt.Api.Controllers
 
             return Ok(task);
         }
+
+        #endregion
     }
 }

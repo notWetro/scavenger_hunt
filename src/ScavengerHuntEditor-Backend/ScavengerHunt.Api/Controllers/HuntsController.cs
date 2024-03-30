@@ -27,6 +27,7 @@ namespace ScavEditor.Api.Controllers
 
         /// <summary>
         /// Format: GET: api/Hunts/5
+        /// Get a scavenger hunt
         /// </summary>
         /// <param name="id">Id of desired scavenger hunt.</param>
         /// <returns>Requested scavenger hunt if it exists.</returns>
@@ -41,6 +42,12 @@ namespace ScavEditor.Api.Controllers
             return Ok(scavengerHunt);
         }
 
+        /// <summary>
+        /// Format: GET api/Hunts/5/Stations
+        /// Get all stations of a scavenger hunt.
+        /// </summary>
+        /// <param name="id">Id of desired scavenger hunt.</param>
+        /// <returns>List of stations.</returns>
         [HttpGet("{id}/Stations")]
         public async Task<ActionResult<IEnumerable<Station>>> GetScavengerHuntStations(int id)
         {
@@ -123,7 +130,6 @@ namespace ScavEditor.Api.Controllers
         }
 
         #endregion
-
 
         private bool ScavengerHuntExists(int id)
         {

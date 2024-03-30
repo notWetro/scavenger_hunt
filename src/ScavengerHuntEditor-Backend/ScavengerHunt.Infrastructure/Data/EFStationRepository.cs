@@ -5,16 +5,9 @@ using ScavengerHunt.Infrastructure;
 
 namespace ScavengerStation.Domain.Repositories
 {
-    public sealed class EFStationRepository : IStationRepository
+    public sealed class EFStationRepository(ScavHuntDbContext dbContext) : IStationRepository
     {
-        private ScavHuntDbContext _context;
-
-        // TODO: Logging
-
-        public EFStationRepository(ScavHuntDbContext dbContext)
-        {
-            _context = dbContext;
-        }
+        private readonly ScavHuntDbContext _context = dbContext;
 
         public async Task<Station?> GetByIdAsync(int id)
         {

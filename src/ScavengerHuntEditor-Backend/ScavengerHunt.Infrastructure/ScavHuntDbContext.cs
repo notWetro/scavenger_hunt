@@ -1,16 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Entities;
-using System.Reflection.Emit;
 
 namespace ScavengerHunt.Infrastructure
 {
-    public sealed class ScavHuntDbContext : DbContext
+    public sealed class ScavHuntDbContext(DbContextOptions<ScavHuntDbContext> options) : DbContext(options)
     {
         public DbSet<Hunt> ScavengerHunts { get; set; }
         public DbSet<Station> Stations { get; set; }
         public DbSet<TaskText> Tasks { get; set; }
-
-        public ScavHuntDbContext(DbContextOptions<ScavHuntDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
