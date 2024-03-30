@@ -1,6 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Repositories;
 using ScavengerHunt.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using ScavengerStation.Domain.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +36,7 @@ static void ConfigureServices(WebApplicationBuilder builder)
 
     services.AddDbContext<ScavHuntDbContext>(options => options
         .EnableSensitiveDataLogging()
-        .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."), 
+        .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
         b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
 
     services.AddControllers();

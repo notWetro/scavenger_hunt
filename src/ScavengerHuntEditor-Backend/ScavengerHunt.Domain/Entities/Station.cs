@@ -1,5 +1,4 @@
-﻿
-namespace ScavengerHunt.Domain.Entities
+﻿namespace ScavengerHunt.Domain.Entities
 {
     public sealed class Station
     {

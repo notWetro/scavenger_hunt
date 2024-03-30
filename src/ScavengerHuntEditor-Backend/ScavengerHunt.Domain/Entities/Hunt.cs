@@ -15,7 +15,7 @@ namespace ScavengerHunt.Domain.Entities
         // TODO: Ask if this is needed. _isDraft flag would allow for hunts to be "private" until the needed changes have been made
         public bool _isDraft;
         public static Hunt NewHunt() => new() { _isDraft = true };
-        
+
         public Hunt()
         {
             _isDraft = false;

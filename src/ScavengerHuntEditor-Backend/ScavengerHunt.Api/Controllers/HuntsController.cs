@@ -33,7 +33,7 @@ namespace ScavEditor.Api.Controllers
         public async Task<ActionResult<Hunt>> GetScavengerHunt(int id)
         {
             var scavengerHunt = await _huntRepository.GetByIdAsync(id);
-            
+
             if (scavengerHunt is null)
                 return NotFound();
 
@@ -56,17 +56,17 @@ namespace ScavEditor.Api.Controllers
         {
             if (id != scavengerHunt.Id)
                 return BadRequest();
-            
+
             var hunt = await _huntRepository.GetByIdAsync(id);
 
-            if(hunt is null)
+            if (hunt is null)
                 return NotFound();
 
             var res = await _huntRepository.UpdateAsync(scavengerHunt);
 
-            if(res)
+            if (res)
                 return Ok(res);
-            
+
             return BadRequest();
         }
 
@@ -85,7 +85,7 @@ namespace ScavEditor.Api.Controllers
         {
             var id = await _huntRepository.AddAsync(scavengerHunt);
 
-            if(id <= 0)
+            if (id <= 0)
                 return BadRequest();
             return CreatedAtAction(nameof(PostScavengerHunt), new { id = scavengerHunt.Id }, scavengerHunt.Title);
         }
@@ -103,7 +103,7 @@ namespace ScavEditor.Api.Controllers
         public async Task<IActionResult> DeleteScavengerHunt(int id)
         {
             var hunt = await _huntRepository.DeleteByIdAsync(id);
-            
+
             if (hunt is null)
                 return NotFound();
 

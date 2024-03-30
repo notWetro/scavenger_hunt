@@ -27,7 +27,7 @@ namespace ScavengerHunt.Domain.Repositories
                 return null;
             }
         }
-            
+
         public async Task<IEnumerable<Hunt>> GetAll()
         {
             try
@@ -82,7 +82,7 @@ namespace ScavengerHunt.Domain.Repositories
             {
                 var scavengerHunt = await _context.ScavengerHunts.FindAsync(id);
 
-                if(scavengerHunt is not null)
+                if (scavengerHunt is not null)
                 {
                     _context.ScavengerHunts.Remove(scavengerHunt);
                     await _context.SaveChangesAsync();
