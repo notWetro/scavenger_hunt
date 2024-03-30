@@ -5,39 +5,15 @@
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
 
-        // Note: Instead of Latitude and Longitude we might use Points from
+        // TODO/Note: Instead of Latitude and Longitude we might use Points from
         // NetTopologySuite.Geometries.Point Namespace (for calculating distances, etc.)
 
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
-        private List<TaskText> _textTasks;
-        private List<TaskQuestionAnswer> _questionTasks;
+        public int HuntId { get; set; }
+        public Hunt? Hunt { get; set; }
 
-        public IReadOnlyCollection<TaskText> TextTasks => _textTasks.AsReadOnly();
-        public IReadOnlyCollection<TaskQuestionAnswer> QuestionTasks => _questionTasks.AsReadOnly();
-
-        public bool _isDraft;
-
-        public static Station NewStation() => new() { _isDraft = true };
-
-        public Station()
-        {
-            _isDraft = false;
-            _textTasks = [];
-            _questionTasks = [];
-        }
-
-        public void AddTask(TaskBase task)
-        {
-            if (task is TaskQuestionAnswer taskQuestion)
-            {
-                _questionTasks.Add(taskQuestion);
-            }
-            else if (task is TaskText taskText)
-            {
-                _textTasks.Add(taskText);
-            }
-        }
+        public ICollection<TaskText> Tasks { get; set; } = [];
     }
 }

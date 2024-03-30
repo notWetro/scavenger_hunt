@@ -6,14 +6,9 @@ namespace ScavengerHunt.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StationsController : ControllerBase
+    public class StationsController(IStationRepository repository) : ControllerBase
     {
-        private readonly IStationRepository _stationRepository;
-
-        public StationsController(IStationRepository repository)
-        {
-            _stationRepository = repository;
-        }
+        private readonly IStationRepository _stationRepository = repository;
 
         // GET: api/Stations
         [HttpGet]

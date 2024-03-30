@@ -6,9 +6,10 @@ namespace ScavEditor.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class HuntsController(IHuntRepository repository) : ControllerBase
+    public sealed class HuntsController(IHuntRepository hrepository, IStationRepository srepository) : ControllerBase
     {
-        private readonly IHuntRepository _huntRepository = repository;
+        private readonly IHuntRepository _huntRepository = hrepository;
+        private readonly IStationRepository _stationRepository = srepository;
 
         #region HTTP GETs
 
@@ -38,6 +39,17 @@ namespace ScavEditor.Api.Controllers
                 return NotFound();
 
             return Ok(scavengerHunt);
+        }
+
+        [HttpGet("{id}/Stations")]
+        public async Task<ActionResult<IEnumerable<Station>>> GetScavengerHuntStations(int id)
+        {
+            var stationsOfHunt = await _stationRepository.GetAllByHuntId(id);
+
+            if (stationsOfHunt is null)
+                return NotFound();
+
+            return Ok(stationsOfHunt);
         }
 
         #endregion
@@ -111,6 +123,7 @@ namespace ScavEditor.Api.Controllers
         }
 
         #endregion
+
 
         private bool ScavengerHuntExists(int id)
         {

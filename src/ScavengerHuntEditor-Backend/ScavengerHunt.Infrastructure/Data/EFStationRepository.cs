@@ -42,6 +42,21 @@ namespace ScavengerStation.Domain.Repositories
             }
         }
 
+        public async Task<IEnumerable<Station>> GetAllByHuntId(int huntId)
+        {
+            try
+            {
+                return await _context.Stations
+                        .Where(x => x.HuntId == huntId)
+                        .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
+        }
+
         public async Task<int> AddAsync(Station Station)
         {
             try
@@ -57,16 +72,11 @@ namespace ScavengerStation.Domain.Repositories
             }
         }
 
-        public Task<int[]> AddRangeAsync(IEnumerable<Station> Stations)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateAsync(Station Station)
+        public async Task<bool> UpdateAsync(Station station)
         {
             try
             {
-                _context.Entry(Station).State = EntityState.Modified;
+                _context.Entry(station).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 return true;

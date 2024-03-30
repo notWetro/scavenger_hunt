@@ -13,11 +13,35 @@ namespace ScavengerHunt.Domain.Repositories
             _context = dbContext;
         }
 
-        public async Task<TaskBase?> GetByIdAsync(int id)
+        public Task<TaskQuestionAnswer?> GetQuestionAnswerByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+            //try
+            //{
+            //    var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+
+            //    if(task is TaskQuestionAnswer taskQA)
+            //        return taskQA;
+
+            //    return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    _ = ex.Message;
+            //    return null;
+            //}
+        }
+
+        public async Task<TaskText?> GetTextByIdAsync(int id)
         {
             try
             {
-                return await _context.Tasks.FirstOrDefaultAsync(sh => sh.Id == id);
+                var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+
+                if (task is TaskText taskText)
+                    return taskText;
+
+                return null;
             }
             catch (Exception ex)
             {
@@ -26,26 +50,29 @@ namespace ScavengerHunt.Domain.Repositories
             }
         }
 
-        public async Task<IEnumerable<TaskBase>> GetAll()
+        public Task<int> AddAsync(TaskQuestionAnswer task)
         {
-            try
-            {
-                return await _context.Tasks.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _ = ex.Message;
-                return [];
-            }
+            throw new NotImplementedException();
+            //try
+            //{
+            //    await _context.Tasks.AddAsync(task);
+            //    _context.SaveChanges();
+            //    return task.Id;
+            //}
+            //catch (Exception ex)
+            //{
+            //    _ = ex.Message;
+            //    return -1;
+            //}
         }
 
-        public async Task<int> AddAsync(TaskBase TaskBase)
+        public async Task<int> AddAsync(TaskText task)
         {
             try
             {
-                await _context.Tasks.AddAsync(TaskBase);
+                await _context.Tasks.AddAsync(task);
                 _context.SaveChanges();
-                return TaskBase.Id;
+                return task.Id;
             }
             catch (Exception ex)
             {
@@ -54,16 +81,11 @@ namespace ScavengerHunt.Domain.Repositories
             }
         }
 
-        public Task<int[]> AddRangeAsync(IEnumerable<TaskBase> TaskBases)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> UpdateAsync(TaskBase TaskBase)
+        public async Task<bool> UpdateAsync(TaskQuestionAnswer task)
         {
             try
             {
-                _context.Entry(TaskBase).State = EntityState.Modified;
+                _context.Entry(task).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 return true;
@@ -74,6 +96,23 @@ namespace ScavengerHunt.Domain.Repositories
                 return false;
             }
         }
+
+        public async Task<bool> UpdateAsync(TaskText task)
+        {
+            try
+            {
+                _context.Entry(task).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return false;
+            }
+        }
+
         public async Task<TaskBase?> DeleteByIdAsync(int id)
         {
             try

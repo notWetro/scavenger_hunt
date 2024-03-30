@@ -7,9 +7,9 @@ namespace ScavengerHunt.Domain.Repositories
         public Task<Station?> GetByIdAsync(int id);
         public Task<IEnumerable<Station>> GetAll();
 
-        public Task<int> AddAsync(Station station);
+        public Task<IEnumerable<Station>> GetAllByHuntId(int huntId);
 
-        public Task<int[]> AddRangeAsync(IEnumerable<Station> stations);
+        public Task<int> AddAsync(Station station);
 
         public Task<bool> UpdateAsync(Station station);
         public Task<Station?> DeleteByIdAsync(int id);

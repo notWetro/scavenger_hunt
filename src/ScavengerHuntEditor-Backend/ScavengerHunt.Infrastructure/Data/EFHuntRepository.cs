@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Infrastructure;
+using System.Linq;
 
 namespace ScavengerHunt.Domain.Repositories
 {
@@ -41,6 +42,19 @@ namespace ScavengerHunt.Domain.Repositories
             }
         }
 
+        public async Task<IEnumerable<Station>> GetStationsByHuntId(int id)
+        {
+            try
+            {
+                return await _context.Stations.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
+        }
+
         public async Task<int> AddAsync(Hunt hunt)
         {
             try
@@ -56,15 +70,17 @@ namespace ScavengerHunt.Domain.Repositories
             }
         }
 
-        public Task<int[]> AddRangeAsync(IEnumerable<Hunt> hunts)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> UpdateAsync(Hunt hunt)
         {
             try
             {
+                var existingHunt = await _context.ScavengerHunts.FindAsync(hunt.Id);
+
+                if (existingHunt is not null)
+                {
+                    _context.Entry(existingHunt).State = EntityState.Detached;
+                }
+
                 _context.Entry(hunt).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 

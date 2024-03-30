@@ -33,7 +33,7 @@ namespace ScavengerHunt.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Latitude = table.Column<double>(type: "float", nullable: false),
                     Longitude = table.Column<double>(type: "float", nullable: false),
-                    HuntId = table.Column<int>(type: "int", nullable: true)
+                    HuntId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +42,8 @@ namespace ScavengerHunt.Infrastructure.Migrations
                         name: "FK_Stations_ScavengerHunts_HuntId",
                         column: x => x.HuntId,
                         principalTable: "ScavengerHunts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,12 +52,8 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Discriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
-                    Question = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ExpectedAnswer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StationId = table.Column<int>(type: "int", nullable: true),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TaskText_StationId = table.Column<int>(type: "int", nullable: true)
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,12 +62,8 @@ namespace ScavengerHunt.Infrastructure.Migrations
                         name: "FK_Tasks_Stations_StationId",
                         column: x => x.StationId,
                         principalTable: "Stations",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tasks_Stations_TaskText_StationId",
-                        column: x => x.TaskText_StationId,
-                        principalTable: "Stations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -82,11 +75,6 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 name: "IX_Tasks_StationId",
                 table: "Tasks",
                 column: "StationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tasks_TaskText_StationId",
-                table: "Tasks",
-                column: "TaskText_StationId");
         }
 
         /// <inheritdoc />

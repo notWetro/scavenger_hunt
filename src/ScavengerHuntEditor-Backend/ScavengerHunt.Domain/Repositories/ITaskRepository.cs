@@ -4,14 +4,15 @@ namespace ScavengerHunt.Domain.Repositories
 {
     public interface ITaskRepository
     {
-        public Task<TaskBase?> GetByIdAsync(int id);
-        public Task<IEnumerable<TaskBase>> GetAll();
+        public Task<TaskQuestionAnswer?> GetQuestionAnswerByIdAsync(int id);
+        public Task<TaskText?> GetTextByIdAsync(int id);
 
-        public Task<int> AddAsync(TaskBase task);
+        public Task<int> AddAsync(TaskQuestionAnswer task);
+        public Task<int> AddAsync(TaskText task);
 
-        public Task<int[]> AddRangeAsync(IEnumerable<TaskBase> tasks);
-
-        public Task<bool> UpdateAsync(TaskBase task);
+        public Task<bool> UpdateAsync(TaskQuestionAnswer task);
+        public Task<bool> UpdateAsync(TaskText task);
+        
         public Task<TaskBase?> DeleteByIdAsync(int id);
     }
 }
