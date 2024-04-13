@@ -11,7 +11,7 @@ namespace ScavengerHunt.Domain.Entities
         /// <summary>
         /// A title usually contains a topic of a hunt.
         /// </summary>
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; } = default!;
 
         /// <summary>
         /// A description usually contains additional information of a hunt.

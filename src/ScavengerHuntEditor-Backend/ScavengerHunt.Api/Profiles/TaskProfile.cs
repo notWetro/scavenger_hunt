@@ -9,6 +9,7 @@ namespace ScavengerHunt.Api.Profiles
         public TaskProfile() 
         {
             CreateMap<TaskTextInnerCreateDto, TaskText>();
+            CreateMap<TaskText, TaskTextInnerGetDto>();
         }
     }
 }

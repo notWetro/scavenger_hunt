@@ -9,6 +9,8 @@ namespace ScavengerHunt.Api.Profiles
         public HuntProfile()
         {
             CreateMap<HuntCreateDto, Hunt>();
+            CreateMap<Hunt, HuntGetDto>();
+            CreateMap<HuntUpdateDto, Hunt>();
         }
     }
 }

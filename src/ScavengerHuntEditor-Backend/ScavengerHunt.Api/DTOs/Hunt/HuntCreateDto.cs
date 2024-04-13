@@ -1,5 +1,4 @@
 ﻿using ScavengerHunt.Api.DTOs.Station;
-using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.DTOs.Hunt
 {

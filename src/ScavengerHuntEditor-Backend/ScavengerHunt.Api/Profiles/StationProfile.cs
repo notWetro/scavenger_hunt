@@ -9,6 +9,7 @@ namespace ScavengerHunt.Api.Profiles
         public StationProfile()
         {
             CreateMap<StationInnerCreateDto, Station>();
+            CreateMap<Station, StationInnerGetDto>();
         }
     }
 }
