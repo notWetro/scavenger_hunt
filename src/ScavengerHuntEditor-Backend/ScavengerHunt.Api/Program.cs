@@ -28,6 +28,7 @@ static void ConfigureServices(WebApplicationBuilder builder)
     var services = builder.Services;
 
     // Add services
+    services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddScoped<IHuntRepository, EFHuntRepository>();
     services.AddScoped<IStationRepository, EFStationRepository>();
     services.AddScoped<ITaskRepository, EFTaskRepository>();
