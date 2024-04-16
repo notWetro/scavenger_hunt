@@ -13,7 +13,7 @@ namespace ScavengerHunt.Api.DTOs.Hunt
         /// <summary>
         /// Every hunt consists of multiple stations.
         /// TODO: Ask if aggregation-encapsulation makes sense here.
-        /// Private: Stattions cannot be added from outside directly but only with AddStation() Method
+        /// Private: Stations cannot be added from outside directly but only with AddStation() Method
         /// </summary>
         public ICollection<StationInnerGetDto> Stations { get; set; } = [];
     }
