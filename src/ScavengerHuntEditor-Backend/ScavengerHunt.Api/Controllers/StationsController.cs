@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Domain.Repositories;
 
@@ -6,9 +7,10 @@ namespace ScavengerHunt.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StationsController(IStationRepository repository) : ControllerBase
+    public class StationsController(IStationRepository repository, IMapper mapper) : ControllerBase
     {
         private readonly IStationRepository _stationRepository = repository;
+        private readonly IMapper _mapper = mapper;
 
         #region HTTP GETs
 
