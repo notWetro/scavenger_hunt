@@ -25,7 +25,9 @@ namespace ScavengerHunt.Domain.Repositories
         {
             try
             {
-                return await _context.ScavengerHunts.ToListAsync();
+                return await _context.ScavengerHunts.Include(hunt => hunt.Stations)
+                    .ThenInclude(station => station.Tasks)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
