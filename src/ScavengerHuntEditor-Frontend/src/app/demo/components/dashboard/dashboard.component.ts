@@ -9,18 +9,30 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnDestroy {
 	subscription!: Subscription;
 
-	//scavengerHunts$!: Observable<string>;
+	hunts = [];
 
 	constructor(
 		public layoutService: LayoutService,
 		private router: Router
 	) {
 		this.subscription = this.layoutService.configUpdate$.pipe(debounceTime(25)).subscribe();
+		this.generateHunts();
 	}
 
 	addNewHunt(): void {
-		console.log('test');
 		this.router.navigate(['/pages/scavenger-hunt-form']).then();
+	}
+
+	generateHunts(): void {
+		const numberOfHunts = 18; // Change this number as needed
+
+		for (let i = 1; i <= numberOfHunts; i++) {
+			this.hunts.push({
+				name: `Scavenger Hunt ${i}`,
+				stations: [`Station 1`, `Station 2`], // Example stations
+				participants: [`Participant 1`, `Participant 2`, `Participant 3`, `Participant 4`] // Example participants
+			});
+		}
 	}
 
 	ngOnDestroy() {
