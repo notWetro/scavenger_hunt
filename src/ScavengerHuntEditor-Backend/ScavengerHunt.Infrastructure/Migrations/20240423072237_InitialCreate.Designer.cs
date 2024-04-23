@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ScavengerHunt.Infrastructure;
 
@@ -10,9 +11,11 @@ using ScavengerHunt.Infrastructure;
 namespace ScavengerHunt.Infrastructure.Migrations
 {
     [DbContext(typeof(ScavHuntDbContext))]
-    partial class ScavHuntDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423072237_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,4 +1,4 @@
-﻿using ScavengerHunt.Api.DTOs.Station;
+﻿using ScavengerHunt.Api.DTOs.Assignment;
 
 namespace ScavengerHunt.Api.DTOs.Hunt
 {
@@ -10,11 +10,6 @@ namespace ScavengerHunt.Api.DTOs.Hunt
 
         public string Description { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Every hunt consists of multiple stations.
-        /// TODO: Ask if aggregation-encapsulation makes sense here.
-        /// Private: Stations cannot be added from outside directly but only with AddStation() Method
-        /// </summary>
-        public ICollection<StationInnerGetDto> Stations { get; set; } = [];
+        public ICollection<AssignmentInnerGetDto> Assignments { get; set; } = [];
     }
 }

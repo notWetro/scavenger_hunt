@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Repositories;
 using ScavengerHunt.Infrastructure;
-using ScavengerStation.Domain.Repositories;
+using ScavengerHunt.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigureServices(builder);
@@ -30,15 +30,22 @@ static void ConfigureServices(WebApplicationBuilder builder)
     // Add services
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddScoped<IHuntRepository, EFHuntRepository>();
-    services.AddScoped<IStationRepository, EFStationRepository>();
-    services.AddScoped<ITaskRepository, EFTaskRepository>();
+    services.AddScoped<IAssignmentRepository, EFAssignmentRepository>();
 
     // Add other repositories, DbContext, etc.
 
     services.AddDbContext<ScavHuntDbContext>(options => options
-        .EnableSensitiveDataLogging()
-        .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
-        b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
+    .EnableSensitiveDataLogging()
+    .UseMySql(
+        builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
+        new MySqlServerVersion(new Version(8, 3, 0)),
+    b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
+
+
+    //services.AddDbContext<ScavHuntDbContext>(options => options
+    //    .EnableSensitiveDataLogging()
+    //    .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
+    //    b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
 
     services.AddControllers();
 

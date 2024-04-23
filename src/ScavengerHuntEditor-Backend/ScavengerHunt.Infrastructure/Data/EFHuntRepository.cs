@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Infrastructure;
+using ScavengerHunt.Domain.Repositories;
 
-namespace ScavengerHunt.Domain.Repositories
+namespace ScavengerHunt.Infrastructure.Data
 {
     public sealed class EFHuntRepository(ScavHuntDbContext dbContext) : IHuntRepository
     {
@@ -26,8 +27,10 @@ namespace ScavengerHunt.Domain.Repositories
             try
             {
                 return await _context.ScavengerHunts
-                    .Include(hunt => hunt.Stations)
-                        .ThenInclude(station => station.Tasks)
+                    .Include(hunt => hunt.Assignments)
+                    .ThenInclude(assignment => assignment.Hint)
+                    .Include(hunt => hunt.Assignments)
+                    .ThenInclude(assignment => assignment.Solution)
                     .ToListAsync();
             }
             catch (Exception ex)

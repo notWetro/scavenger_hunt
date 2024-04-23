@@ -1,4 +1,4 @@
-﻿using ScavengerHunt.Api.DTOs.Station;
+﻿using ScavengerHunt.Api.DTOs.Assignment;
 
 namespace ScavengerHunt.Api.DTOs.Hunt
 {
@@ -8,6 +8,6 @@ namespace ScavengerHunt.Api.DTOs.Hunt
 
         public string Description { get; set; } = string.Empty;
 
-        public ICollection<StationInnerCreateDto> Stations { get; set; } = [];
+        public ICollection<AssignmentInnerCreateDto> Assignments { get; set; } = [];
     }
 }

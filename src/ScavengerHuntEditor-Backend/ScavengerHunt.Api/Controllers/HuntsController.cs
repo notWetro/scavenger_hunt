@@ -4,7 +4,7 @@ using ScavengerHunt.Api.DTOs.Hunt;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Domain.Repositories;
 
-namespace ScavEditor.Api.Controllers
+namespace ScavengerHunt.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -97,7 +97,7 @@ namespace ScavEditor.Api.Controllers
 
             if (id <= 0)
                 return BadRequest();
-            
+
             return CreatedAtAction(nameof(PostScavengerHunt), _mapper.Map<HuntGetDto>(scavengerHunt));
         }
 
