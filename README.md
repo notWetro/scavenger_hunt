@@ -2,6 +2,10 @@
 
 Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und Rosario an der Hochschule Aalen.
 
+# Quicklinks
+
+- [Backend](src/ScavengerHuntEditor-Backend/README.md)
+
 # Verzeichnisstruktur
 
 - `-\demos\`: Beispiel-Anwendungen um die Verwendung verschiedener Technologien zu testen. Der hier enthaltene Source-Code dient lediglich zum austesten.
@@ -11,37 +15,6 @@ Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und
 - `.\utils\`: Nützliche Tools die im Rahmen des Projekts Verwendung finden / gefunden haben.
 
 # Inbetriebnahme der Anwendung(en)
-
-### MS SQL Docker-Container initialisieren
-
-1) Docker-Image holen
-
-```
-docker pull mcr.microsoft.com/mssql/server
-```
-
-2) Docker-Container erstellen und starten
-
-```
-docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=XXX' -p 1433:1433 --name sql_server_container -d mcr.microsoft.com/mssql/server:latest
-```
-
-3) Connection-String in `appsettings.json` einfügen
-
-```json
-"ConnectionStrings": {
-    "ScavEditorApiContext": "Server=localhost,1433;Database=master;User=sa;Password=XXX;TrustServerCertificate=True"
-  }
-```
-
-4) Nun kann MS SQL in der Anwendung über `options.UseSqlServer(...)` verwendet werden.
-
-### Migrations
-
-1) In Visual Studio 2022 _Tools >> NuGet Package Manager >> Package Manager Console_ öffnen.
-2) In das Verzeichnis wechseln.
-3) Die Befehle `Add-Migration InitialCreate` und `Update-Database` ausführen.
-4) Nun wurden die Tabellen erfolgreich angelegt.
 
 ### Generieren von QR-Codes mit dem _qrcode-generator_
 
