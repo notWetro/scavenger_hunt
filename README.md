@@ -4,7 +4,8 @@ Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und
 
 # Quicklinks
 
-- [Backend](src/ScavengerHuntEditor-Backend/README.md)
+- [Scavenger-Hunt-Backend](src/ScavengerHuntEditor-Backend/README.md)
+- [Scavenger-Hunt-AR-App](TODO)
 
 # Verzeichnisstruktur
 
