@@ -17,9 +17,59 @@ namespace ScavengerHunt.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Assignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HintId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HuntId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SolutionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HuntId");
+
+                    b.ToTable("Assignments");
+                });
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Hint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("HintType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId")
+                        .IsUnique();
+
+                    b.ToTable("Hint");
+                });
 
             modelBuilder.Entity("ScavengerHunt.Domain.Entities.Hunt", b =>
                 {
@@ -27,75 +77,51 @@ namespace ScavengerHunt.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
                     b.ToTable("ScavengerHunts");
                 });
 
-            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Station", b =>
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Solution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("HuntId")
+                    b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Data")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HuntId");
+                    b.HasIndex("AssignmentId")
+                        .IsUnique();
 
-                    b.ToTable("Stations");
+                    b.ToTable("Solution");
                 });
 
-            modelBuilder.Entity("ScavengerHunt.Domain.Entities.TaskText", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("StationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StationId");
-
-                    b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Station", b =>
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Assignment", b =>
                 {
                     b.HasOne("ScavengerHunt.Domain.Entities.Hunt", "Hunt")
-                        .WithMany("Stations")
+                        .WithMany("Assignments")
                         .HasForeignKey("HuntId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -103,25 +129,40 @@ namespace ScavengerHunt.Infrastructure.Migrations
                     b.Navigation("Hunt");
                 });
 
-            modelBuilder.Entity("ScavengerHunt.Domain.Entities.TaskText", b =>
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Hint", b =>
                 {
-                    b.HasOne("ScavengerHunt.Domain.Entities.Station", "Station")
-                        .WithMany("Tasks")
-                        .HasForeignKey("StationId")
+                    b.HasOne("ScavengerHunt.Domain.Entities.Assignment", "Assignment")
+                        .WithOne("Hint")
+                        .HasForeignKey("ScavengerHunt.Domain.Entities.Hint", "AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Station");
+                    b.Navigation("Assignment");
+                });
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Solution", b =>
+                {
+                    b.HasOne("ScavengerHunt.Domain.Entities.Assignment", "Assignment")
+                        .WithOne("Solution")
+                        .HasForeignKey("ScavengerHunt.Domain.Entities.Solution", "AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+                });
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Assignment", b =>
+                {
+                    b.Navigation("Hint")
+                        .IsRequired();
+
+                    b.Navigation("Solution")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ScavengerHunt.Domain.Entities.Hunt", b =>
                 {
-                    b.Navigation("Stations");
-                });
-
-            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Station", b =>
-                {
-                    b.Navigation("Tasks");
+                    b.Navigation("Assignments");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,15 @@
+﻿using ScavengerHunt.Api.DTOs.Assignment;
+
+namespace ScavengerHunt.Api.DTOs.Hunt
+{
+    public class HuntGetDto
+    {
+        public int Id { get; set; }
+
+        public string Title { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        public ICollection<AssignmentInnerGetDto> Assignments { get; set; } = [];
+    }
+}

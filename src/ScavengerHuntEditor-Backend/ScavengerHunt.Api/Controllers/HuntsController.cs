@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ScavengerHunt.Api.DTOs.Hunt;
 using ScavengerHunt.Domain.Entities;
 using ScavengerHunt.Domain.Repositories;
 
-namespace ScavEditor.Api.Controllers
+namespace ScavengerHunt.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class HuntsController(IHuntRepository hrepository, IStationRepository srepository) : ControllerBase
+    public sealed class HuntsController(IHuntRepository hrepository, IMapper mapper) : ControllerBase
     {
         private readonly IHuntRepository _huntRepository = hrepository;
-        private readonly IStationRepository _stationRepository = srepository;
+        private readonly IMapper _mapper = mapper;
 
         #region HTTP GETs
 
@@ -19,10 +21,10 @@ namespace ScavEditor.Api.Controllers
         /// </summary>
         /// <returns>List of scavenger hunts.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hunt>>> GetScavengerHunt()
+        public async Task<ActionResult<IEnumerable<HuntGetDto>>> GetScavengerHunt()
         {
             var hunts = await _huntRepository.GetAll();
-            return Ok(hunts);
+            return Ok(_mapper.Map<IEnumerable<HuntGetDto>>(hunts));
         }
 
         /// <summary>
@@ -39,24 +41,7 @@ namespace ScavEditor.Api.Controllers
             if (scavengerHunt is null)
                 return NotFound();
 
-            return Ok(scavengerHunt);
-        }
-
-        /// <summary>
-        /// Format: GET api/Hunts/5/Stations
-        /// Get all stations of a scavenger hunt.
-        /// </summary>
-        /// <param name="id">Id of desired scavenger hunt.</param>
-        /// <returns>List of stations.</returns>
-        [HttpGet("{id}/Stations")]
-        public async Task<ActionResult<IEnumerable<Station>>> GetScavengerHuntStations(int id)
-        {
-            var stationsOfHunt = await _stationRepository.GetAllByHuntId(id);
-
-            if (stationsOfHunt is null)
-                return NotFound();
-
-            return Ok(stationsOfHunt);
+            return Ok(_mapper.Map<HuntGetDto>(scavengerHunt));
         }
 
         #endregion
@@ -71,9 +56,9 @@ namespace ScavEditor.Api.Controllers
         /// <param name="scavengerHunt">Updated scavenger hunt object.</param>
         /// <returns>Ok-Code 200 if request was fulfilled.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutScavengerHunt(int id, Hunt scavengerHunt)
+        public async Task<IActionResult> PutScavengerHunt(int id, HuntUpdateDto scavengerHuntDto)
         {
-            if (id != scavengerHunt.Id)
+            if (id != scavengerHuntDto.Id)
                 return BadRequest();
 
             var hunt = await _huntRepository.GetByIdAsync(id);
@@ -81,7 +66,11 @@ namespace ScavEditor.Api.Controllers
             if (hunt is null)
                 return NotFound();
 
-            var res = await _huntRepository.UpdateAsync(scavengerHunt);
+            // TODO: This is scary. Maybe change it a bit.
+            hunt.Title = scavengerHuntDto.Title;
+            hunt.Description = scavengerHuntDto.Description;
+
+            var res = await _huntRepository.UpdateAsync(hunt);
 
             if (res)
                 return Ok(res);
@@ -97,16 +86,19 @@ namespace ScavEditor.Api.Controllers
         /// Format: POST: api/Hunts
         /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         /// </summary>
-        /// <param name="scavengerHunt">New scavenger hunt object to be added.</param>
+        /// <param name="scavengerHuntDto">New scavenger hunt object to be added.</param>
         /// <returns>Ok-Code 201 and title of scavenger hunt on success.</returns>
         [HttpPost]
-        public async Task<ActionResult<Hunt>> PostScavengerHunt(Hunt scavengerHunt)
+        public async Task<ActionResult<HuntGetDto>> PostScavengerHunt(HuntCreateDto scavengerHuntDto)
         {
+            var scavengerHunt = _mapper.Map<Hunt>(scavengerHuntDto);
+
             var id = await _huntRepository.AddAsync(scavengerHunt);
 
             if (id <= 0)
                 return BadRequest();
-            return CreatedAtAction(nameof(PostScavengerHunt), new { id = scavengerHunt.Id }, scavengerHunt.Title);
+
+            return CreatedAtAction(nameof(PostScavengerHunt), _mapper.Map<HuntGetDto>(scavengerHunt));
         }
 
         #endregion
@@ -126,7 +118,7 @@ namespace ScavEditor.Api.Controllers
             if (hunt is null)
                 return NotFound();
 
-            return Ok(hunt);
+            return Ok(_mapper.Map<HuntGetDto>(hunt));
         }
 
         #endregion

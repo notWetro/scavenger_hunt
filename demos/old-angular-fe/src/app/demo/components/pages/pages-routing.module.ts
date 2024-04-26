@@ -2,11 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
-    imports: [RouterModule.forChild([
-        { path: 'crud', loadChildren: () => import('./crud/crud.module').then(m => m.CrudModule) },
-        { path: 'empty', loadChildren: () => import('./empty/emptydemo.module').then(m => m.EmptyDemoModule) },
-        { path: '**', redirectTo: '/notfound' }
-    ])],
-    exports: [RouterModule]
+	imports: [
+		RouterModule.forChild([
+			{
+				path: 'scavenger-hunt-form',
+				loadChildren: () => import('./scavenger-hunt-form/scavenger-hunt-form.module').then((m) => m.ScavengerHuntFormModule)
+			},
+			{ path: '**', redirectTo: '/notfound' }
+		])
+	],
+	exports: [RouterModule]
 })
-export class PagesRoutingModule { }
+export class PagesRoutingModule {}

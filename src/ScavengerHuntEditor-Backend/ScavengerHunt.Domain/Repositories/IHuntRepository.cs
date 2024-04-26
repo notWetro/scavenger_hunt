@@ -17,7 +17,6 @@ namespace ScavengerHunt.Domain.Repositories
         /// <returns>A list of hunt-objects.</returns>
         public Task<IEnumerable<Hunt>> GetAll();
 
-
         /// <summary>
         /// Saves a new hunt.
         /// </summary>
