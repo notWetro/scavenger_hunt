@@ -39,7 +39,7 @@
 		</ul>
 	</div>
 	<div class="navbar-end">
-		<a class="btn">
+		<a class="btn" href="/create">
 			<Plus/>
 			Add new
 		</a>
