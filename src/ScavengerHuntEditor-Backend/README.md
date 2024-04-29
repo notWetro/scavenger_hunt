@@ -45,4 +45,22 @@ Lastly, update the database migrations accordingly. A migrations file should alr
 Update-Database
 ```
 
+## Run with Docker Compose
+
+### Environment Variables Setup
+
+Make sure that you have the following `.env` file inside the root of the source-files where `docker-compose.yaml` and `dockerfile` are located:
+
+```txt
+MYSQL_ROOT_PASSWORD=your_password_here
+```
+
+You can build and run the containers with docker compose:
+
+```shell
+docker compose up --build
+```
+
+Make sure that after everything is up and running, that you manually update your migrations like specified [above](README.md#configuring-mysql).
+
 Now, the Backend API can function appropriately.

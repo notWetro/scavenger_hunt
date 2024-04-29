@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  scavenger-hunt-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Adjust port as needed
+    depends_on:
+      - mysql
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__ScavEditorApiContext=Server=mysql;Port=3306;Database=ScavengerHuntHsAa;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD}
+
+  mysql:
+    image: mysql:latest
+    container_name: scavenger-hunt-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    secrets:
+      - mysql_root_password
+
+secrets:
+  mysql_root_password:
+    file: .env
+
+volumes:
+  mysql-data:
