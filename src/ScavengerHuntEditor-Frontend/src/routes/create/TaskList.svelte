@@ -1,5 +1,14 @@
-<script>
+<script lang="ts">
+	import type { Assignment } from '$lib/models/Assignment';
+	import type { Hunt } from '$lib/models/Hunt';
+	import { hintTypeToString, solutionTypeToString } from '$lib/utils';
 	import { PlusIcon } from 'lucide-svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
+
+	export let assignments: Assignment[];
+	$: assignments;
 </script>
 
 <div
@@ -15,55 +24,17 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr class="hover">
-				<th>1</th>
-				<td>Text</td>
-				<td>QR</td>
-			</tr>
-			<tr class="hover">
-				<th>2</th>
-				<td>Bild</td>
-				<td>Standort</td>
-			</tr>
-			<tr class="hover">
-				<th>3</th>
-				<td>Objekt</td>
-				<td>Text</td>
-			</tr>
-			<tr class="hover">
-				<th>4</th>
-				<td>Text</td>
-				<td>QR</td>
-			</tr>
-			<tr class="hover">
-				<th>5</th>
-				<td>Bild</td>
-				<td>Standort</td>
-			</tr>
-			<tr class="hover">
-				<th>6</th>
-				<td>Objekt</td>
-				<td>Text</td>
-			</tr>
-			<tr class="hover">
-				<th>7</th>
-				<td>Text</td>
-				<td>QR</td>
-			</tr>
-			<tr class="hover">
-				<th>8</th>
-				<td>Bild</td>
-				<td>Standort</td>
-			</tr>
-			<tr class="hover">
-				<th>9</th>
-				<td>Objekt</td>
-				<td>Text</td>
-			</tr>
+			{#each assignments as assignment}
+				<tr class="hover">
+					<th>1</th>
+					<td>{hintTypeToString(assignment.hint.hintType)}</td>
+					<td>{solutionTypeToString(assignment.solution.solutionType)}</td>
+				</tr>
+			{/each}
 		</tbody>
 	</table>
 
-	<button class="btn btn-ghost">
+	<button class="btn btn-ghost" on:click={() => dispatch('NewAssignment')}>
 		Neue Aufgabe
 		<PlusIcon />
 	</button>

@@ -1,13 +1,9 @@
 <script lang="ts">
+	import { SolutionType } from '$lib/models/Solution';
+	import { solutionTypeToString } from '$lib/utils';
 	import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from 'lucide-svelte';
 
-	enum SolutionType {
-		Text = 'Text',
-		Location = 'Standort',
-		QRCode = 'Qr-Code'
-	}
-
-	let solutionType: SolutionType;
+	let solutionType: string;
 </script>
 
 <div
@@ -18,18 +14,20 @@
 	<select bind:value={solutionType} class="select select-bordered select-lg w-full">
 		<option disabled selected>Lösungs-Typ</option>
 		{#each Object.values(SolutionType) as type}
-			<option>{type}</option>
+			{#if typeof type === 'number'}
+				<option>{solutionTypeToString(type)}</option>
+			{/if}
 		{/each}
 	</select>
 
-	{#if solutionType === SolutionType.Text}
+	{#if solutionType === 'Text'}
 		<textarea
 			class="textarea textarea-bordered textarea-lg w-full"
 			placeholder="Gewünschte Lösung hier eingeben"
 		></textarea>
 	{/if}
 
-	{#if solutionType === SolutionType.Location}
+	{#if solutionType === 'Location'}
 		<label class="input input-bordered flex items-center gap-2">
 			<ChevronsLeftRightIcon />
 			<input type="number" class="grow" placeholder="Latitude" />
@@ -41,7 +39,7 @@
 		</label>
 	{/if}
 
-	{#if solutionType === SolutionType.QRCode}
+	{#if solutionType === 'QRCode'}
 		<div class="flex items-center justify-center flex-col">
 			<strong>WICHTIG!</strong>
 			<p>Ein Qr-Code wird beim Erstellen der Aufgabe generiert und gespeichert.</p>

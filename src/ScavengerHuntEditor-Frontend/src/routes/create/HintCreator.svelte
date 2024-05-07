@@ -1,10 +1,11 @@
 <script lang="ts">
-	enum HintType {
-		Text = 'Text',
-		Image = 'Bild'
-	}
+	import type { Assignment } from '$lib/models/Assignment';
+	import { HintType } from '$lib/models/Hint';
+	import { hintTypeToString } from '$lib/utils';
 
-	let hintType: HintType;
+	export let currentAssignment: Assignment;
+
+	console.log('Current assignment', currentAssignment);
 </script>
 
 <div
@@ -12,19 +13,32 @@
 >
 	<label class="hidden" for="select">Hinweis</label>
 
-	<select bind:value={hintType} class="select select-bordered select-lg w-full" id="select">
+	<select
+		bind:value={currentAssignment.hint.hintType}
+		class="select select-bordered select-lg w-full"
+		id="select"
+	>
 		<option disabled selected>Hinweis-Typ</option>
 		{#each Object.values(HintType) as type}
-			<option>{type}</option>
+			{#if typeof type === 'number'}
+				<option>{hintTypeToString(type)}</option>
+			{/if}
 		{/each}
 	</select>
 
-	{#if hintType === HintType.Image}
-		<input type="file" class="file-input file-input-bordered file-input-primary w-full" />
+	<!-- I dont care what you say, I'll do it anyway! -->
+	{#if currentAssignment.hint.hintType === HintType.Image}
+		<input
+			bind:value={currentAssignment.hint.data}
+			type="file"
+			class="file-input file-input-bordered file-input-primary w-full"
+		/>
 	{/if}
 
-	{#if hintType === HintType.Text}
+	<!-- I dont care what you say, I'll do it anyway! -->
+	{#if currentAssignment.hint.hintType === HintType.Text}
 		<textarea
+			bind:value={currentAssignment.hint.data}
 			class="textarea textarea-bordered textarea-lg w-full"
 			placeholder="Hinweis hier eingeben"
 		></textarea>
