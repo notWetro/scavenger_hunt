@@ -3,9 +3,7 @@
 	import { HintType } from '$lib/models/Hint';
 	import { hintTypeToString } from '$lib/utils';
 
-	export let currentAssignment: Assignment;
-
-	console.log('Current assignment', currentAssignment);
+	export let assignment: Assignment;
 </script>
 
 <div
@@ -14,7 +12,7 @@
 	<label class="hidden" for="select">Hinweis</label>
 
 	<select
-		bind:value={currentAssignment.hint.hintType}
+		bind:value={assignment.hint.hintType}
 		class="select select-bordered select-lg w-full"
 		id="select"
 	>
@@ -27,18 +25,18 @@
 	</select>
 
 	<!-- I dont care what you say, I'll do it anyway! -->
-	{#if currentAssignment.hint.hintType === HintType.Image}
+	{#if assignment.hint.hintType === HintType.Image}
 		<input
-			bind:value={currentAssignment.hint.data}
+			bind:value={assignment.hint.data}
 			type="file"
 			class="file-input file-input-bordered file-input-primary w-full"
 		/>
 	{/if}
 
 	<!-- I dont care what you say, I'll do it anyway! -->
-	{#if currentAssignment.hint.hintType === HintType.Text}
+	{#if assignment.hint.hintType === HintType.Text}
 		<textarea
-			bind:value={currentAssignment.hint.data}
+			bind:value={assignment.hint.data}
 			class="textarea textarea-bordered textarea-lg w-full"
 			placeholder="Hinweis hier eingeben"
 		></textarea>

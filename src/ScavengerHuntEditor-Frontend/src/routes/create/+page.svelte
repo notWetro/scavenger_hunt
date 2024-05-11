@@ -29,6 +29,6 @@
 	{/if}
 
 	{#if counter === 2}
-		<AddAssignmentsStep {hunt} on:Previous={() => (counter -= 1)} on:Next={() => (counter += 1)} />
+		<AddAssignmentsStep bind:assignments={hunt.assignments} on:Previous={() => (counter -= 1)} on:Next={() => (counter += 1)} />
 	{/if}
 </div>
