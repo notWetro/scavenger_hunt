@@ -1,29 +1,15 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
-	import type { Hunt } from '$lib/models/Hunt'; // assuming Hunt interface is defined in types.ts
-
 	import StepsBar from './StepsBar.svelte';
 	import AddBasicInfosStep from './AddBasicInfosStep.svelte';
 	import AddAssignmentsStep from './AddAssignmentsStep.svelte';
 	import { ArrowBigRight } from 'lucide-svelte';
 	import { postHunt } from '$lib/services/hunt-api';
-
-	let hunt: Hunt = {
-		title: '',
-		description: '',
-		assignments: []
-	};
-
-	const huntStore = writable(hunt);
-
-	huntStore.subscribe((value) => {
-		hunt = value;
-	});
+	import { _huntStore } from './+page';
 
 	let counter: number = 1;
 
 	function submutHunt(): any {
-		postHunt(hunt).catch(() => console.error('Error-Case not implemented.'));
+		postHunt($_huntStore).catch(() => console.error('Error-Case not implemented.'));
 	}
 </script>
 
@@ -31,12 +17,12 @@
 
 <div class="mt-3 flex flex-col gap-4 items-center justify-items-stretch w-full">
 	{#if counter === 1}
-		<AddBasicInfosStep {hunt} on:Next={() => (counter += 1)} />
+		<AddBasicInfosStep hunt={$_huntStore} on:Next={() => (counter += 1)} />
 	{/if}
 
 	{#if counter === 2}
 		<AddAssignmentsStep
-			bind:assignments={hunt.assignments}
+			bind:assignments={$_huntStore.assignments}
 			on:Previous={() => (counter -= 1)}
 			on:Next={() => (counter += 1)}
 		/>

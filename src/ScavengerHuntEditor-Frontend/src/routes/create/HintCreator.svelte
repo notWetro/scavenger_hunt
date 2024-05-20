@@ -4,6 +4,20 @@
 	import { hintTypeToString } from '$lib/utils';
 
 	export let assignment: Assignment;
+
+	function addImageDataToAssignment(
+		event: Event & { currentTarget: EventTarget & HTMLInputElement }
+	) {
+		assignment.hint.data = 'TODO: ADD BASE64 IMAGE HERE';
+		throw new Error('Function not implemented.');
+	}
+
+	function addTextDataToAssignment(
+		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
+	) {
+		assignment.hint.data = (event.currentTarget as HTMLTextAreaElement)?.value ?? '';
+		console.log(assignment.hint.data);
+	}
 </script>
 
 <div
@@ -23,7 +37,7 @@
 	<!-- I dont care what you say, I'll do it anyway! -->
 	{#if assignment.hint.hintType === HintType.Image}
 		<input
-			bind:value={assignment.hint.data}
+			on:input={(event) => addImageDataToAssignment(event)}
 			type="file"
 			class="file-input file-input-bordered file-input-primary w-full"
 		/>
@@ -32,7 +46,7 @@
 	<!-- I dont care what you say, I'll do it anyway! -->
 	{#if assignment.hint.hintType === HintType.Text}
 		<textarea
-			bind:value={assignment.hint.data}
+			on:input={(event) => addTextDataToAssignment(event)}
 			class="textarea textarea-bordered textarea-lg w-full"
 			placeholder="Hinweis hier eingeben"
 		></textarea>

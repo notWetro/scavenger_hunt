@@ -5,6 +5,23 @@
 	import { ChevronsLeftRightIcon, ChevronsUpDownIcon } from 'lucide-svelte';
 
 	export let assignment: Assignment;
+
+	let latitude: number = 0;
+	let longitude: number = 0;
+	$: {
+	}
+
+	function addTextDataToAssignment(
+		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
+	): any {
+		assignment.solution.data = (event.currentTarget as HTMLTextAreaElement)?.value ?? '';
+		console.log(assignment.solution.data);
+	}
+
+	function addLocationToAssignment(): any {
+		assignment.solution.data = `${latitude}/${longitude}`;
+		console.log(assignment.solution.data);
+	}
 </script>
 
 <div
@@ -26,6 +43,7 @@
 
 	{#if assignment.solution.solutionType === SolutionType.Text}
 		<textarea
+			on:input={(event) => addTextDataToAssignment(event)}
 			class="textarea textarea-bordered textarea-lg w-full"
 			placeholder="Gewünschte Lösung hier eingeben"
 		></textarea>
@@ -34,12 +52,24 @@
 	{#if assignment.solution.solutionType === SolutionType.Location}
 		<label class="input input-bordered flex items-center gap-2">
 			<ChevronsLeftRightIcon />
-			<input type="number" class="grow" placeholder="Latitude" />
+			<input
+				bind:value={latitude}
+				on:input={addLocationToAssignment}
+				type="number"
+				class="grow"
+				placeholder="Latitude"
+			/>
 		</label>
 
 		<label class="input input-bordered flex items-center gap-2">
 			<ChevronsUpDownIcon />
-			<input type="number" class="grow" placeholder="Longitude" />
+			<input
+				bind:value={longitude}
+				on:input={addLocationToAssignment}
+				type="number"
+				class="grow"
+				placeholder="Longitude"
+			/>
 		</label>
 	{/if}
 

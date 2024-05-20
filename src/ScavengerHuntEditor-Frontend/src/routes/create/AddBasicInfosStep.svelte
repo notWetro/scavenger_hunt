@@ -18,7 +18,7 @@
 	bind:value={hunt.description}
 	placeholder="Beschreibung der Schnitzeljagd"
 	class="textarea textarea-bordered textarea-lg w-full max-w-lg shadow-xl"
-></textarea>
+/>
 
 <StepsButtons
 	isPreviousEnabled={false}
