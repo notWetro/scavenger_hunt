@@ -5,6 +5,8 @@
 	import StepsBar from './StepsBar.svelte';
 	import AddBasicInfosStep from './AddBasicInfosStep.svelte';
 	import AddAssignmentsStep from './AddAssignmentsStep.svelte';
+	import { ArrowBigRight } from 'lucide-svelte';
+	import { postHunt } from '$lib/services/hunt-api';
 
 	let hunt: Hunt = {
 		title: '',
@@ -19,6 +21,10 @@
 	});
 
 	let counter: number = 1;
+
+	function submutHunt(): any {
+		postHunt(hunt).catch(() => console.error('Error-Case not implemented.'));
+	}
 </script>
 
 <StepsBar bind:counter />
@@ -29,6 +35,19 @@
 	{/if}
 
 	{#if counter === 2}
-		<AddAssignmentsStep bind:assignments={hunt.assignments} on:Previous={() => (counter -= 1)} on:Next={() => (counter += 1)} />
+		<AddAssignmentsStep
+			bind:assignments={hunt.assignments}
+			on:Previous={() => (counter -= 1)}
+			on:Next={() => (counter += 1)}
+		/>
+	{/if}
+
+	{#if counter === 3}
+		<div class="flex flex-row gap-2 justify-center max-w-lg">
+			<button class="btn btn-primary btn-lg w-full disabled" on:click={submutHunt}>
+				Submit
+				<ArrowBigRight />
+			</button>
+		</div>
 	{/if}
 </div>

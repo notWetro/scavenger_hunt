@@ -11,15 +11,11 @@
 >
 	<label class="hidden" for="select">Hinweis</label>
 
-	<select
-		bind:value={assignment.hint.hintType}
-		class="select select-bordered select-lg w-full"
-		id="select"
-	>
+	<select bind:value={assignment.hint.hintType} class="select select-bordered select-lg w-full">
 		<option disabled selected>Hinweis-Typ</option>
-		{#each Object.values(HintType) as type}
+		{#each Object.values(HintType) as type (type)}
 			{#if typeof type === 'number'}
-				<option>{hintTypeToString(type)}</option>
+				<option value={type}>{hintTypeToString(type)}</option>
 			{/if}
 		{/each}
 	</select>
