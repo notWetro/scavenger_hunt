@@ -1,4 +1,12 @@
-# create-svelte
+# Setting up Environment Variables
+
+Inside the root directory of the svelte-app, add a file named `.env`. The file should contain the following environment variable(s):
+
+```
+PUBLIC_HUNT_API_ADRESS="https://localhost:7161/api"
+```
+
+# Development with Svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
