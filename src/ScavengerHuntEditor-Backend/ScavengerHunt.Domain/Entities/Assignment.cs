@@ -12,13 +12,13 @@ namespace ScavengerHunt.Domain.Entities
         public int Id { get; set; }
 
         public int HuntId { get; set; }
-        public Hunt Hunt { get; set; }
+        public required Hunt Hunt { get; set; }
 
         public int HintId { get; set; }
-        public Hint Hint { get; set; }
+        public required Hint Hint { get; set; }
 
         public int SolutionId { get; set; }
-        public Solution Solution { get; set; }
+        public required Solution Solution { get; set; }
 
     }
 }

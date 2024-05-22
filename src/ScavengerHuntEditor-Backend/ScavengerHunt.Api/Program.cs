@@ -31,6 +31,8 @@ static void ConfigureServices(WebApplicationBuilder builder)
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     services.AddScoped<IHuntRepository, EFHuntRepository>();
     services.AddScoped<IAssignmentRepository, EFAssignmentRepository>();
+    services.AddScoped<IParticipationRepository, EFParticipationRepository>();
+    services.AddScoped<IParticipantRepository, EFParticipantRepository>();
 
     // Add other repositories, DbContext, etc.
 

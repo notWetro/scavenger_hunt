@@ -10,9 +10,9 @@ namespace ScavengerHunt.Domain.Entities
     {
         public int Id { get; set; }
         public HintType HintType { get; set; }
-        public string Data { get; set; } = string.Empty;
+        public string Data { get; set; } = default!;
 
         public int AssignmentId { get; set; }
-        public Assignment Assignment { get; set; }
+        public required Assignment Assignment { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ScavengerHunt.Api.DTOs.Hunt
 {
-    public class HuntUpdateDto
+    public sealed class HuntUpdateDto
     {
         /// <summary>
         /// Unique identifier of a hunt.

@@ -4,6 +4,7 @@ namespace ScavengerHunt.Domain.Entities
     public sealed class Participant
     {
         public int Id { get; set; }
-        public string Username { get; set; } = string.Empty;
+        public required string Username { get; set; }
+        public required string Password { get; set; }
     }
 }

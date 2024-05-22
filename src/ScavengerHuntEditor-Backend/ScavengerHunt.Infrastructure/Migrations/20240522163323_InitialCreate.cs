@@ -15,6 +15,23 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Participants",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Username = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Password = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Participants", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "ScavengerHunts",
                 columns: table => new
                 {
@@ -77,6 +94,40 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Participations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ParticipantId = table.Column<int>(type: "int", nullable: false),
+                    HuntId = table.Column<int>(type: "int", nullable: false),
+                    CurrentAssignmentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Participations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Participations_Assignments_CurrentAssignmentId",
+                        column: x => x.CurrentAssignmentId,
+                        principalTable: "Assignments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Participations_Participants_ParticipantId",
+                        column: x => x.ParticipantId,
+                        principalTable: "Participants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Participations_ScavengerHunts_HuntId",
+                        column: x => x.HuntId,
+                        principalTable: "ScavengerHunts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Solution",
                 columns: table => new
                 {
@@ -111,6 +162,21 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Participations_CurrentAssignmentId",
+                table: "Participations",
+                column: "CurrentAssignmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participations_HuntId",
+                table: "Participations",
+                column: "HuntId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Participations_ParticipantId",
+                table: "Participations",
+                column: "ParticipantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Solution_AssignmentId",
                 table: "Solution",
                 column: "AssignmentId",
@@ -124,7 +190,13 @@ namespace ScavengerHunt.Infrastructure.Migrations
                 name: "Hint");
 
             migrationBuilder.DropTable(
+                name: "Participations");
+
+            migrationBuilder.DropTable(
                 name: "Solution");
+
+            migrationBuilder.DropTable(
+                name: "Participants");
 
             migrationBuilder.DropTable(
                 name: "Assignments");

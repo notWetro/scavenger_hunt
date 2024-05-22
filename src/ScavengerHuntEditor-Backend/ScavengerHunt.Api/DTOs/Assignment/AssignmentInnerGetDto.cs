@@ -1,6 +1,5 @@
 ﻿using ScavengerHunt.Api.DTOs.Hint;
 using ScavengerHunt.Api.DTOs.Solution;
-using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.DTOs.Assignment
 {

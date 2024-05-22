@@ -11,22 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Domain", "Sca
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Infrastructure", "ScavengerHunt.Infrastructure\ScavengerHunt.Infrastructure.csproj", "{4BB549D1-61E6-4F4A-B4D1-357A1037A607}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Participations", "Participations", "{BA6EE61F-BCD7-4543-A88E-A1463AA0837A}"
-	ProjectSection(SolutionItems) = preProject
-		ScavengerHunt.Domain\SeedWork\Entity.cs = ScavengerHunt.Domain\SeedWork\Entity.cs
-		ScavengerHunt.Domain\SeedWork\Enumeration.cs = ScavengerHunt.Domain\SeedWork\Enumeration.cs
-		ScavengerHunt.Domain\SeedWork\IAggregateRoot.cs = ScavengerHunt.Domain\SeedWork\IAggregateRoot.cs
-		ScavengerHunt.Domain\Interfaces\IParticipantRepository.cs = ScavengerHunt.Domain\Interfaces\IParticipantRepository.cs
-		ScavengerHunt.Domain\Interfaces\IParticipationRepository.cs = ScavengerHunt.Domain\Interfaces\IParticipationRepository.cs
-		ScavengerHunt.Domain\SeedWork\IRepository.cs = ScavengerHunt.Domain\SeedWork\IRepository.cs
-		ScavengerHunt.Domain\SeedWork\IUnitOfWork.cs = ScavengerHunt.Domain\SeedWork\IUnitOfWork.cs
-		ScavengerHunt.Domain\Models\Participant.cs = ScavengerHunt.Domain\Models\Participant.cs
-		ScavengerHunt.Infrastructure\Repositories\ParticipantRepository.cs = ScavengerHunt.Infrastructure\Repositories\ParticipantRepository.cs
-		ScavengerHunt.Domain\Models\Participation.cs = ScavengerHunt.Domain\Models\Participation.cs
-		ScavengerHunt.Domain\Models\ProgressionStatus.cs = ScavengerHunt.Domain\Models\ProgressionStatus.cs
-		ScavengerHunt.Domain\SeedWork\ValueObject.cs = ScavengerHunt.Domain\SeedWork\ValueObject.cs
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

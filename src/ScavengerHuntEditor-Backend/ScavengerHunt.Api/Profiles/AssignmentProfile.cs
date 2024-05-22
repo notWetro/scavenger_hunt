@@ -5,7 +5,7 @@ using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.Profiles
 {
-    public class AssignmentProfile : Profile
+    public sealed class AssignmentProfile : Profile
     {
         public AssignmentProfile()
         {

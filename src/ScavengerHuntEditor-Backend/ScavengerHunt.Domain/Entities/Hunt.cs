@@ -16,7 +16,7 @@ namespace ScavengerHunt.Domain.Entities
         /// <summary>
         /// A description usually contains additional information of a hunt.
         /// </summary>
-        public string Description { get; set; } = string.Empty;
+        public string Description { get; set; } = default!;
 
         /// <summary>
         /// Each hunt has multiple tasks to complete.

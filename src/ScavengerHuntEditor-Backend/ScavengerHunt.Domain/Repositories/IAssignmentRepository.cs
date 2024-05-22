@@ -20,7 +20,7 @@ namespace ScavengerHunt.Domain.Repositories
         /// <summary>
         /// Saves a new assignment.
         /// </summary>
-        /// <param name="hunt">Assignment-object to be saved.</param>
+        /// <param name="assignment">Assignment-object to be saved.</param>
         /// <returns>New identifier of saved assignment.</returns>
         public Task<int> AddAsync(Assignment assignment);
 

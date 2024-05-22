@@ -92,6 +92,55 @@ namespace ScavengerHunt.Infrastructure.Migrations
                     b.ToTable("ScavengerHunts");
                 });
 
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Participant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Participants");
+                });
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Participation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurrentAssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HuntId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrentAssignmentId");
+
+                    b.HasIndex("HuntId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("Participations");
+                });
+
             modelBuilder.Entity("ScavengerHunt.Domain.Entities.Solution", b =>
                 {
                     b.Property<int>("Id")
@@ -138,6 +187,33 @@ namespace ScavengerHunt.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Assignment");
+                });
+
+            modelBuilder.Entity("ScavengerHunt.Domain.Entities.Participation", b =>
+                {
+                    b.HasOne("ScavengerHunt.Domain.Entities.Assignment", "CurrentAssignment")
+                        .WithMany()
+                        .HasForeignKey("CurrentAssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScavengerHunt.Domain.Entities.Hunt", "Hunt")
+                        .WithMany()
+                        .HasForeignKey("HuntId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ScavengerHunt.Domain.Entities.Participant", "Participant")
+                        .WithMany()
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurrentAssignment");
+
+                    b.Navigation("Hunt");
+
+                    b.Navigation("Participant");
                 });
 
             modelBuilder.Entity("ScavengerHunt.Domain.Entities.Solution", b =>

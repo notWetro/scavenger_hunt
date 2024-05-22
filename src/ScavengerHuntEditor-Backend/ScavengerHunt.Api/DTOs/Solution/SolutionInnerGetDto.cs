@@ -2,7 +2,7 @@
 
 namespace ScavengerHunt.Api.DTOs.Solution
 {
-    public class SolutionInnerGetDto
+    public sealed class SolutionInnerGetDto
     {
         public int Id { get; set; }
         public SolutionType Type { get; set; }

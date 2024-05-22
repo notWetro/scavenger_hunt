@@ -5,7 +5,7 @@ using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.Profiles
 {
-    public class HintProfile : Profile
+    public sealed class HintProfile : Profile
     {
         public HintProfile()
         {

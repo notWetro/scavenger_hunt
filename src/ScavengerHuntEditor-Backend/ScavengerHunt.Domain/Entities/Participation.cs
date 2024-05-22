@@ -11,12 +11,12 @@ namespace ScavengerHunt.Domain.Entities
         public int Id { get; set; }
 
         public int ParticipantId { get; set; }
-        public Participant Participant { get; set; }
+        public required Participant Participant { get; set; }
 
         public int HuntId { get; set; }
-        public Hunt Hunt { get; set; }
+        public required Hunt Hunt { get; set; }
 
         public int CurrentAssignmentId { get; set; }
-        public int CurrentAssignment { get; set; }
+        public required Assignment CurrentAssignment { get; set; }
     }
 }
