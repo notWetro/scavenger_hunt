@@ -1,8 +1,9 @@
 export interface Hint {
-    hintType: HintType;
-    data: string;
+	hintType: HintType;
+	data: string;
 }
 
 export enum HintType {
-    Text, Image
+	Text,
+	Image
 }

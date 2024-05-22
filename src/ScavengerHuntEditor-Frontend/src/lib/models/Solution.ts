@@ -1,8 +1,10 @@
 export interface Solution {
-    solutionType: SolutionType;
-    data: string;
+	solutionType: SolutionType;
+	data: string;
 }
 
 export enum SolutionType {
-    QRCode, Text, Location
+	QRCode,
+	Text,
+	Location
 }

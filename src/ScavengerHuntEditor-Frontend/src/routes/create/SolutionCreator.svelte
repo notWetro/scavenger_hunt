@@ -8,17 +8,16 @@
 
 	let latitude: number = 0;
 	let longitude: number = 0;
-	$: {
-	}
+
 
 	function addTextDataToAssignment(
 		event: Event & { currentTarget: EventTarget & HTMLTextAreaElement }
-	): any {
+	) {
 		assignment.solution.data = (event.currentTarget as HTMLTextAreaElement)?.value ?? '';
 		console.log(assignment.solution.data);
 	}
 
-	function addLocationToAssignment(): any {
+	function addLocationToAssignment() {
 		assignment.solution.data = `${latitude}/${longitude}`;
 		console.log(assignment.solution.data);
 	}

@@ -8,7 +8,7 @@
 
 	let counter: number = 1;
 
-	function submutHunt(): any {
+	function submitHunt() {
 		postHunt($_huntStore).catch(() => console.error('Error-Case not implemented.'));
 	}
 </script>
@@ -30,7 +30,7 @@
 
 	{#if counter === 3}
 		<div class="flex flex-row gap-2 justify-center max-w-lg">
-			<button class="btn btn-primary btn-lg w-full disabled" on:click={submutHunt}>
+			<button class="btn btn-primary btn-lg w-full disabled" on:click={submitHunt}>
 				Submit
 				<ArrowBigRight />
 			</button>
