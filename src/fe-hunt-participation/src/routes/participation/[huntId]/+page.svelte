@@ -1,44 +1,51 @@
 <script lang="ts">
 	import type { Hunt } from '$lib/models/hunt';
-	import { onMount } from 'svelte';
+	import { error } from '@sveltejs/kit';
+	import type { PageData } from './$types';
 
 	let modal: HTMLDialogElement;
 	let username: string;
 	let password: string;
-	// TODO: accessing this still gives undefined
-	export let huntData: Hunt = {
-		id: 67,
-		title: 'Hs-Aalen Ersties Tour',
-		description: 'Nur für newbies!'
-	};
 
-	$: console.log('huntdata', huntData);
+	export let data: PageData;
+	$: hunt = data.hunt as Hunt;
 
 	function showForm() {
 		modal.showModal();
 	}
-	// TODO: figure add actual http request
 	async function submit(username: string, password: string, huntId: number) {
-		console.log(username, password, huntId);
-		//const res = await fetch(`http://localhost:4000/api/Participation/Hunt/${huntId}`);
+		const res = await fetch(`http://localhost:4000/api/Participation/Hunt/${huntId}`, {
+			method: 'POST',
+			body: JSON.stringify({
+				username,
+				password
+			})
+		});
+
+		if (!res.ok) {
+			throw error(res.status, await res.text());
+		}
+
+		return await res.json();
 	}
 </script>
 
-<main class="p-4">
+<main>
 	<h1 class="text-2xl font-bold text-center">
 		Anmeldung
-		<span class="badge badge-lg">@{huntData.id}</span>
+		<span class="badge badge-lg">@{hunt.id}</span>
 	</h1>
 
-	<div class="card w-96 bg-primary text-primary-content">
+	<div class="card w-96 bg-primary text-primary-content mt-5">
 		<div class="card-body">
-			<h2 class="card-title">{huntData.title}</h2>
-			<p>{huntData.description}</p>
+			<h2 class="card-title">{hunt.title}</h2>
+			<p>{hunt.description}</p>
 			<div class="card-actions justify-end">
 				<button class="btn" on:click={showForm}> Participate! </button>
 			</div>
 		</div>
 	</div>
+
 	<dialog class="modal" bind:this={modal}>
 		<div class="modal-box">
 			<h3 class="font-bold text-lg">Participate in Scavenger Hunt!</h3>
@@ -68,17 +75,15 @@
 					/>
 				</div>
 				<div class="flex flex-row justify-end mt-4 gap-5">
-					<!--					TODO: figure out why clear also closes dialog -->
 					<button
 						class="btn btn-neutral"
 						on:click={() => {
 							username = '';
 							password = '';
-						}}>Clear</button
+						}}>Cancel</button
 					>
-					<button
-						class="btn btn-primary"
-						on:click={async () => submit(username, password, huntData.id)}>Submit</button
+					<button class="btn btn-primary" on:click={async () => submit(username, password, hunt.id)}
+						>Submit</button
 					>
 				</div>
 			</form>

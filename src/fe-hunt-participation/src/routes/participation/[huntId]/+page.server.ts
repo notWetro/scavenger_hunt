@@ -1,29 +1,28 @@
 import type { Hunt } from '$lib/models/hunt';
 import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
-export async function load({ params, fetch }) {
+export const load: PageServerLoad = async ({ params, fetch }) => {
 	const { huntId } = params;
-	const isDebug = true;
+	const debug = true;
 
-	let huntData: Hunt;
-
-	if (isDebug) {
-		huntData = {
-			id: Number(huntId),
-			title: 'Hs-Aalen Ersties Tour',
-			description: 'Nur für newbies!'
+	if (debug) {
+		return {
+			hunt: {
+				id: huntId,
+				title: 'Hs-Aalen Ersties Tour',
+				description: 'Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies! Nur für newbies!'
+			}
 		};
-	} else {
-		const res = await fetch(`http://localhost:4000/api/Hunt/${huntId}`);
+	}
 
-		if (!res.ok) {
-			throw error(res.status, await res.text());
-		}
+	const res = await fetch(`http://localhost:4000/api/Hunt/${huntId}`)
 
-		huntData = (await res.json()) as Hunt;
+	if (!res.ok) {
+		throw error(res.status, await res.text());
 	}
 
 	return {
-		huntData
+		hunt: await res.json() as Hunt
 	};
-}
+};
