@@ -6,6 +6,13 @@ using ScavengerHunt.Domain.Repositories;
 
 namespace ScavengerHunt.Api.Controllers
 {
+    public sealed class UserCredentials
+    {
+        public required string Username { get; set; }
+        public required string Password { get; set; }
+    }
+    
+    
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ParticipationController(IHuntRepository hrepository, IParticipantRepository prepository, IParticipationRepository parepository, IMapper mapper) : ControllerBase
@@ -16,9 +23,9 @@ namespace ScavengerHunt.Api.Controllers
         private readonly IMapper _mapper = mapper;
 
         [HttpPost("Hunt/{huntId}")]
-        public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, string username, string password)
+        public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, [FromBody] UserCredentials cred)
         {
-            var existingParticipation = await _participationRepository.GetByIdAndUsernameAsync(huntId, username);
+            var existingParticipation = await _participationRepository.GetByIdAndUsernameAsync(huntId, cred.Username);
             if(existingParticipation is not null)
                 return Conflict("Participation already exists for the given hunt and username.");
 
@@ -27,11 +34,11 @@ namespace ScavengerHunt.Api.Controllers
             if (scavengerHunt is null)
                 return NotFound("Specified hunt-id has no associated hunt-object.");
 
-            var participant = await _participantRepository.GetByUsernameAsync(username);
+            var participant = await _participantRepository.GetByUsernameAsync(cred.Username);
 
             if (participant is null)
             {
-                participant = new Participant() { Username = username, Password = "1234" };
+                participant = new Participant() { Username = cred.Username, Password = cred.Password };
                 await _participantRepository.AddAsync(participant);
             }
 
