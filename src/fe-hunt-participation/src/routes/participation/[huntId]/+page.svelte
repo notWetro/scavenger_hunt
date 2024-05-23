@@ -1,21 +1,26 @@
 <script lang="ts">
 	import type { Hunt } from '$lib/models/hunt';
+	import { onMount } from 'svelte';
 
+	let modal: HTMLDialogElement;
+	let username: string;
+	let password: string;
+	// TODO: accessing this still gives undefined
 	export let huntData: Hunt = {
-		id: 69,
+		id: 67,
 		title: 'Hs-Aalen Ersties Tour',
 		description: 'Nur für newbies!'
 	};
 
-	let formVisible: boolean = false;
+	$: console.log('huntdata', huntData);
 
 	function showForm() {
-		formVisible = true;
+		modal.showModal();
 	}
-
-	async function submit(username: string, huntId: number) {
-		const res = await fetch(`http://localhost:4000/api/Participation/Hunt/${huntId}`);
-		throw Error('This function is not implemented.');
+	// TODO: figure add actual http request
+	async function submit(username: string, password: string, huntId: number) {
+		console.log(username, password, huntId);
+		//const res = await fetch(`http://localhost:4000/api/Participation/Hunt/${huntId}`);
 	}
 </script>
 
@@ -34,11 +39,49 @@
 			</div>
 		</div>
 	</div>
-
-	{#if formVisible}
-		<button class="btn btn-neutral"> Clear </button>
-		<button class="btn btn-primary" on:click={async () => submit('username', huntData.id)}>
-			Submit
-		</button>
-	{/if}
+	<dialog class="modal" bind:this={modal}>
+		<div class="modal-box">
+			<h3 class="font-bold text-lg">Participate in Scavenger Hunt!</h3>
+			<form method="dialog" class="modal-backdrop">
+				<div class="form-control">
+					<label for="username" class="label">
+						<span class="label-text">Username</span>
+					</label>
+					<input
+						bind:value={username}
+						type="text"
+						id="username"
+						placeholder="Username"
+						class="input input-bordered text-gray-300"
+					/>
+				</div>
+				<div class="form-control">
+					<label for="password" class="label">
+						<span class="label-text">Password</span>
+					</label>
+					<input
+						bind:value={password}
+						type="password"
+						id="password"
+						placeholder="Password"
+						class="input input-bordered text-gray-300"
+					/>
+				</div>
+				<div class="flex flex-row justify-end mt-4 gap-5">
+					<!--					TODO: figure out why clear also closes dialog -->
+					<button
+						class="btn btn-neutral"
+						on:click={() => {
+							username = '';
+							password = '';
+						}}>Clear</button
+					>
+					<button
+						class="btn btn-primary"
+						on:click={async () => submit(username, password, huntData.id)}>Submit</button
+					>
+				</div>
+			</form>
+		</div>
+	</dialog>
 </main>
