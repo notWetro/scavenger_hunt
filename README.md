@@ -1,90 +1,30 @@
-# Einführung
+# Projekt AR-Schnitzeljagd
 
-Repository für die Projektarbeit "AugmentedReality-Schnitzeljagd" von Lukas und Rosario an der Hochschule Aalen.
+## Einführung
 
-# Quicklinks
+Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwickelte System einer AR-Schnitzeljagd.
 
-- [Scavenger-Hunt-Backend](src/ScavengerHuntEditor-Backend/README.md)
-- [Scavenger-Hunt-AR-App](TODO)
+**Autoren**: Lukas Steckbauer und Rosario Aranzulla
 
-# Verzeichnisstruktur
+**Betreuer**: Dr. Marc Hermann
 
-- `-\demos\`: Beispiel-Anwendungen um die Verwendung verschiedener Technologien zu testen. Der hier enthaltene Source-Code dient lediglich zum austesten.
-- `.\docs\`: Dokumentation der Projektarbeit und eventuelle Literatur.
-- `.\libs\`: Bibliotheken, die im Projekt verwendung finden. Beispielsweise `.dll`-Dateien.
-- `.\src\`: Projekt-Source-Code für den Schnitzeljagd-Editor bzw. die AR-Mobile-App.
-- `.\utils\`: Nützliche Tools die im Rahmen des Projekts Verwendung finden / gefunden haben.
+**Einrichtung**: _Hochschule-Aalen Fakultät Informatik und Elektrotechnik_
 
-# Inbetriebnahme der Anwendung(en)
+## Quicklinks
 
-### Generieren von QR-Codes mit dem _qrcode-generator_
+### Projekte
 
-Für das Testen (und für die Erstellung des QR-Code-Generators innerhalb des Projekts) wurde eine Utility erstellt, die mittels Kommandozeilen-Aufruf einen QR-Code basierend auf einen Input-String erstellt. Der resultierende QR-Code wird im `Downloads` Verzeichnis des Benutzers angelegt und ist über einen Timestamp identifizierbar (bspw. `QRCode_20240323113550.png`).
+- **Backend** und **API**: [Hunt-API](src/be-hunt-api/README.md)
+- **Mobile-App**: [ScavAR](src/ScavAR/README.md)
+- **Web-App**: [Hunt-Editor](src/ScavengerHuntEditor-Frontend/README.md)
+- **Web-App**: [Participation](src/fe-hunt-participation/README.md)
 
-### Testen der REST-API / Schnittstelle
+### Dokumentation
 
-#### Anleitung
+Die Dokumentation der Projektarbeit sowie sonstige Literaturverweise befinden sich im Verzeichnis `.\docs\` [hier](docs/dokumentation-projektarbeit/INDEX.tex).
 
-1) Backend-Anwendung compilieren und starten.
-2) (Localhost) Adresse und Port notieren.
-3) In Projekt `ScavEditor.Api.Tests` die Datei `Program.cs` öffnen.
-4) In `Program.cs` Datei die Variable `baseUrl` auf die in Schritt 2 notierte Adresse setzen.
-5) Test-Anwendung starten, evtl. Tastatur-Input eingeben.
+# Utilities
 
-```cs
-string baseUrl = "http://localhost:5282";
-```
+## QR-Code Generator
 
-#### Beispiel-Ausgabe Test-Programm
-
-```
-Populating Database with Dummy-Data.
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-AddUsers: Request was successful!
-
-C:\...\ScavEditor.Api.Tests.exe (process 21984) exited with code 0.
-Press any key to close this window . . .
-```
-
-#### Beispiel-Ausgabe Backend-Anwendung
-
-```
-info: Microsoft.Hosting.Lifetime[14]
-      Now listening on: http://localhost:5282
-info: Microsoft.Hosting.Lifetime[0]
-      Application started. Press Ctrl+C to shut down.
-info: Microsoft.Hosting.Lifetime[0]
-      Hosting environment: Development
-info: Microsoft.Hosting.Lifetime[0]
-      Content root path: C:\...\ScavEditor.Api
-warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
-      Failed to determine the https port for redirect.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-info: Microsoft.EntityFrameworkCore.Update[30100]
-      Saved 1 entities to in-memory store.
-```
+Für das Testen (und für die Erstellung des QR-Code-Generators innerhalb des Projekts) wurde eine Utility erstellt, die mittels Kommandozeilen-Aufruf einen QR-Code basierend auf einen Input-String erstellt. Der resultierende QR-Code wird im `Downloads` Verzeichnis des Benutzers angelegt und ist über einen Timestamp identifizierbar (bspw. `QRCode_20240323113550.png`). Die utility ist [hier](utils/qrcode-generator/) einsehbar.
