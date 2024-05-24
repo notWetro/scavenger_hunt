@@ -3,7 +3,7 @@ using ScavengerHunt.Api.DTOs.Solution;
 
 namespace ScavengerHunt.Api.DTOs.Assignment
 {
-    public class AssignmentInnerCreateDto
+    public sealed class AssignmentInnerCreateDto
     {
         public HintInnerCreateDto Hint { get; set; }
 

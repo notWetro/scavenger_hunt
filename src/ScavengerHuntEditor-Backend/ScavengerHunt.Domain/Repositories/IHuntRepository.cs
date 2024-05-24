@@ -37,5 +37,6 @@ namespace ScavengerHunt.Domain.Repositories
         /// <param name="id">Identifier of requested hunt.</param>
         /// <returns>Hunt-object that was deleted.</returns>
         public Task<Hunt?> DeleteByIdAsync(int id);
+
     }
 }

@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using ScavengerHunt.Api.DTOs.Assignment;
 using ScavengerHunt.Api.DTOs.Hint;
 using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.Profiles
 {
-    public class HintProfile : Profile
+    public sealed class HintProfile : Profile
     {
         public HintProfile()
         {

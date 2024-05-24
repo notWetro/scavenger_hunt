@@ -2,7 +2,7 @@
 
 namespace ScavengerHunt.Api.DTOs.Hint
 {
-    public class HintInnerGetDto
+    public sealed class HintInnerGetDto
     {
         public int Id { get; set; }
         public HintType HintType { get; set; }

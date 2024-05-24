@@ -8,7 +8,7 @@ namespace ScavengerHunt.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class HuntsController(IHuntRepository hrepository, IMapper mapper) : ControllerBase
+    public sealed class HuntController(IHuntRepository hrepository, IMapper mapper) : ControllerBase
     {
         private readonly IHuntRepository _huntRepository = hrepository;
         private readonly IMapper _mapper = mapper;

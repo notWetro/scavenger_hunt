@@ -2,7 +2,7 @@
 
 namespace ScavengerHunt.Api.DTOs.Hunt
 {
-    public class HuntGetDto
+    public sealed class HuntGetDto
     {
         public int Id { get; set; }
 

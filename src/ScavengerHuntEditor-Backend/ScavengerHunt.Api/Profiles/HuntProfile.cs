@@ -4,7 +4,7 @@ using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.Profiles
 {
-    public class HuntProfile : Profile
+    public sealed class HuntProfile : Profile
     {
         public HuntProfile()
         {
