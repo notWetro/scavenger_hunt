@@ -2,8 +2,11 @@
 	import type { Hunt } from '$lib/models/hunt';
 	import { error } from '@sveltejs/kit';
 	import type { PageData } from './$types';
+	import { PUBLIC_DEMO_MODE, PUBLIC_HUNT_API_ADRESS } from '$env/static/public';
+	import Check from 'lucide-svelte/icons/check';
 
 	let modal: HTMLDialogElement;
+	let success: boolean = false;
 	let username: string;
 	let password: string;
 
@@ -13,8 +16,18 @@
 	function showForm() {
 		modal.showModal();
 	}
+
+	const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 	async function submit(username: string, password: string, huntId: number) {
-		const res = await fetch(`http://localhost:4000/api/Participation/Hunt/${huntId}`, {
+		if (PUBLIC_DEMO_MODE === 'True') {
+			success = true;
+			return {
+				id: 69
+			};
+		}
+
+		const res = await fetch(`${PUBLIC_HUNT_API_ADRESS}/Participation/Hunt/${huntId}`, {
 			method: 'POST',
 			body: JSON.stringify({
 				username,
@@ -24,6 +37,8 @@
 
 		if (!res.ok) {
 			throw error(res.status, await res.text());
+		} else {
+			success = true;
 		}
 
 		return await res.json();
@@ -41,7 +56,13 @@
 			<h2 class="card-title">{hunt.title}</h2>
 			<p>{hunt.description}</p>
 			<div class="card-actions justify-end">
-				<button class="btn" on:click={showForm}> Participate! </button>
+				<button class="btn" on:click={showForm} disabled={success}>
+					{#if success}
+						<Check />
+					{:else}
+						Participate!
+					{/if}
+				</button>
 			</div>
 		</div>
 	</div>
@@ -82,9 +103,12 @@
 							password = '';
 						}}>Cancel</button
 					>
-					<button class="btn btn-primary" on:click={async () => submit(username, password, hunt.id)}
-						>Submit</button
+					<button
+						class="btn btn-primary"
+						on:click={async () => submit(username, password, hunt.id)}
 					>
+						Submit
+					</button>
 				</div>
 			</form>
 		</div>

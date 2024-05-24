@@ -1,12 +1,14 @@
 import type { Hunt } from '$lib/models/hunt';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { PUBLIC_HUNT_API_ADRESS, PUBLIC_DEMO_MODE } from '$env/static/public';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
 	const { huntId } = params;
-	const debug = true;
 
-	if (debug) {
+	console.log(`${PUBLIC_HUNT_API_ADRESS}/Hunt/${huntId}`)
+
+	if (PUBLIC_DEMO_MODE === "True") {
 		return {
 			hunt: {
 				id: huntId,
@@ -16,7 +18,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 		};
 	}
 
-	const res = await fetch(`http://localhost:4000/api/Hunt/${huntId}`)
+	const res = await fetch(`${PUBLIC_HUNT_API_ADRESS}/Hunt/${huntId}`)
 
 	if (!res.ok) {
 		throw error(res.status, await res.text());
