@@ -13,7 +13,7 @@ namespace ScavengerHunt.Infrastructure.Data
             try
             {
                 await _context.Participants.AddAsync(participant);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return participant.Id;
             }
             catch (Exception ex)

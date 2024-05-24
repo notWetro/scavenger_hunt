@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ScavengerHunt.Api.DTOs.Assignment;
-using ScavengerHunt.Api.DTOs.Hunt;
 using ScavengerHunt.Domain.Entities;
 
 namespace ScavengerHunt.Api.Profiles

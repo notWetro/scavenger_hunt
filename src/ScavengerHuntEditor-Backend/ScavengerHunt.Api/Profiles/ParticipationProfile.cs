@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ScavengerHunt.Api.DTOs.Assignment;
 using ScavengerHunt.Api.DTOs.Participation;
 using ScavengerHunt.Domain.Entities;
 

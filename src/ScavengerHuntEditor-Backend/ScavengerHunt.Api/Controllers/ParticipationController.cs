@@ -11,8 +11,8 @@ namespace ScavengerHunt.Api.Controllers
         public required string Username { get; set; }
         public required string Password { get; set; }
     }
-    
-    
+
+
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ParticipationController(IHuntRepository hrepository, IParticipantRepository prepository, IParticipationRepository parepository, IMapper mapper) : ControllerBase
@@ -26,7 +26,7 @@ namespace ScavengerHunt.Api.Controllers
         public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, [FromBody] UserCredentials cred)
         {
             var existingParticipation = await _participationRepository.GetByIdAndUsernameAsync(huntId, cred.Username);
-            if(existingParticipation is not null)
+            if (existingParticipation is not null)
                 return Conflict("Participation already exists for the given hunt and username.");
 
             var scavengerHunt = await _huntRepository.GetByIdAsync(huntId);

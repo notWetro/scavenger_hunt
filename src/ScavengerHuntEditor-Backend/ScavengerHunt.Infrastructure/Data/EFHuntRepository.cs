@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ScavengerHunt.Domain.Entities;
-using ScavengerHunt.Infrastructure;
 using ScavengerHunt.Domain.Repositories;
 
 namespace ScavengerHunt.Infrastructure.Data
@@ -50,7 +49,7 @@ namespace ScavengerHunt.Infrastructure.Data
             try
             {
                 await _context.ScavengerHunts.AddAsync(hunt);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return hunt.Id;
             }
             catch (Exception ex)
