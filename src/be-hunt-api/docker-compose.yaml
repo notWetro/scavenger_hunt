@@ -1,33 +1,45 @@
 version: '3.8'
 
 services:
-  scavenger-hunt-api:
+  sqlserver:
+    container_name: scavenger-hunt-db
+    image: mysql:latest
+    env_file: .env
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  migrations:
+    container_name: service-migrations
+    image: service-migrations
+    env_file: .env
     build:
       context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080" # Adjust port as needed
+      dockerfile: dockerfile.migrations
+      target: migrations
     depends_on:
-      - mysql
+      - sqlserver
+    command: ["dotnet-ef", "database", "update", "--project", "ScavengerHunt.Infrastructure/", "--startup-project", "ScavengerHunt.Api/"]
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__ScavEditorApiContext=Server=mysql;Port=3306;Database=ScavengerHuntHsAa;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD}
+      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${MYSQL_DATABASE};User=root;Password=${MYSQL_ROOT_PASSWORD}
 
-  mysql:
-    image: mysql:latest
-    container_name: scavenger-hunt-db
+  api:
+    container_name: scavenger-hunt-api
+    env_file: .env
+    build:
+      context: .
+      dockerfile: dockerfile.api
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${MYSQL_DATABASE};User=root;Password=${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
-    volumes:
-      - mysql-data:/var/lib/mysql
-    secrets:
-      - mysql_root_password
-
-secrets:
-  mysql_root_password:
-    file: .env
-
-volumes:
-  mysql-data:
+      - "7105:7105"

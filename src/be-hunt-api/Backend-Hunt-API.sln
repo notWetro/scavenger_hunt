@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hunts", "Hunts", "{F19DCBDD-65BE-462E-90A6-C6727384BA43}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Api", "ScavengerHunt.Api\ScavengerHunt.Api.csproj", "{DC84237D-E885-4C12-884B-DB21712A0BAC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Domain", "ScavengerHunt.Domain\ScavengerHunt.Domain.csproj", "{0808F895-197E-4964-89A2-F189FCF1D71A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScavengerHunt.Infrastructure", "ScavengerHunt.Infrastructure\ScavengerHunt.Infrastructure.csproj", "{4BB549D1-61E6-4F4A-B4D1-357A1037A607}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{309C3DF1-11C6-45A2-B109-E380A1FB7E9B}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+		dockerfile.api = dockerfile.api
+		dockerfile.migrations = dockerfile.migrations
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,11 +38,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DC84237D-E885-4C12-884B-DB21712A0BAC} = {F19DCBDD-65BE-462E-90A6-C6727384BA43}
-		{0808F895-197E-4964-89A2-F189FCF1D71A} = {F19DCBDD-65BE-462E-90A6-C6727384BA43}
-		{4BB549D1-61E6-4F4A-B4D1-357A1037A607} = {F19DCBDD-65BE-462E-90A6-C6727384BA43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {500D82DA-5E51-4433-9309-C86BEBC2ABEC}

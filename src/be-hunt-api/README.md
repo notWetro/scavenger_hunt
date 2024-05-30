@@ -1,10 +1,50 @@
 # Scavenger-Hunt: Backend
 
-## Database Setup
+## Introduction
 
-To persist our scavenger hunts, we use a SQL database, specifically with MySQL provider. For testing purposes, we utilize container technologies like Docker to easily set up and run a local database that stores dummy data. Below is a guide to setting up the environment for development.
+This project serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
 
-### Installing MySQL
+## Getting Started with Docker-Compose
+
+To run the backend using Docker-Compose, follow these setup instructions.
+
+### Configuration Files
+
+Ensure the following configuration files are in place:
+
+1. **.env File**: This file should be in the root directory of the `hunt-api` and contain:
+
+    ```shell
+    MYSQL_ROOT_PASSWORD=desired_password_here
+    MYSQL_DATABASE=desired_database_name_here
+    ```
+
+2. **appsettings.json File**: This file should be located in the `ScavengerHunt.Api` directory and contain:
+
+    ```json
+    {
+      "ConnectionStrings": {
+        "DefaultConnection": "Server=sqlserver;Database=desired_database_name_here;User=root;Password=desired_password_here"
+      },
+      "AllowedHosts": "*"
+    }
+    ```
+
+### Running the Application
+
+After setting up the configuration files, build and run the backend with the following command executed from the root directory of the `hunt-api`:
+
+```shell
+docker-compose up --build
+```
+
+_Note_: Ensure the Docker Daemon is running before executing any Docker commands.
+
+## Database Setup for Development
+
+We use a MySQL database to persist scavenger hunts. For development and testing, we utilize Docker to set up a local MySQL database. Follow these steps to configure your environment.
+
+### Pulling MySQL Image
 
 Pull the latest MySQL image from Docker Hub:
 
@@ -12,55 +52,52 @@ Pull the latest MySQL image from Docker Hub:
 docker pull mysql
 ```
 
-Run a container using the pulled image:
+### Running MySQL Container
+
+Run a container with the pulled MySQL image:
 
 ```shell
-docker run --name scavenger-hunt-hsaa -e MYSQL_ROOT_PASSWORD=your_password_here -p 3306:3306 -d mysql:latest
+docker run --name scavenger-hunt-db -e MYSQL_ROOT_PASSWORD=desired_password_here -p 3306:3306 -d mysql:latest
 ```
 
-### Configuring MySQL
+### Configuring MySQL for the Backend
 
-To access the database with our backend, ensure a working connection. In your `appsettings.json`, verify that you have the correct connection string:
+Ensure your `appsettings.json` file has the correct connection string to access the database:
 
 ```json
 "ConnectionStrings": {
-    "ScavEditorApiContext": "Server=localhost;Port=3306;Database=ScavengerHuntHsAa;Uid=root;Pwd=your_password_here;"
+    "DefaultConnection": "Server=localhost;Port=3306;Database=desired_database_name_here;User=root;Password=desired_password_here"
 }
 ```
 
-Ensure the correct version is specified in the `Program.cs` database configuration. For example, we use Version 8.3.0 of MySQL:
+### Setting Up Entity Framework
+
+Specify the MySQL version in `Program.cs`:
 
 ```csharp
 services.AddDbContext<ScavHuntDbContext>(options => options
-    .EnableSensitiveDataLogging() // Optional, shouldn't be enabled in production
+    .EnableSensitiveDataLogging()
     .UseMySql(
-        builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("..."),
-        new MySqlServerVersion(new Version(8, 3, 0)),
-        b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
+        builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection string 'DefaultConnection' not found."),
+        new MySqlServerVersion(new Version(8, 3, 0)), 
+        b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")
+    )
+    .EnableRetryOnFailure()
+);
 ```
 
-Lastly, update the database migrations accordingly. A migrations file should already exist within the `ScavengerHunt.Infrastructure` assembly. If not, run the `Add-Migration InitialCreate` command in your package manager console. To update the database itself, use the command specified below:
+### Updating the Database
+
+Ensure your database migrations are up to date. If the initial migration does not exist, create it:
+
+```shell
+Add-Migration InitialCreate
+```
+
+Then, update the database:
 
 ```shell
 Update-Database
 ```
 
-## Run with Docker Compose
-
-### Environment Variables Setup
-
-Make sure that you have the following `.env` file inside the root of the source-files where `docker-compose.yaml` and `dockerfile` are located:
-
-```txt
-MYSQL_ROOT_PASSWORD=your_password_here
-```
-
-You can build and run the containers with docker compose:
-
-```shell
-docker compose up --build
-```
-
-Make sure that after everything is up and running, that you manually update your migrations like specified [above](README.md#configuring-mysql).
-
-Now, the Backend API can function appropriately.
+By following these steps, your development environment should be correctly set up for running and testing the backend of the scavenger hunt application.

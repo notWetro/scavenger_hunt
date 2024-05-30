@@ -37,18 +37,11 @@ static void ConfigureServices(WebApplicationBuilder builder)
     // Add other repositories, DbContext, etc.
 
     services.AddDbContext<ScavHuntDbContext>(options => options
-    .EnableSensitiveDataLogging()
-    .UseMySql(
-        builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
-        new MySqlServerVersion(new Version(8, 3, 0)),
-    b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
-
-
-    //services.AddDbContext<ScavHuntDbContext>(options => options
-    //    .EnableSensitiveDataLogging()
-    //    .UseSqlServer(builder.Configuration.GetConnectionString("ScavEditorApiContext") ?? throw new InvalidOperationException("Connection string 'ScavEditorApiContext' not found."),
-    //    b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")));
-
+                .EnableSensitiveDataLogging()
+                .UseMySql(
+                    builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection string 'DefaultConnection' not found."),
+                    new MySqlServerVersion(new Version(8, 3, 0)), b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")
+                .EnableRetryOnFailure()));
     services.AddControllers();
 
     services.AddEndpointsApiExplorer();
