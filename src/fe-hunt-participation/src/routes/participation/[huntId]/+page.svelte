@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Hunt } from '$lib/models/hunt';
+	import { postParticipation } from '$lib/services/hunt-api';
 	import { error } from '@sveltejs/kit';
 	import type { PageData } from './$types';
-	import { PUBLIC_DEMO_MODE, PUBLIC_HUNT_API_ADRESS } from '$env/static/public';
 	import Check from 'lucide-svelte/icons/check';
 
 	let modal: HTMLDialogElement;
@@ -17,35 +17,10 @@
 		modal.showModal();
 	}
 
-	const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-
 	async function submit(username: string, password: string, huntId: number) {
-		if (PUBLIC_DEMO_MODE === 'True') {
-			success = true;
-			return {
-				id: 69
-			};
-		}
-
-		const res = await fetch(`${PUBLIC_HUNT_API_ADRESS}/Participation/Hunt/${huntId}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username,
-				password
-			}),
-			credentials: 'include'
-		});
-
-		if (!res.ok) {
-			throw error(res.status, await res.text());
-		} else {
-			success = true;
-		}
-
-		return await res.json();
+		await postParticipation(username, password, huntId)
+			.then(() => (success = true))
+			.catch(() => (success = false));
 	}
 </script>
 

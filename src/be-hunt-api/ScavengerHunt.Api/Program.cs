@@ -23,6 +23,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseCors("AllowSpecificOrigin");
+
 app.MapControllers();
 
 app.Run();
@@ -63,6 +65,16 @@ static void ConfigureServices(WebApplicationBuilder builder)
 
     services.AddScoped<ITokenService, TokenService>()
             .AddScoped<IAuthenticationService, AuthenticationService>();
+
+    // Add cors policies
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder => builder
+                .WithOrigins("http://localhost:5173") // Add the specific origins you want to allow
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+    });
 
     // Add other repositories, DbContext, etc.
 
