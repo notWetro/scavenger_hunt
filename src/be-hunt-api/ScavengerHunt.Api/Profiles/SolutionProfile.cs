@@ -10,6 +10,8 @@ namespace ScavengerHunt.Api.Profiles
         {
             CreateMap<Solution, SolutionInnerGetDto>();
             CreateMap<SolutionInnerCreateDto, Solution>();
+            CreateMap<SolutionGetPrivateDto, Solution>();
+            CreateMap<Solution, SolutionGetPrivateDto>();
         }
     }
 }

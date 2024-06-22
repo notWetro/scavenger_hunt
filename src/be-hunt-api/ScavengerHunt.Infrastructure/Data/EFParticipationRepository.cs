@@ -36,6 +36,26 @@ namespace ScavengerHunt.Infrastructure.Data
             }
         }
 
+        public async Task<Participation?> GetLatestByUsernameAsync(string username)
+        {
+            try
+            {
+                return await _context.Participations
+                             .Where(p => p.Participant.Username == username)
+                             .Include(p => p.CurrentAssignment)
+                                .ThenInclude(a => a.Hint)
+                             .Include(p => p.CurrentAssignment)
+                                .ThenInclude(a => a.Solution)
+                             .OrderByDescending(p => p.Id)
+                             .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return null;
+            }
+        }
+
         public Task<Participation?> DeleteByIdAsync(int id)
         {
             throw new NotImplementedException();

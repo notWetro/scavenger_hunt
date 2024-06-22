@@ -5,8 +5,8 @@ namespace ScavengerHunt.Api.DTOs.Assignment
 {
     public sealed class AssignmentInnerCreateDto
     {
-        public HintInnerCreateDto Hint { get; set; }
+        public required HintInnerCreateDto Hint { get; set; }
 
-        public SolutionInnerCreateDto Solution { get; set; }
+        public required SolutionInnerCreateDto Solution { get; set; }
     }
 }

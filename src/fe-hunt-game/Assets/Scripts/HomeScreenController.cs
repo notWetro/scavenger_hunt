@@ -12,7 +12,6 @@ public class HomeScreenController : MonoBehaviour
     [SerializeField]
     private TMP_InputField passwordInputField;
 
-
     [SerializeField]
     private const string HUNT_API_URL = "http://localhost:7105/api";
 
@@ -50,9 +49,13 @@ public class HomeScreenController : MonoBehaviour
             else
             {
                 Debug.Log($"Response: {request.downloadHandler.text}");
+
                 if (request.responseCode == 200)
                 {
-                    SceneManager.LoadScene("SampleScene");
+                    var tokenResponse = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
+                    TokenStorage.UserToken = tokenResponse.token;
+
+                    SceneManager.LoadScene("MainScreen");
                 }
                 else
                 {
@@ -64,9 +67,15 @@ public class HomeScreenController : MonoBehaviour
     }
 
     [System.Serializable]
-    private class LoginForm
+    private sealed class LoginForm
     {
         public string username;
         public string password;
+    }
+
+    [System.Serializable]
+    private sealed class LoginResponse
+    {
+        public string token;
     }
 }

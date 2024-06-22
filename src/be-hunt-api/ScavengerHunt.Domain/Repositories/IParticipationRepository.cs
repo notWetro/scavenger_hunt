@@ -12,6 +12,7 @@ namespace ScavengerHunt.Domain.Repositories
         /// <returns>A similar participation that the user is trying to do.</returns>
         public Task<Participation?> GetByIdAndUsernameAsync(int huntId, string username);
 
+        public Task<Participation?> GetLatestByUsernameAsync(string username);
 
         /// <summary>
         /// Get a participation.

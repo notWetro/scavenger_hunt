@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ScavengerHunt.Api.Services;
 using ScavengerHunt.Domain.Repositories;
 using ScavengerHunt.Infrastructure;
 using ScavengerHunt.Infrastructure.Data;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -71,8 +73,10 @@ static void ConfigureServices(WebApplicationBuilder builder)
                 .UseMySql(
                     builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection string 'DefaultConnection' not found."),
                     new MySqlServerVersion(new Version(8, 3, 0)), b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")
-                .EnableRetryOnFailure()));
+                    .EnableRetryOnFailure()));
     services.AddControllers();
+
+    services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection") ?? throw new Exception("Connection string 'RedisConnection' not found.")));
 
     services.AddEndpointsApiExplorer();
     services.AddSwaggerGen();
