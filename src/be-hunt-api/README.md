@@ -15,18 +15,52 @@ Ensure the following configuration files are in place:
 1. **.env File**: This file should be in the root directory of the `hunt-api` and contain:
 
     ```shell
-    MYSQL_ROOT_PASSWORD=desired_password_here
-    MYSQL_DATABASE=desired_database_name_here
+    HUNTS_DB_NAME=desired_database_name_here
+    HUNTS_DB_ROOT_PWD=desired_password_here
+    PARTICIPANTS_DB_NAME=desired_database_name_here
+    PARTICIPANTS_DB_ROOT_PWD=desired_password_here
     ```
 
-2. **appsettings.json File**: This file should be located in the `ScavengerHunt.Api` directory and contain:
+2. **appsettings.json Files**: These files should be located in the corresponding Api directory (`Hunts.Api` or `Participants.Api`) and contain the appropriate connection strings. Each complete file is defined below:
+
+    1. **appsettings.json** for `Hunts.Api`:
 
     ```json
     {
-      "ConnectionStrings": {
-        "DefaultConnection": "Server=sqlserver;Database=desired_database_name_here;User=root;Password=desired_password_here"
-      },
-      "AllowedHosts": "*"
+        "ConnectionStrings": {
+            "HuntsDbConnection": "Server=localhost;Port=3366;Database=desired_database_name_here;User=root;Password=desired_password_here"
+        },
+        "Logging": {
+            "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+            }
+        },
+        "AllowedHosts": "*"
+    }
+    ```
+
+    2. **appsettings.json** for `Participations.Api`:
+
+    ```json
+    {
+        "ConnectionStrings": {
+            "ParticipantsDbConnection": "Server=localhost;Port=3399;Database=desired_database_name_here;User=root;Password=desired_password_here"
+        },
+        "Jwt": {
+            "Key": "Xx69420-EncryptionIsGood-69420xX",
+            "Issuer": "YourIssuer",
+            "Audience": "YourAudience"
+        },
+        "Logging": {
+            "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+            }
+        },
+        "AllowedHosts": "*"
     }
     ```
 
@@ -60,44 +94,28 @@ Run a container with the pulled MySQL image:
 docker run --name scavenger-hunt-db -e MYSQL_ROOT_PASSWORD=desired_password_here -p 3306:3306 -d mysql:latest
 ```
 
-### Configuring MySQL for the Backend
-
-Ensure your `appsettings.json` file has the correct connection string to access the database:
-
-```json
-"ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=3306;Database=desired_database_name_here;User=root;Password=desired_password_here"
-}
-```
-
-### Setting Up Entity Framework
-
-Specify the MySQL version in `Program.cs`:
-
-```csharp
-services.AddDbContext<ScavHuntDbContext>(options => options
-    .EnableSensitiveDataLogging()
-    .UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection string 'DefaultConnection' not found."),
-        new MySqlServerVersion(new Version(8, 3, 0)), 
-        b => b.MigrationsAssembly("ScavengerHunt.Infrastructure")
-    )
-    .EnableRetryOnFailure()
-);
-```
-
-### Updating the Database
-
-Ensure your database migrations are up to date. If the initial migration does not exist, create it:
+For running each database individually use the following commands:
 
 ```shell
-Add-Migration InitialCreate
+docker run --name scavenger-hunts-db -e MYSQL_ROOT_PASSWORD=desired_password_here -p 3366:3306 -d mysql:latest
+
+docker run --name scavenger-participations-db -e MYSQL_ROOT_PASSWORD=desired_password_here -p 3399:3306 -d mysql:latest
 ```
 
-Then, update the database:
+### Running migrations on MySQL Containers
+
+Ensure your database-migrations are up to date. If the initial migrations don't exist, create them:
 
 ```shell
-Update-Database
+dotnet ef migrations add InitialCreate --startup-project ..\Hunts.Api\ --project .
+dotnet ef migrations add InitialCreate --startup-project ..\Participants.Api\ --project .
+```
+
+Now, you can apply the database-migrations:
+
+```shell
+dotnet ef database update --startup-project ..\Hunts.Api\ --project .
+dotnet ef database update --startup-project ..\Participants.Api\ --project .
 ```
 
 By following these steps, your development environment should be correctly set up for running and testing the backend of the scavenger hunt application.
