@@ -30,6 +30,8 @@ Ensure the following configuration files are in place:
         "ConnectionStrings": {
             "HuntsDbConnection": "Server=localhost;Port=3366;Database=desired_database_name_here;User=root;Password=desired_password_here"
         },
+        "RabbitMQHost": "localhost",
+        "RabbitMQPort":  5672,
         "Logging": {
             "LogLevel": {
             "Default": "Information",
@@ -48,6 +50,8 @@ Ensure the following configuration files are in place:
         "ConnectionStrings": {
             "ParticipantsDbConnection": "Server=localhost;Port=3399;Database=desired_database_name_here;User=root;Password=desired_password_here"
         },
+        "RabbitMQHost": "localhost",
+        "RabbitMQPort":  5672,
         "Jwt": {
             "Key": "Xx69420-EncryptionIsGood-69420xX",
             "Issuer": "YourIssuer",

@@ -10,9 +10,11 @@ services:
       dockerfile: hunts.api.dockerfile
     depends_on:
       - hunts-db
+      - rabbitmq
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__HuntsDbConnection: Server=hunts-db;Database=${HUNTS_DB_NAME};User=root;Password=${HUNTS_DB_ROOT_PWD}
+      RabbitMQHost: scavenger-msg-bus
     ports:
       - "5000:7105"
 
@@ -56,9 +58,11 @@ services:
       dockerfile: participants.api.dockerfile
     depends_on:
       - participants-db
+      - rabbitmq
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__ParticipantsDbConnection: Server=participants-db;Database=${PARTICIPANTS_DB_NAME};User=root;Password=${PARTICIPANTS_DB_ROOT_PWD}
+      RabbitMQHost: scavenger-msg-bus
     ports:
       - "5100:7105"
 
@@ -92,3 +96,11 @@ services:
     command: ["dotnet-ef", "database", "update", "--project", "Participants.Infrastructure/", "--startup-project", "Participants.Api/"]
     environment:
       ConnectionStrings__ParticipantsDbConnection: Server=participants-db;Database=${PARTICIPANTS_DB_NAME};User=root;Password=${PARTICIPANTS_DB_ROOT_PWD}
+
+  # RabbitMQ Message Bus
+  rabbitmq:
+    container_name: 'scavenger-msg-bus'
+    image: rabbitmq:3-management
+    ports:
+        - 5672:5672
+        - 15672:15672

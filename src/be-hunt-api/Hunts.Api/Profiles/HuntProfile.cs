@@ -10,7 +10,11 @@ namespace Hunts.Api.Profiles
         {
             CreateMap<HuntCreateDto, Hunt>();
             CreateMap<Hunt, HuntGetDto>();
+            
             CreateMap<HuntUpdateDto, Hunt>();
+
+            CreateMap<HuntPublishDto, Hunt>();
+            CreateMap<Hunt, HuntPublishDto>();
         }
     }
 }

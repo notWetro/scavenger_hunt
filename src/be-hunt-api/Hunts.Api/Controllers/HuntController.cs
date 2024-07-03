@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hunts.Api.DTOs.Hunt;
+using Hunts.Api.Services;
 using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,11 @@ namespace Hunts.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class HuntController(IHuntRepository hrepository, IMapper mapper) : ControllerBase
+    public sealed class HuntController(IHuntRepository hrepository, IMapper mapper, IMessageBusClient messageBus) : ControllerBase
     {
         private readonly IHuntRepository _huntRepository = hrepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IMessageBusClient messageBus = messageBus;
 
         #region HTTP GETs
 
@@ -72,10 +74,21 @@ namespace Hunts.Api.Controllers
 
             var res = await _huntRepository.UpdateAsync(hunt);
 
-            if (res)
-                return Ok(res);
+            if (!res)
+                return BadRequest();
 
-            return BadRequest();
+            try
+            {
+                var huntPublish = _mapper.Map<HuntPublishDto>(hunt);
+                huntPublish.Event = "Hunt_Updated";
+                messageBus.PublishNewHunt(huntPublish);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Couldn't publish new hunt to message bus: {ex.Message}");
+            }
+
+            return Ok(res);
         }
 
         #endregion
@@ -98,6 +111,17 @@ namespace Hunts.Api.Controllers
             if (id <= 0)
                 return BadRequest();
 
+            try
+            {
+                var huntPublish = _mapper.Map<HuntPublishDto>(scavengerHunt);
+                huntPublish.Event = "Hunt_Created";
+                messageBus.PublishNewHunt(huntPublish);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Couldn't publish new hunt to message bus: {ex.Message}");
+            }
+
             return CreatedAtAction(nameof(PostScavengerHunt), _mapper.Map<HuntGetDto>(scavengerHunt));
         }
 
@@ -117,6 +141,17 @@ namespace Hunts.Api.Controllers
 
             if (hunt is null)
                 return NotFound();
+
+            try
+            {
+                var huntPublish = _mapper.Map<HuntPublishDto>(hunt);
+                huntPublish.Event = "Hunt_Deleted";
+                messageBus.PublishNewHunt(huntPublish);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Couldn't publish new hunt to message bus: {ex.Message}");
+            }
 
             return Ok(_mapper.Map<HuntGetDto>(hunt));
         }

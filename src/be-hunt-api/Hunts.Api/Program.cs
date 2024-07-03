@@ -1,3 +1,4 @@
+using Hunts.Api.Services;
 using Hunts.Domain.Repositories;
 using Hunts.Infrastructure;
 using Hunts.Infrastructure.Data;
@@ -31,7 +32,8 @@ static void ConfigureServices(WebApplicationBuilder builder)
 
     // Add services
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-    services.AddScoped<IHuntRepository, EFHuntRepository>()
+    services.AddSingleton<IMessageBusClient, MessageBusClient>()
+            .AddScoped<IHuntRepository, EFHuntRepository>()
             .AddScoped<IAssignmentRepository, EFAssignmentRepository>();
 
     services.AddDbContext<HuntsDbContext>(options => options

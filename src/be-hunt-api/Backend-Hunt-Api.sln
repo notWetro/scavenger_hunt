@@ -5,9 +5,12 @@ VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{309C3DF1-11C6-45A2-B109-E380A1FB7E9B}"
 	ProjectSection(SolutionItems) = preProject
+		.env = .env
 		docker-compose.yaml = docker-compose.yaml
-		dockerfile.api = dockerfile.api
-		dockerfile.migrations = dockerfile.migrations
+		hunts.api.dockerfile = hunts.api.dockerfile
+		hunts.migrations.dockerfile = hunts.migrations.dockerfile
+		participants.api.dockerfile = participants.api.dockerfile
+		participants.migrations.dockerfile = participants.migrations.dockerfile
 		README.md = README.md
 	EndProjectSection
 EndProject

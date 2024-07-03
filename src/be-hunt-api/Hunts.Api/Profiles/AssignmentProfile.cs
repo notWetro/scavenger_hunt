@@ -10,6 +10,9 @@ namespace Hunts.Api.Profiles
         {
             CreateMap<Assignment, AssignmentInnerGetDto>();
             CreateMap<AssignmentInnerCreateDto, Assignment>();
+
+            CreateMap<Assignment, AssignmentPublishDto>();
+            CreateMap<AssignmentPublishDto, Assignment>();
         }
     }
 }
