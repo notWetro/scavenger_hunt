@@ -36,7 +36,8 @@ static void ConfigureServices(WebApplicationBuilder builder)
     var services = builder.Services;
 
     services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-    services.AddScoped<IParticipantRepository, EFParticipantRepository>()
+    services.AddSingleton<IEventProcessor, EventProcessor>()
+            .AddScoped<IParticipantRepository, EFParticipantRepository>()
             .AddScoped<IParticipationRepository, EFParticipationRepository>();
 
     services.AddDbContext<ParticipantsDbContext>(options => options
@@ -45,6 +46,8 @@ static void ConfigureServices(WebApplicationBuilder builder)
                 builder.Configuration.GetConnectionString("ParticipantsDbConnection") ?? throw new Exception("Connection string 'ParticipantsDbConnection' not found."),
                 new MySqlServerVersion(new Version(8, 3, 0)), b => b.MigrationsAssembly("Participants.Infrastructure")
             .EnableRetryOnFailure()));
+
+    services.AddHostedService<MessageBusSubscriber>();
 
     services.AddScoped<ITokenService, TokenService>()
             .AddScoped<IAuthenticationService, AuthenticationService>();
