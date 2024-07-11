@@ -10,27 +10,25 @@ EXPOSE 7105
 FROM ${DOTNET_SDK} AS buildbase
 WORKDIR /source
 
-COPY . .
-
-# # Copy solution files and project files
-# COPY ["Backend-Hunt-Api.sln", "./"]
-# COPY ["Hunts.Api/Hunts.Api.csproj", "Hunts.Api/Hunts.Api.csproj"]
-# COPY ["Hunts.Domain/Hunts.Domain.csproj", "Hunts.Domain/Hunts.Domain.csproj"]
-# COPY ["Hunts.Infrastructure/Hunts.Infrastructure.csproj", "Hunts.Infrastructure/Hunts.Infrastructure.csproj"]
-# COPY ["Participants.Api/Participants.Api.csproj", "Participants.Api/Participants.Api.csproj"]
-# COPY ["Participants.Domain/Participants.Domain.csproj", "Participants.Domain/Participants.Domain.csproj"]
-# COPY ["Participants.Infrastructure/Participants.Infrastructure.csproj", "Participants.Infrastructure/Participants.Infrastructure.csproj"]
+# Copy solution files and project files
+COPY ["Backend-Hunt-Api.sln", "./"]
+COPY ["Hunts.Api/Hunts.Api.csproj", "Hunts.Api/Hunts.Api.csproj"]
+COPY ["Hunts.Domain/Hunts.Domain.csproj", "Hunts.Domain/Hunts.Domain.csproj"]
+COPY ["Hunts.Infrastructure/Hunts.Infrastructure.csproj", "Hunts.Infrastructure/Hunts.Infrastructure.csproj"]
+COPY ["Participants.Api/Participants.Api.csproj", "Participants.Api/Participants.Api.csproj"]
+COPY ["Participants.Domain/Participants.Domain.csproj", "Participants.Domain/Participants.Domain.csproj"]
+COPY ["Participants.Infrastructure/Participants.Infrastructure.csproj", "Participants.Infrastructure/Participants.Infrastructure.csproj"]
 
 # Restore solution structure
 RUN dotnet restore Backend-Hunt-Api.sln
 
-# # Copy missing source files
-# COPY ["Hunts.Api/", "Hunts.Api/"]
-# COPY ["Hunts.Domain/", "Hunts.Domain/"]
-# COPY ["Hunts.Infrastructure/", "Hunts.Infrastructure/"]
-# COPY ["Participants.Api/", "Participants.Api/"]
-# COPY ["Participants.Domain/", "Participants.Domain/"]
-# COPY ["Participants.Infrastructure/", "Participants.Infrastructure/"]
+# Copy missing source files
+COPY ["Hunts.Api/", "Hunts.Api/"]
+COPY ["Hunts.Domain/", "Hunts.Domain/"]
+COPY ["Hunts.Infrastructure/", "Hunts.Infrastructure/"]
+COPY ["Participants.Api/", "Participants.Api/"]
+COPY ["Participants.Domain/", "Participants.Domain/"]
+COPY ["Participants.Infrastructure/", "Participants.Infrastructure/"]
 
 # Run ef-core database migrations
 FROM buildbase as migrations

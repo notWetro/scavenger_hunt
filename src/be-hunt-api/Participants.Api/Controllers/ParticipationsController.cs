@@ -15,7 +15,7 @@ namespace Participants.Api.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class ParticipationController(IParticipantRepository prepository, IParticipationRepository parepository, IMapper mapper) : ControllerBase
+    public sealed class ParticipationsController(IParticipantRepository prepository, IParticipationRepository parepository, IMapper mapper) : ControllerBase
     {
         private readonly IParticipantRepository _participantRepository = prepository;
         private readonly IParticipationRepository _participationRepository = parepository;

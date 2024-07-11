@@ -123,3 +123,53 @@ dotnet ef database update --startup-project ..\Participants.Api\ --project .
 ```
 
 By following these steps, your development environment should be correctly set up for running and testing the backend of the scavenger hunt application.
+
+## Accessing Backend from another device
+
+If you want to access the backend from your phone for testing purposes, you can do so with the following guide (Windows only).
+
+_Note_: This will only work for devices connected in the same local network.
+
+### Figuring out Local IP-Adress
+
+For accessing a device on the same network, you'll first need to find your local IP-Adress.
+
+1) Open a Terminal Window.
+2) Run the command `ipconfig`. This will list your Windows IP configuration.
+3) Find the Ethernet Adapter that is connected to your home router. An example is shown below:
+
+```shell
+PS C:\Users\xyz> ipconfig
+
+Windows IP Configuration
+
+Ethernet adapter Ethernet X:
+
+   Connection-specific DNS Suffix  . : xxxxx.xxx
+   IPv6 Address. . . . . . . . . . . : xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx
+   Temporary IPv6 Address. . . . . . : xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx
+   Link-local IPv6 Address . . . . . : xxxx::xxxx:xxxx:xxxx:xxxx
+   IPv4 Address. . . . . . . . . . . : 192.168.178.69
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : xxxx::xxxx:xxxx:xxxx:xxxx
+                                       xxx.xxx.xxx.x
+```
+
+4) Note down the adress located at `IPv4 Address`.
+
+### Configuring Windows Defender Firewall
+
+1) Open "Windows Defender Firewall with Advanced Security".
+2) Right click on "Inbound Rules" and select "New Rule...".
+3) For "Type of rule" Select "Port". Click next.
+4) Select "TCP" and specify port "5500". Click next.
+5) For "Action" select "Allow the connection". Click next.
+6) For "When does this rule apply?" choose all. Click next.
+7) Give the new rule a name (and optionally a description). Click finish.
+
+With the IP-Adress from [here](#figuring-out-local-ip-adress) and the specified port `5500` you should be able to access your backend from a different device on the same network.
+
+```
+http://192.168.178.69:5500/hunts/api/...
+http://192.168.178.69:5500/participants/api/...
+```

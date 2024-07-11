@@ -11,7 +11,7 @@ namespace Participants.Api.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class ParticipantController(IAuthenticationService authService) : ControllerBase
+    public sealed class ParticipantsController(IAuthenticationService authService) : ControllerBase
     {
         private readonly IAuthenticationService _authService = authService;
 

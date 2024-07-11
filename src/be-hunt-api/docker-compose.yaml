@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+
+  # RabbitMQ Message Bus
+  rabbitmq:
+    container_name: scavenger-msg-bus
+    image: rabbitmq:3-management
+    ports:
+        - 5672:5672
+        - 15672:15672
+
+  # NGNIX Reverse Proxy
+  ngnix:
+    container_name: 'scavenger-proxy'
+    build: Proxy
+    ports:
+      - 5500:5500
+    depends_on: 
+      - hunts-api
+      - participants-api
+
   # Hunts Api Setup
   hunts-api:
     container_name: scavenger-hunts-api
@@ -45,7 +64,7 @@ services:
       target: migrations
     depends_on:
       - hunts-db
-    command: ["dotnet-ef", "database", "update", "--project", "Hunts.Infrastructure/", "--startup-project", "Hunts.Api/"] # TODO: CHECK IF THIS WORKS! DIRECTORIES!
+    command: ["dotnet-ef", "database", "update", "--project", "Hunts.Infrastructure/", "--startup-project", "Hunts.Api/"]
     environment:
       ConnectionStrings__HuntsDbConnection: Server=hunts-db;Database=${HUNTS_DB_NAME};User=root;Password=${HUNTS_DB_ROOT_PWD}
 
@@ -93,14 +112,7 @@ services:
       target: migrations
     depends_on:
       - participants-db
-    command: ["dotnet-ef", "database", "update", "--project", "Participants.Infrastructure/", "--startup-project", "Participants.Api/"] # TODO: CHECK IF THIS WORKS! DIRECTORIES!
+    command: ["dotnet-ef", "database", "update", "--project", "Participants.Infrastructure/", "--startup-project", "Participants.Api/"]
     environment:
       ConnectionStrings__ParticipantsDbConnection: Server=participants-db;Database=${PARTICIPANTS_DB_NAME};User=root;Password=${PARTICIPANTS_DB_ROOT_PWD}
 
-  # RabbitMQ Message Bus
-  rabbitmq:
-    container_name: 'scavenger-msg-bus'
-    image: rabbitmq:3-management
-    ports:
-        - 5672:5672
-        - 15672:15672
