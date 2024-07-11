@@ -4,7 +4,7 @@ services:
 
   # RabbitMQ Message Bus
   rabbitmq:
-    container_name: scavenger-msg-bus
+    container_name: message-bus
     image: rabbitmq:3-management
     ports:
         - 5672:5672
@@ -12,7 +12,7 @@ services:
 
   # NGNIX Reverse Proxy
   ngnix:
-    container_name: 'scavenger-proxy'
+    container_name: proxy
     build: Proxy
     ports:
       - 5500:5500
@@ -22,7 +22,7 @@ services:
 
   # Hunts Api Setup
   hunts-api:
-    container_name: scavenger-hunts-api
+    container_name: hunts-api
     env_file: .env
     build:
       context: .
@@ -33,13 +33,13 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__HuntsDbConnection: Server=hunts-db;Database=${HUNTS_DB_NAME};User=root;Password=${HUNTS_DB_ROOT_PWD}
-      RabbitMQHost: scavenger-msg-bus
+      RabbitMQHost: message-bus
     ports:
       - "5000:7105"
 
   # Hunts Database Setup
   hunts-db:
-    container_name: scavenger-hunts-db
+    container_name: hunts-db
     image: mysql:latest
     env_file: .env
     ports:
@@ -55,7 +55,7 @@ services:
 
   # Hunts Migrations Setup
   hunts-migrations:
-    container_name: scavenger-hunts-migrations
+    container_name: hunts-migrations
     image: scavenger-hunts-migrations
     env_file: .env
     build:
@@ -70,24 +70,26 @@ services:
 
   # Participants Api Setup
   participants-api:
-    container_name: scavenger-participants-api
+    container_name: participants-api
     env_file: .env
     build:
       context: .
       dockerfile: Participants.Api/Dockerfile
     depends_on:
       - participants-db
+      - participants-cache
       - rabbitmq
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__ParticipantsDbConnection: Server=participants-db;Database=${PARTICIPANTS_DB_NAME};User=root;Password=${PARTICIPANTS_DB_ROOT_PWD}
-      RabbitMQHost: scavenger-msg-bus
+      ConnectionStrings__ParticipantsCacheConnection: participants-cache
+      RabbitMQHost: message-bus
     ports:
       - "5100:7105"
 
   # Participants Database Setup
   participants-db:
-    container_name: scavenger-participants-db
+    container_name: participants-db
     image: mysql:latest
     env_file: .env
     ports:
@@ -103,7 +105,7 @@ services:
 
   # Participants Migrations Setup
   participants-migrations:
-    container_name: scavenger-participants-migrations
+    container_name: participants-migrations
     image: scavenger-participants-migrations
     env_file: .env
     build:
@@ -112,7 +114,14 @@ services:
       target: migrations
     depends_on:
       - participants-db
+      - participants-cache
     command: ["dotnet-ef", "database", "update", "--project", "Participants.Infrastructure/", "--startup-project", "Participants.Api/"]
     environment:
       ConnectionStrings__ParticipantsDbConnection: Server=participants-db;Database=${PARTICIPANTS_DB_NAME};User=root;Password=${PARTICIPANTS_DB_ROOT_PWD}
+      ConnectionStrings__ParticipantsCacheConnection: participants-cache
 
+  participants-cache:
+    container_name: participants-cache
+    image: redis:latest
+    ports:
+      - "6379:6379"

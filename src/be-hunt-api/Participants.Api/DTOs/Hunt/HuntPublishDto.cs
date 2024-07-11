@@ -2,12 +2,10 @@
 
 namespace Participants.Api.DTOs.Hunt
 {
-    public sealed class HuntPublishDto
+    public sealed class HuntPublishDto : GenericEventDto
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
         public required string Title { get; set; }
         public required ICollection<AssignmentPublishDto> Assignments { get; set; }
-
-        public required string Event { get; set; }
     }
 }

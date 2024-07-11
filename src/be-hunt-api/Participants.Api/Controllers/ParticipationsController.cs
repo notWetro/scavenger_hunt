@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Participants.Api.DTOs.Participation;
+using Participants.Api.Services;
 using Participants.Domain.Entities;
 using Participants.Domain.Repositories;
 
@@ -15,10 +16,11 @@ namespace Participants.Api.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class ParticipationsController(IParticipantRepository prepository, IParticipationRepository parepository, IMapper mapper) : ControllerBase
+    public sealed class ParticipationsController(IParticipantRepository prepository, IParticipationRepository parepository, ICache cache, IMapper mapper) : ControllerBase
     {
         private readonly IParticipantRepository _participantRepository = prepository;
         private readonly IParticipationRepository _participationRepository = parepository;
+        private readonly ICache _cache = cache;
         private readonly IMapper _mapper = mapper;
 
         [HttpPost("Hunt/{huntId}")]
@@ -28,10 +30,9 @@ namespace Participants.Api.Controllers
             if (existingParticipation is not null)
                 return Conflict("Participation already exists for the given hunt and username.");
 
-            //var scavengerHunt = await _huntRepository.GetByIdAsync(huntId);
-
-            //if (scavengerHunt is null)
-            //    return NotFound("Specified hunt-id has no associated hunt-object.");
+            var hunt = await _cache.GetHuntAsync(huntId);
+            if(hunt is null)
+                return NotFound("Specified hunt-id has no associated hunt-object.");
 
             var participant = await _participantRepository.GetByUsernameAsync(cred.Username);
 
@@ -45,7 +46,7 @@ namespace Participants.Api.Controllers
             {
                 Participant = participant,
                 HuntId = huntId,
-                CurrentAssignmentId = GetAssignmentIdOfHunt(huntId)
+                CurrentAssignmentId = hunt.Assignments.First()
             };
 
             participant.Participations.Add(participation);
@@ -53,11 +54,6 @@ namespace Participants.Api.Controllers
             await _participationRepository.AddAsync(participation);
 
             return Ok(_mapper.Map<ParticipationGetDto>(participation));
-        }
-
-        private int GetAssignmentIdOfHunt(int huntId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

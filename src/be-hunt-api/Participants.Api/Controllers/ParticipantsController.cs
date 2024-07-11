@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Participants.Api.Services;
 using IAuthenticationService = Participants.Api.Services.IAuthenticationService;
 
 namespace Participants.Api.Controllers
@@ -11,9 +12,10 @@ namespace Participants.Api.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public sealed class ParticipantsController(IAuthenticationService authService) : ControllerBase
+    public sealed class ParticipantsController(IAuthenticationService authService, ICache cache) : ControllerBase
     {
         private readonly IAuthenticationService _authService = authService;
+        private readonly ICache _cache = cache;
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
@@ -23,6 +25,8 @@ namespace Participants.Api.Controllers
             {
                 return Unauthorized("Invalid username or password.");
             }
+
+            await _cache.SaveLoginToken(loginRequest.Username, token);
 
             return Ok(new { Token = token });
         }

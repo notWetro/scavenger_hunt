@@ -48,7 +48,8 @@ Ensure the following configuration files are in place:
     ```json
     {
         "ConnectionStrings": {
-            "ParticipantsDbConnection": "Server=localhost;Port=3399;Database=desired_database_name_here;User=root;Password=desired_password_here"
+            "ParticipantsDbConnection": "Server=localhost;Port=3399;Database=desired_database_name_here;User=root;Password=desired_password_here",
+            "ParticipantsCacheConnection": "localhost:6379"
         },
         "RabbitMQHost": "localhost",
         "RabbitMQPort":  5672,

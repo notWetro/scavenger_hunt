@@ -1,9 +1,9 @@
 upstream hunts-api {
-    server scavenger-hunts-api:7105;
+    server hunts-api:7105;
 }
 
 upstream participants-api {
-    server scavenger-participants-api:7105;
+    server participants-api:7105;
 }
 
 server {

@@ -11,7 +11,7 @@ using Participants.Infrastructure;
 namespace Participants.Infrastructure.Migrations
 {
     [DbContext(typeof(ParticipantsDbContext))]
-    [Migration("20240701101138_InitialCreate")]
+    [Migration("20240711174321_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

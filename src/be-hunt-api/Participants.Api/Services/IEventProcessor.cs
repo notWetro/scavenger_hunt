@@ -2,6 +2,6 @@
 {
     public interface IEventProcessor
     {
-        public string ProcessEvent(string message);
+        public void ProcessEvent(string message);
     }
 }
