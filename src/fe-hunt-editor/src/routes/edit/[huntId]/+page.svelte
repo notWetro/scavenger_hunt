@@ -9,8 +9,10 @@
 	import ProgressBar from '$lib/components/Progressbar.svelte';
 	import OverviewEdit from '$lib/components/OverviewEdit.svelte';
 
+	// needed for huntId from params
 	export let data: PageData;
 
+	// trigger update of huntStore with the current hunt data
 	$: huntStore.update(() => {
 		return { ...(data.hunt as Hunt) };
 	});

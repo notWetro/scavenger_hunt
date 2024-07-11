@@ -15,18 +15,20 @@
 	import { createEventDispatcher } from 'svelte';
 	import { huntStore } from '$lib/stores/huntStore';
 
+	// Mapping of the solutionType and hintType strings to numbers
 	const reverseSolutionTypeMapping = {
 		0: 'QRCode',
 		1: 'Text',
 		2: 'Location'
 	};
 
+	// Mapping of the solutionType and hintType strings to numbers
 	const reverseHintTypeMapping = {
 		0: 'Text',
 		1: 'Image'
 	};
 
-	// Function to reverse map the assignments
+	// Function to reverse map the assignments to the original format so that strings are displayed instead of numbers
 	function reverseMapAssignments(assignments) {
 		return assignments.map((assignment) => ({
 			...assignment,
@@ -41,6 +43,7 @@
 		}));
 	}
 	let updatedHuntStoreWithNames = reverseMapAssignments($huntStore.assignments);
+	// either use the current assignments (editing) or an empty array (creating)
 	let items: Assignment[] = updatedHuntStoreWithNames || [];
 
 	let expandedItem: number = 0;
@@ -56,22 +59,26 @@
 
 	const dispatch = createEventDispatcher();
 
+	// Function to toggle the expanded state of an item in the list
 	function toggleExpand(id: number) {
 		expandedItem = expandedItem === id ? 0 : id;
 	}
 
+	// Function to move an item up in the list
 	function moveUp(index: number) {
 		if (index > 0) {
 			[items[index - 1], items[index]] = [items[index], items[index - 1]];
 		}
 	}
 
+	// Function to move an item down in the list
 	function moveDown(index: number) {
 		if (index < items.length - 1) {
 			[items[index + 1], items[index]] = [items[index], items[index + 1]];
 		}
 	}
 
+	// Function to delete an item from the list
 	function deleteItem(id: number) {
 		items = items.filter((item) => item.id !== id);
 		if (expandedItem === id) {
@@ -79,6 +86,7 @@
 		}
 	}
 
+	// Function to add a new assignment to the list
 	function addAssignment() {
 		const newAssignment: Assignment = {
 			id: nextId,
@@ -89,14 +97,18 @@
 		nextId++;
 	}
 
+	// Function to set the hint type of an item
 	function setHintType(index: number, type: HintType) {
 		items[index].hint.hintType = type;
 	}
 
+	// Function to set the solution type of an item
 	function setSolutionType(index: number, type: SolutionType) {
 		items[index].solution.solutionType = type;
 	}
 
+	// Function to handle the file upload
+	// TODO: write base64 string to hint.data
 	const onFileSelected = (e: Event) => {
 		const input = e.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
@@ -195,7 +207,7 @@
 							/>
 						{:else if item.solution.solutionType === SolutionType.Location}
 							<div class="flex space-x-2">
-								<!--                                TODO: fix displaying of latitude and longitude by splitting data at ";"-->
+								<!--  TODO: fix displaying of latitude and longitude by splitting data at ";"-->
 								<Input bind:value={item.solution.data} placeholder="Latitude" class="mt-2" />
 								<Input bind:value={item.solution.data} placeholder="Longitude" class="mt-2" />
 							</div>

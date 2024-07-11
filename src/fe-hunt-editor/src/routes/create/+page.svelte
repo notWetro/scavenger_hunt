@@ -7,6 +7,7 @@
 	import { Button } from 'flowbite-svelte';
 	import { huntStore } from '$lib/stores/huntStore';
 
+	// make sure that huntStore is reset before trying to create a new hunt
 	huntStore.set({
 		id: 0,
 		title: '',

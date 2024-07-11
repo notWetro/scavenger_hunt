@@ -4,10 +4,14 @@
 	import { ArrowRight } from 'lucide-svelte';
 	import { huntStore } from '$lib/stores/huntStore';
 
+	// create a dispatcher to emit finished event
 	const dispatch = createEventDispatcher();
+
+	// either use the current title and description (for editing) or an empty string (for creating)
 	let title = $huntStore.title || '';
 	let description = $huntStore.description || '';
 
+	// update the huntStore with the new title and description
 	function updateWithBasicData() {
 		huntStore.update((currentHunt) => {
 			return { ...currentHunt, title, description };
