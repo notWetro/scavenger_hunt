@@ -56,6 +56,6 @@ namespace Participants.Api.Services
         HuntUpdated,
         HuntCreated,
         HuntDeleted,
-        
+
     }
 }

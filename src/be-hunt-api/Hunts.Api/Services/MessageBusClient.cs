@@ -1,5 +1,4 @@
 ﻿using Hunts.Api.DTOs.Hunt;
-using Microsoft.Identity.Client;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -15,8 +14,8 @@ namespace Hunts.Api.Services
         public MessageBusClient(IConfiguration configuration)
         {
             var factory = new ConnectionFactory()
-            { 
-                HostName = configuration["RabbitMQHost"], 
+            {
+                HostName = configuration["RabbitMQHost"],
                 Port = int.Parse(configuration["RabbitMQPort"] ?? throw new ArgumentNullException("Port for 'RabbitMQPort' not found."))
             };
 

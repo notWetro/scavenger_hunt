@@ -3,7 +3,7 @@
     public sealed class Solution
     {
         public int Id { get; set; }
-        public SolutionType Type { get; set; }
+        public SolutionType SolutionType { get; set; }
         public string Data { get; set; } = default!;
 
         public int AssignmentId { get; set; }

@@ -24,4 +24,8 @@
     <ProjectReference Include="..\Hunts.Domain\Hunts.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

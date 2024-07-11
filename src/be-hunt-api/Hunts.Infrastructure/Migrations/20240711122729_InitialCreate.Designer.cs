@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hunts.Infrastructure.Migrations
 {
     [DbContext(typeof(HuntsDbContext))]
-    [Migration("20240701100821_InitialCreate")]
+    [Migration("20240711122729_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -110,7 +110,7 @@ namespace Hunts.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("SolutionType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

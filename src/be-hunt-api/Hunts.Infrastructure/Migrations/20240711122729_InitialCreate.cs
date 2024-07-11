@@ -82,7 +82,7 @@ namespace Hunts.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    SolutionType = table.Column<int>(type: "int", nullable: false),
                     Data = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AssignmentId = table.Column<int>(type: "int", nullable: false)

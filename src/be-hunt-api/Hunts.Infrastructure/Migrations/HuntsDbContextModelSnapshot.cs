@@ -107,7 +107,7 @@ namespace Hunts.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("SolutionType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
