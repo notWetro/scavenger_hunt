@@ -5,8 +5,8 @@
 	import { huntStore } from '$lib/stores/huntStore';
 
 	const dispatch = createEventDispatcher();
-	let title = '';
-	let description = '';
+	let title = $huntStore.title || '';
+	let description = $huntStore.description || '';
 
 	function updateWithBasicData() {
 		huntStore.update((currentHunt) => {

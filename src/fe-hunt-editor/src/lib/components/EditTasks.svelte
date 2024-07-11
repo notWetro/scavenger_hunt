@@ -15,33 +15,33 @@
 	import { createEventDispatcher } from 'svelte';
 	import { huntStore } from '$lib/stores/huntStore';
 
-	let items: Assignment[] = [
-		{
-			id: 1,
-			hint: { hintType: HintType.Text, data: 'Hint data 1' },
-			solution: { solutionType: SolutionType.QRCode, data: 'Solution data 1' }
-		},
-		{
-			id: 2,
-			hint: { hintType: HintType.Image, data: 'Hint data 2' },
-			solution: { solutionType: SolutionType.Text, data: 'Solution data 2' }
-		},
-		{
-			id: 3,
-			hint: { hintType: HintType.Text, data: 'Hint data 3' },
-			solution: { solutionType: SolutionType.Location, data: 'Solution data 3' }
-		},
-		{
-			id: 4,
-			hint: { hintType: HintType.Text, data: 'Hint data 4' },
-			solution: { solutionType: SolutionType.QRCode, data: 'Solution data 4' }
-		},
-		{
-			id: 5,
-			hint: { hintType: HintType.Image, data: 'Hint data 5' },
-			solution: { solutionType: SolutionType.Location, data: '1313131343;9848349' }
-		}
-	];
+	const reverseSolutionTypeMapping = {
+		0: 'QRCode',
+		1: 'Text',
+		2: 'Location'
+	};
+
+	const reverseHintTypeMapping = {
+		0: 'Text',
+		1: 'Image'
+	};
+
+	// Function to reverse map the assignments
+	function reverseMapAssignments(assignments) {
+		return assignments.map((assignment) => ({
+			...assignment,
+			solution: {
+				...assignment.solution,
+				solutionType: reverseSolutionTypeMapping[assignment.solution.solutionType]
+			},
+			hint: {
+				...assignment.hint,
+				hintType: reverseHintTypeMapping[assignment.hint.hintType]
+			}
+		}));
+	}
+	let updatedHuntStoreWithNames = reverseMapAssignments($huntStore.assignments);
+	let items: Assignment[] = updatedHuntStoreWithNames || [];
 
 	let expandedItem: number = 0;
 
