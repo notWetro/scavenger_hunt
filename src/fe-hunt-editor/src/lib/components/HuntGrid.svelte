@@ -3,17 +3,18 @@
 	import { onMount } from 'svelte';
 	import type { Hunt } from '$lib/models/Hunt';
 
+	import {PUBLIC_API_URL} from '$env/static/public';
+
 	let hunts: Hunt[] = [];
 
 	onMount(async () => {
-		// TODO: fetch data from API instead of local file
-		const response = await fetch('/sampleHunts.json');
+		const response = await fetch(`${PUBLIC_API_URL}/hunts`);
 		hunts = await response.json();
 	});
 </script>
 
 <div class="grid p-10 gap-10 grid-cols-3">
-	{#each hunts as hunt (hunt.title)}
+	{#each hunts as hunt (hunt.id)}
 		<HuntCard {hunt} />
 	{/each}
 </div>

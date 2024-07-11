@@ -13,6 +13,7 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
+	import {PUBLIC_API_URL} from '$env/static/public';
 
 	let qrCodes = [];
 
@@ -64,9 +65,38 @@
 		}
 	}
 
-	function submitHunt() {
+	async function submitHunt() {
 		console.log('Hunt:', hunt);
-		// TODO: Implement API call to submit the hunt
+		// Map solutionType and hintType strings to numbers
+		const solutionTypeMapping = { 'QRCode': 0, 'Text': 1, 'Location': 2 };
+		const hintTypeMapping = { 'Text': 0, 'Image': 1 };
+
+		// Create a new huntData object with modified assignments
+		const huntData = {
+			...hunt,
+			assignments: hunt.assignments.map(assignment => ({
+				...assignment,
+				solution: {
+					...assignment.solution,
+					solutionType: solutionTypeMapping[assignment.solution.solutionType]
+				},
+				hint: {
+					...assignment.hint,
+					hintType: hintTypeMapping[assignment.hint.hintType]
+				}
+			}))
+		};
+
+		const response = await fetch(`${PUBLIC_API_URL}/hunts`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(huntData)
+		});
+		if (!response.ok) {
+			throw new Error(`Failed to create Hunt: ${response.status}`);
+		}
 		dispatch('Finished');
 	}
 </script>
