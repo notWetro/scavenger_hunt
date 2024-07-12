@@ -8,14 +8,18 @@
 	let hunts: Hunt[] = [];
 
 	onMount(async () => {
-		const response = await fetch(`${PUBLIC_API_URL}/hunts`);
-		hunts = await response.json();
+		await reloadHunts();
 		console.log('received hunts from backend', hunts);
 	});
+
+	async function reloadHunts() {
+		const response = await fetch(`${PUBLIC_API_URL}/hunts`);
+		hunts = await response.json();
+	}
 </script>
 
 <div class="grid p-10 gap-5 grid-cols-3">
 	{#each hunts as hunt (hunt.id)}
-		<HuntCard {hunt} />
+		<HuntCard {hunt} on:HuntDeleted={reloadHunts} />
 	{/each}
 </div>

@@ -52,10 +52,33 @@
 
 	let file: File | null;
 
-	// TODO: Implement validation logic
 	let isValidData: boolean;
 
-	$: isValidData = true;
+	// reactive statement to check if all assignments have valid data
+	$: isValidData = items.every((item) => {
+		let isValidHint = false;
+		let isValidSolution = false;
+
+		// Validate hint based on its type
+		if (item.hint.hintType === HintType.Text) {
+			isValidHint = item.hint.data.trim() !== '';
+		} else if (item.hint.hintType === HintType.Image) {
+			isValidHint = item.hint.data.startsWith('data:image/');
+		}
+
+		// Validate solution based on its type
+		if (
+			item.solution.solutionType === SolutionType.Text ||
+			item.solution.solutionType === SolutionType.Location
+		) {
+			isValidSolution = item.solution.data.trim() !== '';
+		} else if (item.solution.solutionType === SolutionType.QRCode) {
+			// QRCode does not require validation here
+			isValidSolution = true;
+		}
+
+		return isValidHint && isValidSolution;
+	});
 
 	const dispatch = createEventDispatcher();
 
@@ -107,17 +130,28 @@
 		items[index].solution.solutionType = type;
 	}
 
-	// Function to handle the file upload
-	// TODO: write base64 string to hint.data
-	const onFileSelected = (e: Event) => {
+	// Function to handle the file upload and write base64 string to hint.data
+	const onFileSelected = (e: Event, itemId: number) => {
 		const input = e.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
-			file = input.files[0];
+			const file = input.files[0];
 			const reader = new FileReader();
 
 			reader.onload = (e) => {
-				const base64String = e.target.result;
-				console.log(base64String); // Use this base64 string as needed
+				const base64String = e.target.result as string;
+				// Find the item by itemId and update its hint.data with the base64 string
+				items = items.map((item) => {
+					if (item.id === itemId) {
+						return {
+							...item,
+							hint: {
+								...item.hint,
+								data: base64String
+							}
+						};
+					}
+					return item;
+				});
 			};
 
 			reader.readAsDataURL(file);
@@ -180,7 +214,7 @@
 								<span class="font-semibold">Bild hochladen</span>
 								<Fileupload
 									accept="image/png, image/jpeg"
-									on:change={(e) => onFileSelected(e)}
+									on:change={(e) => onFileSelected(e, item.id)}
 									bind:file
 								/>
 							</Label>

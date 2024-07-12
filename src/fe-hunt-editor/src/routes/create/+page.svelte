@@ -17,8 +17,20 @@
 
 	let currentStep = writable(1);
 
+	// gets called when the current step is finished and advances to the next step
 	function advanceToNextStep() {
 		currentStep.update((n) => n + 1);
+	}
+
+	// resets the current stored huntData and goes back to the first step (BasicData)
+	function createNewHunt() {
+		huntStore.set({
+			id: 0,
+			title: '',
+			description: '',
+			assignments: []
+		});
+		currentStep.set(1);
 	}
 </script>
 
@@ -38,7 +50,6 @@
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold mb-5">Schnitzeljagd erfolgreich erstellt!</h1>
-		<!--        TODO: Check if store is reset here-->
-		<Button on:click={() => currentStep.set(1)}>Neue Schnitzeljagd erstellen</Button>
+		<Button on:click={createNewHunt}>Neue Schnitzeljagd erstellen</Button>
 	</div>
 {/if}
