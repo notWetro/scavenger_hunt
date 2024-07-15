@@ -19,7 +19,7 @@ public class MainScreenController : MonoBehaviour
     private float _timeSinceLastFetch = 0f;
 
     [SerializeField]
-    private const string HUNT_API_URL = "http://localhost:7105/api";
+    private const string HUNT_API_URL = "http://localhost:5100/api";
 
     // Update is called once per frame
     void Update()
@@ -39,6 +39,7 @@ public class MainScreenController : MonoBehaviour
     private IEnumerator FetchAssignment()
     {
         var token = TokenStorage.UserToken;
+        var participationId = ParticipationStore.Participation.Id;
 
         Debug.Log($"Using token: {token}");
 

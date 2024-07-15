@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TokenStorage : MonoBehaviour
 {
-    // Start is called before the first frame update
     private static string _userToken = string.Empty;
     public static string UserToken
     { 
