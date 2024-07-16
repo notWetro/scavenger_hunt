@@ -1,8 +1,5 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 public class HomeScreenController : MonoBehaviour
 {
@@ -11,10 +8,6 @@ public class HomeScreenController : MonoBehaviour
 
     [SerializeField]
     private TMP_InputField passwordInputField;
-
-    // TODO: CHANGE THIS FIELD TO THE ACTUAL ADRESS OF OUR BACKEND API
-    [SerializeField]
-    private const string HUNT_API_URL = "http://localhost:5100/api";
 
     public void OnLoginButtonPressed()
     {

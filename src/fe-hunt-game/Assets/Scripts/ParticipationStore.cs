@@ -11,10 +11,18 @@ public sealed class Participation
 
 public class ParticipationStore : MonoBehaviour
 {
-    private static Participation _participation;
-    public static Participation Participation
+    private static string _huntTitle;
+    public static string HuntTitle
     {
-        get => _participation;
-        set => _participation = value;
+        get => _huntTitle;
+        set => _huntTitle = value;
     }
+
+    private static Assignment _assignment;
+    public static Assignment Assignment
+    {
+        get => _assignment;
+        set => _assignment = value;
+    }
+
 }

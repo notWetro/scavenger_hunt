@@ -1,25 +1,32 @@
 using System;
 using System.Collections;
 using TMPro;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainScreenController : MonoBehaviour
 {
     [SerializeField]
-    private TMP_InputField usernameInputField;
-
-    [SerializeField]
-    private TMP_InputField passwordInputField;
+    private TMP_Text huntTitleText;
 
     private bool _assignmentFetched = false;
     private Assignment _currentAssignment = null;
     private float _fetchInterval = 5f; // Interval in seconds
     private float _timeSinceLastFetch = 0f;
 
-    [SerializeField]
-    private const string HUNT_API_URL = "http://localhost:5100/api";
+    private void Start()
+    {
+        UpdateHuntTitle();
+    }
+
+    private void UpdateHuntTitle()
+    {
+        Debug.Log(ParticipationStore.HuntTitle);
+        huntTitleText.text = ParticipationStore.HuntTitle;
+    }
 
     // Update is called once per frame
     void Update()
@@ -39,88 +46,52 @@ public class MainScreenController : MonoBehaviour
     private IEnumerator FetchAssignment()
     {
         var token = TokenStorage.UserToken;
-        var participationId = ParticipationStore.Participation.Id;
+        const string HUNT_API_URL = "http://localhost:5500/participants/api";
 
-        Debug.Log($"Using token: {token}");
+        Debug.Log(token);
 
-        using (UnityWebRequest request = new UnityWebRequest(HUNT_API_URL + "/Participant/Assignment", "GET"))
+        // Create an instance of the TokenRequest class and serialize it to JSON
+        var assignmentRequest = new AssignmentRequest { token = token };
+        string dataJson = JsonUtility.ToJson(assignmentRequest);
+
+        // Use UnityWebRequest.Post to send the JSON body
+        using (UnityWebRequest www = UnityWebRequest.Put(HUNT_API_URL + "/Participants/CurrentAssignment", dataJson))
         {
-            request.SetRequestHeader("Token", token);
-            request.downloadHandler = new DownloadHandlerBuffer();
+            www.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(dataJson));
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Content-Type", "application/json");
 
-            // Send the request and wait for the response
-            yield return request.SendWebRequest();
+            yield return www.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"Error: {request.error}");
+                Debug.Log(www.error);
             }
             else
             {
-                string responseText = request.downloadHandler.text;
+                string responseText = www.downloadHandler.text;
                 Debug.Log($"Response Text: {responseText}");
 
                 if (string.IsNullOrEmpty(responseText))
                 {
                     Debug.LogError("Error: Response is empty");
                 }
-                else
-                {
-                    if (request.responseCode == 200)
-                    {
-                        try
-                        {
-                            // Deserialize JSON to Assignment object
-                            var response = JsonUtility.FromJson<AssignmentResponse>(responseText);
-                            
-                            //_currentAssignment = new()
-                            //{
-                            //    Id = response.Id,
-                            //    Hint = response.Hint,
-                            //    Solution = new()
-                            //    {
-                            //        Type = response.Solution.Type,
-                            //    }
-                            //};
-                            
-                            _assignmentFetched = true;
-
-                            if (_currentAssignment != null)
-                            {
-                                Debug.Log($"Assignment fetched: Hint Data - {_currentAssignment.Hint.Data}, Solution Type - {_currentAssignment.Solution.Type}");
-                            }
-                            else
-                            {
-                                Debug.LogError("Error: Deserialized assignment is null");
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError($"Error deserializing JSON: {e.Message}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogError($"Fetching assignment failed with status code: {request.responseCode}");
-                    }
-                }
+                _assignmentFetched = true;
             }
         }
     }
 }
 
 [Serializable]
-public sealed class AssignmentResponse
+public sealed class AssignmentRequest
 {
-    public int Id { get; set; }
-    public Hint Hint { get; set; }
-    public SolutionResponse Solution { get; set; }
+    public string token;
 }
 
 [Serializable]
-public sealed class SolutionResponse
+public sealed class AssignmentResponse
 {
-    public int Id { get; set; }
-    public int Type { get; set; }
+    public int HintType { get; set; }
+    public string HintData { get; set; }
+    public int SolutionType { get; set; }
 }
-

@@ -1,12 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 public class ParticipantsService : MonoBehaviour
 {
-    private const string HUNT_API_URL = "http://localhost:5100/api";
+    // ACHTUNG: NGNIX IST CASE SENSITIVE!!!
+    [SerializeField]
+    private const string HUNT_API_URL = "http://localhost:5500/participants/api";
 
     /// <summary>
     /// Performs a login request to the backend.
@@ -20,6 +22,8 @@ public class ParticipantsService : MonoBehaviour
         string jsonData = JsonUtility.ToJson(formData);
 
 #pragma warning disable IDE0063 // Use simple 'using' statement
+
+
         using (UnityWebRequest request = new(HUNT_API_URL + "/Participants/Login", "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
@@ -43,7 +47,8 @@ public class ParticipantsService : MonoBehaviour
                 {
                     var tokenResponse = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
                     TokenStorage.UserToken = tokenResponse.token;
-                    ParticipationStore.Participation = tokenResponse.Participation;
+                    Debug.Log(tokenResponse.huntTitle);
+                    ParticipationStore.HuntTitle = tokenResponse.huntTitle;
 
                     SceneManager.LoadScene("MainScreen");
                 }
@@ -67,7 +72,7 @@ public class ParticipantsService : MonoBehaviour
     public sealed class LoginResponse
     {
         public string token;
-        public Participation Participation { get; set; }
+        public string huntTitle;
     }
 
 }
