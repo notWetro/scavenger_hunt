@@ -17,12 +17,4 @@ public class ParticipationStore : MonoBehaviour
         get => _huntTitle;
         set => _huntTitle = value;
     }
-
-    private static Assignment _assignment;
-    public static Assignment Assignment
-    {
-        get => _assignment;
-        set => _assignment = value;
-    }
-
 }

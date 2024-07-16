@@ -1,19 +1,19 @@
 using System;
 using System.Collections;
 using TMPro;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using static ParticipantsService;
 
 public class MainScreenController : MonoBehaviour
 {
     [SerializeField]
     private TMP_Text huntTitleText;
 
+    public HintController hintController;
+
+    private AssignmentResponse _currentAssignment = null;
     private bool _assignmentFetched = false;
-    private Assignment _currentAssignment = null;
     private float _fetchInterval = 5f; // Interval in seconds
     private float _timeSinceLastFetch = 0f;
 
@@ -76,7 +76,15 @@ public class MainScreenController : MonoBehaviour
                 {
                     Debug.LogError("Error: Response is empty");
                 }
+
+                _currentAssignment = JsonUtility.FromJson<AssignmentResponse>(responseText);
                 _assignmentFetched = true;
+
+                Debug.Log(_currentAssignment.hintType);
+                Debug.Log(_currentAssignment.hintData);
+                Debug.Log(_currentAssignment.solutionType);
+
+                hintController.DisplayHint(_currentAssignment.hintType, _currentAssignment.hintData);
             }
         }
     }
@@ -91,7 +99,7 @@ public sealed class AssignmentRequest
 [Serializable]
 public sealed class AssignmentResponse
 {
-    public int HintType { get; set; }
-    public string HintData { get; set; }
-    public int SolutionType { get; set; }
+    public int hintType;
+    public string hintData;
+    public int solutionType;
 }
