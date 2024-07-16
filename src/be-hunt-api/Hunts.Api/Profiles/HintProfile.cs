@@ -10,6 +10,8 @@ namespace Hunts.Api.Profiles
         {
             CreateMap<Hint, HintInnerGetDto>();
             CreateMap<HintInnerCreateDto, Hint>();
+            CreateMap<Hint, HintPublishDto>();
+            CreateMap<HintPublishDto, Hint>();
         }
     }
 }

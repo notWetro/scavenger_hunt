@@ -46,7 +46,7 @@ namespace Participants.Api.Controllers
             {
                 Participant = participant,
                 HuntId = huntId,
-                CurrentAssignmentId = hunt.Assignments.First()
+                CurrentAssignmentId = hunt.Assignments.First().Id,
             };
 
             participant.Participations.Add(participation);

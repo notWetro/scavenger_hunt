@@ -1,6 +1,4 @@
-﻿using Participants.Api.DTOs.Assignment;
-
-namespace Participants.Api.DTOs.Hunt
+﻿namespace Participants.Api.DTOs.Events
 {
     public sealed class HuntPublishDto : GenericEventDto
     {

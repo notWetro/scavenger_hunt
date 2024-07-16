@@ -27,10 +27,15 @@ namespace Participants.Api.Services
         public async Task SaveLoginToken(string username, string loginToken)
         {
             var tokenCache = _muxer.GetDatabase(TOKEN_CACHE_INDEX);
-            await tokenCache.StringSetAsync(username, loginToken);
+            var tasks = new Task[]
+            {
+                    tokenCache.StringSetAsync(username, loginToken),
+                    tokenCache.StringSetAsync(loginToken, username)
+            };
+            await Task.WhenAll(tasks);
         }
 
-        public Task UpdateHuntAsync(int huntId, ICollection<int> assignmentIds)
+        public Task UpdateHuntAsync(int huntId, ICollection<Assignment> assignments)
         {
             throw new NotImplementedException();
         }
@@ -45,6 +50,12 @@ namespace Participants.Api.Services
                 return null;
 
             return JsonSerializer.Deserialize<Hunt>(huntData!);
+        }
+
+        public async Task<string?> GetUsernameByToken(string token)
+        {
+            var tokenCache = _muxer.GetDatabase(TOKEN_CACHE_INDEX);
+            return await tokenCache.StringGetAsync(token);
         }
     }
 }

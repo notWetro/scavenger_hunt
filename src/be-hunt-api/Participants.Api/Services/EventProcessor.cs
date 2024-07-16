@@ -1,7 +1,10 @@
-﻿using Participants.Api.DTOs;
-using Participants.Api.DTOs.Hunt;
+﻿using AutoMapper;
+using Participants.Api.DTOs;
+using Participants.Api.DTOs.Events;
 using Participants.Domain.Entities;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Participants.Api.Services
 {
@@ -11,7 +14,9 @@ namespace Participants.Api.Services
 
         public void ProcessEvent(string message)
         {
-            Console.WriteLine(message);
+            // Decode message that contains ä, ö, ü, etc.
+            string decodedString = Regex.Unescape(message);
+            Console.WriteLine(decodedString);
 
             // TODO: Do stuff with the message.
             // Created => Add new KVP to Redis store or sth like that
@@ -65,7 +70,21 @@ namespace Participants.Api.Services
             return new()
             {
                 Id = huntPublishDto.Id,
-                Assignments = [..huntPublishDto.Assignments.Select(assignment => assignment.Id)]
+                Title = huntPublishDto.Title,
+                Assignments = huntPublishDto.Assignments.Select(x => new Assignment
+                {
+                    Id = x.Id,
+                    Hint = new Hint
+                    {
+                        HintType = x.Hint.HintType,
+                        Data = x.Hint.Data
+                    },
+                    Solution = new Solution
+                    {
+                        SolutionType = x.Solution.SolutionType,
+                        Data = x.Solution.Data
+                    }
+                }).ToList()
             };
         }
 

@@ -2,7 +2,8 @@
 {
     public sealed class Hunt
     {
-        public int Id { get; set; }
-        public required ICollection<int> Assignments { get; set; }
+        public required int Id { get; set; }
+        public required string Title { get; set; }
+        public required ICollection<Assignment> Assignments { get; set; }
     }
 }

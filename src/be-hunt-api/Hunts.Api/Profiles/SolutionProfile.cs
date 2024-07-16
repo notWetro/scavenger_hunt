@@ -10,6 +10,8 @@ namespace Hunts.Api.Profiles
         {
             CreateMap<Solution, SolutionInnerGetDto>();
             CreateMap<SolutionInnerCreateDto, Solution>();
+            CreateMap<Solution, SolutionPublishDto>();
+            CreateMap<SolutionPublishDto, Solution>();
         }
     }
 }

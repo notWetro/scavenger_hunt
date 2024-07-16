@@ -7,6 +7,13 @@ namespace Participants.Domain.Repositories
         /// <summary>
         /// Get a participation.
         /// </summary>
+        /// <param name="username">Identifier of user.</param>
+        /// <returns>A participation list that the user is trying to do.</returns>
+        public Task<IEnumerable<Participation>> GetByUsernameAsync(string username);
+
+        /// <summary>
+        /// Get a participation.
+        /// </summary>
         /// <param name="huntId">Identifier of hunt.</param>
         /// <param name="username">Identifier of user.</param>
         /// <returns>A similar participation that the user is trying to do.</returns>

@@ -55,5 +55,18 @@ namespace Participants.Infrastructure.Data
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<Participation>> GetByUsernameAsync(string username)
+        {
+            try
+            {
+                return await _context.Participations.Where(p => p.Participant.Username == username).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
+        }
     }
 }
