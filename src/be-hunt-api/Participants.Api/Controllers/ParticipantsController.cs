@@ -14,7 +14,7 @@ namespace Participants.Api.Controllers
     public class LoginResponse
     {
         public required string Token { get; set; }
-        public string HuntTitle { get; set; }
+        public required string HuntTitle { get; set; }
     }
 
     public class GetCurrentAssignmentRequest
@@ -25,7 +25,7 @@ namespace Participants.Api.Controllers
     public class GetCurrentAssignmentResponse
     {
         public int HintType { get; set; }
-        public string HintData { get; set; }
+        public required string HintData { get; set; }
         public int SolutionType { get; set; }
     }
 

@@ -23,10 +23,16 @@ namespace Participants.Api.Controllers
         private readonly ICache _cache = cache;
         private readonly IMapper _mapper = mapper;
 
+        /// <summary>
+        /// POST Hunt/{huntId}: Creates a participation.
+        /// </summary>
+        /// <param name="huntId">Identifier of a hunt</param>
+        /// <param name="credentials">Credentials of the user (e.g. username and password)</param>
+        /// <returns>Participation information when success.</returns>
         [HttpPost("Hunt/{huntId}")]
-        public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, [FromBody] UserCredentials cred)
+        public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, [FromBody] UserCredentials credentials)
         {
-            var existingParticipation = await _participationRepository.GetByIdAndUsernameAsync(huntId, cred.Username);
+            var existingParticipation = await _participationRepository.GetByIdAndUsernameAsync(huntId, credentials.Username);
             if (existingParticipation is not null)
                 return Conflict("Participation already exists for the given hunt and username.");
 
@@ -34,11 +40,12 @@ namespace Participants.Api.Controllers
             if (hunt is null)
                 return NotFound("Specified hunt-id has no associated hunt-object.");
 
-            var participant = await _participantRepository.GetByUsernameAsync(cred.Username);
+            // The participant will be created if it doesn't exist right now
+            var participant = await _participantRepository.GetByUsernameAsync(credentials.Username);
 
             if (participant is null)
             {
-                participant = new Participant() { Username = cred.Username, Password = cred.Password, Participations = [] };
+                participant = new Participant() { Username = credentials.Username, Password = credentials.Password, Participations = [] };
                 await _participantRepository.AddAsync(participant);
             }
 
