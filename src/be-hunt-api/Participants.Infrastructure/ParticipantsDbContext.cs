@@ -11,7 +11,8 @@ namespace Participants.Infrastructure
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Participation>()
-                .HasOne(p => p.Participant);
+                .HasOne(p => p.Participant)
+                .WithMany(p => p.Participations);
 
             builder.Entity<Participant>()
                 .HasMany(p => p.Participations)

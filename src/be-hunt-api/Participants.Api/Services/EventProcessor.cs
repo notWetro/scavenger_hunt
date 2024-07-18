@@ -1,14 +1,16 @@
 ﻿using Participants.Api.DTOs;
 using Participants.Api.DTOs.Events;
 using Participants.Domain.Entities;
+using Participants.Domain.Repositories;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Participants.Api.Services
 {
-    public class EventProcessor(ICache cache) : IEventProcessor
+    public class EventProcessor(ICache cache, IServiceProvider serviceProvider) : IEventProcessor
     {
         private readonly ICache _cache = cache;
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
 
         public void ProcessEvent(string message)
         {
@@ -49,11 +51,9 @@ namespace Participants.Api.Services
                     break;
 
                 case EventType.HuntDeleted:
-
-                    // TODO: Retrieve old hunt (if exists). Retrieve participations with said hunt.
-                    // TODO: Change status of a participation to "invalid" (hunt doesn't exist anymore).
-
                     _cache.DeleteHuntAsync(hunt.Id);
+                    var participationService = _serviceProvider.GetService<IParticipationRepository>();
+                    participationService?.DeleteByIdAsync(hunt.Id);
                     break;
             }
         }

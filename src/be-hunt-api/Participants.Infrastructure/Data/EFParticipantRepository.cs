@@ -37,7 +37,7 @@ namespace Participants.Infrastructure.Data
         {
             try
             {
-                return await _context.Participants.FirstOrDefaultAsync(p => p.Username == username);
+                return await _context.Participants.Include(p => p.Participations).FirstAsync(p => p.Username == username);
             }
             catch (Exception ex)
             {

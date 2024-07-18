@@ -53,5 +53,7 @@ namespace Participants.Domain.Repositories
         /// <param name="id">Identifier of requested participation.</param>
         /// <returns>Participation-object that was deleted.</returns>
         public Task<Participation?> DeleteByIdAsync(int id);
+
+        public Task<IEnumerable<Participation>?> DeleteMultipleByHuntIdAsync(int huntId);
     }
 }

@@ -54,12 +54,10 @@ namespace Participants.Api.Controllers
                 Participant = participant,
                 HuntId = huntId,
                 CurrentAssignmentId = hunt.Assignments.First().Id,
+                Status = ParticipationStatus.Running,
             };
 
-            participant.Participations.Add(participation);
-
             await _participationRepository.AddAsync(participation);
-
             return Ok(_mapper.Map<ParticipationGetDto>(participation));
         }
     }

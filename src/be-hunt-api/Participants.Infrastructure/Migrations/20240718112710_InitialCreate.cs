@@ -39,7 +39,8 @@ namespace Participants.Infrastructure.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ParticipantId = table.Column<int>(type: "int", nullable: false),
                     HuntId = table.Column<int>(type: "int", nullable: false),
-                    CurrentAssignmentId = table.Column<int>(type: "int", nullable: false)
+                    CurrentAssignmentId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

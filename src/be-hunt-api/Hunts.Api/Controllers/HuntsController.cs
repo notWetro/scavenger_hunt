@@ -68,7 +68,6 @@ namespace Hunts.Api.Controllers
             if (hunt is null)
                 return NotFound();
 
-            // TODO: This is scary. Maybe change it a bit.
             hunt.Title = scavengerHuntDto.Title;
             hunt.Description = scavengerHuntDto.Description;
 

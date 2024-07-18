@@ -10,9 +10,12 @@ namespace Participants.Api.Services
         private const int HUNT_CACHE_INDEX = 0;
         private const int TOKEN_CACHE_INDEX = 1;
 
-        public Task DeleteHuntAsync(int huntId)
+        public async Task<Hunt?> DeleteHuntAsync(int huntId)
         {
-            throw new NotImplementedException();
+            var huntsCache = _muxer.GetDatabase(HUNT_CACHE_INDEX);
+            var huntKey = $"{huntId}";
+            var huntData = await huntsCache.StringGetDeleteAsync(huntKey);
+            return JsonSerializer.Deserialize<Hunt>(huntData!);
         }
 
         public async Task SaveHuntAsync(Hunt hunt)

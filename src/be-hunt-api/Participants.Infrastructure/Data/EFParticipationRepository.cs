@@ -68,5 +68,27 @@ namespace Participants.Infrastructure.Data
                 return [];
             }
         }
+
+        public async Task<IEnumerable<Participation>?> DeleteMultipleByHuntIdAsync(int huntId)
+        {
+            try
+            {
+                var participations = await _context.Participations.Where(p => p.HuntId == huntId).ToListAsync();
+
+                foreach (var participation in participations)
+                    participation.Status = ParticipationStatus.Deleted;
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                // Return the list of participations that were marked as deleted
+                return participations;
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
+        }
     }
 }

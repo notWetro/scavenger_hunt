@@ -25,8 +25,6 @@ namespace Participants.Api.Services
             // Generate JWT token
             var token = _tokenService.GenerateToken(participant);
 
-            // TODO: Store Login-Token
-
             return token;
         }
 

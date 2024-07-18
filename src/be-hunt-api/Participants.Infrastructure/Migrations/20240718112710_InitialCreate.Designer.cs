@@ -11,7 +11,7 @@ using Participants.Infrastructure;
 namespace Participants.Infrastructure.Migrations
 {
     [DbContext(typeof(ParticipantsDbContext))]
-    [Migration("20240711174321_InitialCreate")]
+    [Migration("20240718112710_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -60,6 +60,9 @@ namespace Participants.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ParticipantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
