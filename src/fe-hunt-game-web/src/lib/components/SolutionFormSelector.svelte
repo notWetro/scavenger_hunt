@@ -7,7 +7,7 @@
 
 {#if type === 0}
 	<!-- Type 0 means Qr-Code -->
-	<!-- <QrCodeSelector bind:data /> -->
+	<QrCodeSelector bind:data />
 {:else if type === 1}
 	<!-- Type 1 means Text -->
 {:else if type === 2}

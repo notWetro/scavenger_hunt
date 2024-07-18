@@ -11,8 +11,8 @@
 	}
 </script>
 
-<div class="flex flex-col items-center gap-4">
-	<hr class="border-solid border-2 w-full rounded-sm" />
+<div class="flex flex-col w-full items-center gap-4">
+	<hr class="border-solid border-2 rounded-sm" />
 
 	<h1 class="text-xl font-semibold">Angemeldete Schnitzeljagden</h1>
 
