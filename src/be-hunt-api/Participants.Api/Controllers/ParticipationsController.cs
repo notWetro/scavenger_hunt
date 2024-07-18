@@ -31,7 +31,7 @@ namespace Participants.Api.Controllers
                 return Conflict("Participation already exists for the given hunt and username.");
 
             var hunt = await _cache.GetHuntAsync(huntId);
-            if(hunt is null)
+            if (hunt is null)
                 return NotFound("Specified hunt-id has no associated hunt-object.");
 
             var participant = await _participantRepository.GetByUsernameAsync(cred.Username);

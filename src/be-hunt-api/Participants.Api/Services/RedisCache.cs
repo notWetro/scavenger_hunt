@@ -20,7 +20,7 @@ namespace Participants.Api.Services
             var huntsCache = _muxer.GetDatabase(HUNT_CACHE_INDEX);
             var huntKey = $"{hunt.Id}";
             var huntData = JsonSerializer.Serialize(hunt);
-            
+
             await huntsCache.StringSetAsync(huntKey, huntData);
         }
 

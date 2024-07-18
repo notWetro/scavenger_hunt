@@ -19,7 +19,7 @@ namespace Participants.Api
                     .AddScoped<IParticipantRepository, EFParticipantRepository>()
                     .AddScoped<IParticipationRepository, EFParticipationRepository>();
 
-            var cacheConnectionString = 
+            var cacheConnectionString =
                 configuration.GetConnectionString("ParticipantsCacheConnection") ?? throw new Exception("Missing string 'ParticipantsCacheConnection'.");
             //cacheConnectionString += ",AbortOnConnectFail=false;";
             services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(cacheConnectionString))
@@ -66,9 +66,9 @@ namespace Participants.Api
 
         public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            var databaseConnectionString = 
+            var databaseConnectionString =
                 configuration.GetConnectionString("ParticipantsDbConnection") ?? throw new Exception("Missing string 'ParticipantsDbConnection'.");
-            
+
             services.AddDbContext<ParticipantsDbContext>(options => options
                 .EnableSensitiveDataLogging()
                 .UseMySql(databaseConnectionString, new MySqlServerVersion(new Version(8, 3, 0)), b => b.MigrationsAssembly("Participants.Infrastructure")

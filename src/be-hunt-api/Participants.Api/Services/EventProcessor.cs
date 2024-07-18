@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Participants.Api.DTOs;
+﻿using Participants.Api.DTOs;
 using Participants.Api.DTOs.Events;
 using Participants.Domain.Entities;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -45,11 +43,11 @@ namespace Participants.Api.Services
 
                     _cache.UpdateHuntAsync(hunt.Id, hunt.Assignments);
                     break;
-                
+
                 case EventType.HuntCreated:
                     _cache.SaveHuntAsync(hunt);
                     break;
-                
+
                 case EventType.HuntDeleted:
 
                     // TODO: Retrieve old hunt (if exists). Retrieve participations with said hunt.

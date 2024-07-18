@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Participants.Api.Services;
 using Participants.Domain.Repositories;
 using IAuthenticationService = Participants.Api.Services.IAuthenticationService;
@@ -54,7 +53,7 @@ namespace Participants.Api.Controllers
             var participation = await _participationRepository.GetByUsernameAsync(loginRequest.Username);
             var hunt = await _cache.GetHuntAsync(participation.First().HuntId);
 
-            if(hunt is null)
+            if (hunt is null)
             {
                 return NotFound("Couldn't find a hunt for a participation.");
             }
@@ -90,7 +89,7 @@ namespace Participants.Api.Controllers
             // Take the current assignment and return it to the player
             var assignment = hunt.Assignments.ToList().Find(assignment => assignment.Id == participation.First().CurrentAssignmentId);
 
-            if(assignment is null)
+            if (assignment is null)
             {
                 // TODO: Maybe handle this in backend: When no assignment is found, could it be that the hunt is over? Last assignment?
                 return NotFound("Couldn't find an assignment");
