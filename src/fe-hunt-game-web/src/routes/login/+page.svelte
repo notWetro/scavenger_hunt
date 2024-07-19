@@ -7,12 +7,12 @@
 	}
 </script>
 
-<div class="flex flex-col gap-4">
-	<h1>Anmeldung</h1>
-	<span>
+<div class="flex flex-col gap-4 items-center justify-center">
+	<h1 class="text-xl font-bold">Anmeldung</h1>
+	<p class="text-center m-4">
 		Melde dich bitte mit deinem Account an, den du bei der Registrierung für eine Schnitzeljagd
 		verwendet hast.
-	</span>
+	</p>
 </div>
 
 <LoginForm on:loginSuccess={navigateToHome} />

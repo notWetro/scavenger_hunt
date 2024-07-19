@@ -19,7 +19,11 @@
 	{#if isLoggedIn}
 		<slot />
 	{:else}
-		<span>Bitte melde dich erst an, bevor du an einer Schnitzeljagd teilnehmen willst.</span>
+		<h1 class="text-xl font-bold m-2">Womp Womp</h1>
+
+		<p class="text-center m-4">
+			In order to participate to open Scavenger-Hunts you need to be logged in!
+		</p>
 		<Button href="/login">Zur Anmeldung</Button>
 	{/if}
 </div>

@@ -4,6 +4,8 @@
 	import type { HuntLoginResponse } from '$lib/dtos/login/huntLoginResponse';
 	import { playingHunt } from '$lib/stores/playingHunt';
 	import { goto } from '$app/navigation';
+	import { TabItem, Tabs } from 'flowbite-svelte';
+	import { PackageCheckIcon, PackageMinusIcon, PackageOpenIcon } from 'lucide-svelte';
 
 	function startGame(hunt: HuntLoginResponse) {
 		playingHunt.set(hunt);
@@ -11,28 +13,38 @@
 	}
 </script>
 
-<div class="flex flex-col w-full items-center gap-4">
-	<hr class="border-solid border-2 rounded-sm" />
+<Tabs tabStyle="underline" contentClass="p-4 rounded-lg mt-4">
+	<TabItem open>
+		<div slot="title" class="flex items-center gap-2">
+			<PackageOpenIcon />
+			Unfinished
+		</div>
 
-	<h1 class="text-xl font-semibold">Angemeldete Schnitzeljagden</h1>
+		<h1 class="text-xl font-semibold mb-4 text-center">Ongoing Scavenger-Hunts</h1>
 
-	<div class="flex flex-col gap-4">
-		{#each $registeredHunts as hunt}
-			<HuntSelectorCard {hunt} on:huntPressed={() => startGame(hunt)} />
-		{/each}
-	</div>
+		<div class="flex flex-col gap-4">
+			{#each $registeredHunts as hunt}
+				<HuntSelectorCard {hunt} on:huntPressed={() => startGame(hunt)} />
+			{/each}
+		</div>
+	</TabItem>
+	<TabItem>
+		<div slot="title" class="flex items-center gap-2">
+			<PackageCheckIcon />
+			Completed
+		</div>
 
-	<hr class="border-solid border-2 w-full rounded-sm" />
+		<h1 class="text-xl font-semibold mb-4 text-center">Your Completed Scavenger-Hunts</h1>
 
-	<h1 class="text-xl font-semibold">Erledigte Schnitzeljagden</h1>
+		<div>No completed Scavenger-Hunts were found.</div>
+	</TabItem>
+	<TabItem>
+		<div slot="title" class="flex items-center gap-2">
+			<PackageMinusIcon />
+			Expired
+		</div>
+		<h1 class="text-xl font-semibold mb-4 text-center">Expired Scavenger-Hunts</h1>
 
-	<div>Es wurden keine erledigten Schnitzeljagden gefunden</div>
-
-	<hr class="border-solid border-2 w-full rounded-sm" />
-
-	<h1 class="text-xl font-semibold">Vergangene Schnitzeljagden</h1>
-
-	<div>Es wurden keine vergangenen Schnitzeljagden gefunden</div>
-
-	<hr class="border-solid border-2 w-full rounded-sm" />
-</div>
+		<div>No expired Scavenger-Hunts were found.</div>
+	</TabItem>
+</Tabs>
