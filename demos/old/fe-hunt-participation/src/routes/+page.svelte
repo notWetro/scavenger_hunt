@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Button } from 'flowbite-svelte';
-	import { MessageCircleDashed } from 'lucide-svelte';
+	import MessageCircleDashed from 'lucide-svelte/icons/message-circle-dashed';
 
 	function showNotification() {
 		window.alert('Hello there!');
@@ -10,9 +9,9 @@
 <main class="p-4">
 	<div class="flex flex-col justify-center">
 		<h1 class="text-2xl font-bold text-center">Hello, world!</h1>
-		<Button class="btn btn-primary" on:click={showNotification}>
+		<button class="btn btn-primary" on:click={showNotification}>
 			<MessageCircleDashed />
 			Press me
-		</Button>
+		</button>
 	</div>
 </main>

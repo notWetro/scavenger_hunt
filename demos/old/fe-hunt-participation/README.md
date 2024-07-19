@@ -16,9 +16,9 @@ npm create svelte@latest
 npm create svelte@latest my-app
 ```
 
-## Development: Setting up environment
+# Development: Setting up environment
 
-### Environment Variables
+## Environment Variables
 
 In order to successfully run the application, a set of environment-variables needs to be defined. Simply create a new `.env` file inside the root directory of this project. Open it and add the content below.
 
@@ -28,7 +28,7 @@ PUBLIC_DEMO_MODE="False"
 #PUBLIC_DEMO_MODE="True"
 ```
 
-### Running or building web app
+## Running or building web app
 
 Once you've installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 

@@ -1,95 +1,109 @@
 <script lang="ts">
+	import { PUBLIC_PARTICIPANT_API_URL } from '$env/static/public';
 	import type { Hunt } from '$lib/models/hunt';
-	import { postParticipation } from '$lib/services/hunt-api';
-	import { error } from '@sveltejs/kit';
+	import { Button, Card, Helper, Input, Label, Modal } from 'flowbite-svelte';
 	import type { PageData } from './$types';
-	import Check from 'lucide-svelte/icons/check';
+	import { Goal, Check } from 'lucide-svelte';
 
-	let modal: HTMLDialogElement;
-	let success: boolean = false;
+	let success: boolean | null = null;
+	let attemptMade: boolean = false;
+	let showModal: boolean = false;
+
 	let username: string;
 	let password: string;
 
 	export let data: PageData;
 	$: hunt = data.hunt as Hunt;
 
-	function showForm() {
-		modal.showModal();
+	// Reactive statement to clear username and password when modal is closed
+	$: if (!showModal) {
+		username = '';
+		password = '';
+		success = null;
+		attemptMade = false;
 	}
 
 	async function submit(username: string, password: string, huntId: number) {
-		await postParticipation(username, password, huntId)
-			.then(() => (success = true))
-			.catch(() => (success = false));
+		attemptMade = true;
+		try {
+			const res = await fetch(`${PUBLIC_PARTICIPANT_API_URL}/Participations/Hunt/${huntId}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username,
+					password
+				})
+			});
+
+			if (!res.ok) {
+				success = false;
+				throw new Error(await res.text());
+			}
+
+			success = true;
+			return await res.json();
+		} catch (error) {
+			console.error(error);
+			success = false;
+		}
 	}
 </script>
 
 <main>
-	<h1 class="text-2xl font-bold text-center">
-		Anmeldung
-		<span class="badge badge-lg">@{hunt.id}</span>
-	</h1>
-
-	<div class="card w-96 bg-primary text-primary-content mt-5">
-		<div class="card-body">
-			<h2 class="card-title">{hunt.title}</h2>
-			<p>{hunt.description}</p>
-			<div class="card-actions justify-end">
-				<button class="btn" on:click={showForm} disabled={success}>
-					{#if success}
-						<Check />
-					{:else}
-						Participate!
-					{/if}
-				</button>
-			</div>
-		</div>
+	<div class="flex gap-2 flex-col mb-4">
+		<h1 class="text-2xl font-bold text-center underline">Register for Scavenger Hunt:</h1>
+		<span class="text-center">{hunt.title}</span>
 	</div>
 
-	<dialog class="modal" bind:this={modal}>
-		<div class="modal-box">
-			<h3 class="font-bold text-lg">Participate in Scavenger Hunt!</h3>
-			<form method="dialog" class="modal-backdrop">
-				<div class="form-control">
-					<label for="username" class="label">
-						<span class="label-text">Username</span>
-					</label>
-					<input
-						bind:value={username}
-						type="text"
-						id="username"
-						placeholder="Username"
-						class="input input-bordered text-gray-300"
-					/>
-				</div>
-				<div class="form-control">
-					<label for="password" class="label">
-						<span class="label-text">Password</span>
-					</label>
-					<input
-						bind:value={password}
-						type="password"
-						id="password"
-						placeholder="Password"
-						class="input input-bordered text-gray-300"
-					/>
-				</div>
-				<div class="flex flex-row justify-end mt-4 gap-5">
-					<button
-						class="btn btn-neutral"
-						on:click={() => {
-							username = '';
-							password = '';
-						}}>Cancel</button
-					>
-					<button
-						class="btn btn-primary"
-						on:click={async () => submit(username, password, hunt.id)}
-					>
-						Submit
-					</button>
-				</div>
-			</form>
+	<Card>
+		<h2 class="mb-2 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
+		<p class="text-gray-600 leading-tight font-normal mb-3">{hunt.description}</p>
+		<Button on:click={() => (showModal = true)} disabled={success === true}>
+			{#if success}
+				<Check />
+			{:else}
+				Participate!
+			{/if}
+		</Button>
+	</Card>
+
+	<Modal
+		bind:open={showModal}
+		title="Participate in Scavenger Hunt!"
+		size="xs"
+		autoclose={false}
+		class="w-full"
+	>
+		<div class="flex flex-col space-y-6">
+			<Label class="space-y-2">
+				<span>Username</span>
+				<Input required type="text" name="username" bind:value={username} placeholder="Username" />
+			</Label>
+			<Label class="space-y-2">
+				<span>Your password</span>
+				<Input
+					type="password"
+					name="password"
+					color={success === false ? 'red' : 'base'}
+					bind:value={password}
+					placeholder="•••••"
+					required
+				/>
+			</Label>
+			<Helper class={`text-red-900 text-sm ${success === false && attemptMade ? '' : 'hidden'}`}
+				>Submission failed! Please try again.</Helper
+			>
+			<Button
+				type="submit"
+				on:click={async () => submit(username, password, hunt.id)}
+				class="w-full1"
+				disabled={!username || !password}
+			>
+				Submit participation credentials
+				<Goal class="ml-2" />
+			</Button>
 		</div>
-	</dialog>
+	</Modal>
 </main>
