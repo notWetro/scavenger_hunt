@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { Card } from 'flowbite-svelte';
-	import QrCodeScanner from './QrCodeScanner.svelte';
-	import { ScanQrCodeIcon } from 'lucide-svelte';
-
+	import { Button, Card, Input } from 'flowbite-svelte';
+	import { TextCursorInputIcon } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
@@ -16,7 +14,7 @@
 
 <Card class="p-4 mb-4">
 	<div class="flex flex-row items-center text-center">
-		<ScanQrCodeIcon class="w-8 h-8 mb-2 mr-2 text-primary-800" />
+		<TextCursorInputIcon class="w-8 h-8 mb-2 mr-2 text-primary-800" />
 		<h5
 			class="mb-2 text-xl font-semibold underline underline-offset-4 tracking-tight text-primary-800 dark:text-white"
 		>
@@ -24,7 +22,7 @@
 		</h5>
 	</div>
 
-	<QrCodeScanner bind:data on:Finished={submitSolution} />
-	<p class="p-4">Once the QR-Code has been scanned it will be submitted.</p>
-	<p class="p-4">{data}</p>
+	<p class="p-4">Submit your answer when ready.</p>
+	<Input class="mb-2" placeholder="your answer here" bind:value={data} />
+	<Button on:click={submitSolution}>Submit</Button>
 </Card>
