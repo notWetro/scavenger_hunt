@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { token } from '$lib/stores/tokenStore';
 	import { Button } from 'flowbite-svelte';
+	import { ArrowRightIcon } from 'lucide-svelte';
 
 	let isLoggedIn: boolean = false;
 
@@ -24,6 +25,6 @@
 		<p class="text-center m-4">
 			In order to participate to open Scavenger-Hunts you need to be logged in!
 		</p>
-		<Button href="/login">Zur Anmeldung</Button>
+		<Button href="/login">Go to Log in<ArrowRightIcon class="ml-4" /></Button>
 	{/if}
 </div>

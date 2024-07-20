@@ -43,15 +43,15 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<Input placeholder="Benutzername" bind:value={username}>
+	<Input placeholder="username" bind:value={username}>
 		<UserPenIcon slot="left" />
 	</Input>
 
-	<Input type="password" placeholder="Passwort" bind:value={password}>
+	<Input type="password" placeholder="password" bind:value={password}>
 		<KeySquareIcon slot="left" />
 	</Input>
 
 	<Button color={isLastFail ? 'red' : 'primary'} on:click={loginPressed} disabled={isLastFail}
-		>{isLastFail ? 'Falsche Login-Daten' : 'Anmelden'}</Button
+		>{isLastFail ? 'Wrong Log in credentials!' : 'Log in'}</Button
 	>
 </div>

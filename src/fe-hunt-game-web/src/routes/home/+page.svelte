@@ -13,11 +13,11 @@
 	}
 </script>
 
-<Tabs tabStyle="underline" contentClass="p-4 rounded-lg mt-4">
+<Tabs tabStyle="underline" contentClass="p-4 mt-4 h-screen">
 	<TabItem open>
 		<div slot="title" class="flex items-center gap-2">
 			<PackageOpenIcon />
-			Unfinished
+			Ongoing
 		</div>
 
 		<h1 class="text-xl font-semibold mb-4 text-center">Ongoing Scavenger-Hunts</h1>
@@ -31,7 +31,7 @@
 	<TabItem>
 		<div slot="title" class="flex items-center gap-2">
 			<PackageCheckIcon />
-			Completed
+			Complete
 		</div>
 
 		<h1 class="text-xl font-semibold mb-4 text-center">Your Completed Scavenger-Hunts</h1>

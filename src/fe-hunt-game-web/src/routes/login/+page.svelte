@@ -8,10 +8,9 @@
 </script>
 
 <div class="flex flex-col gap-4 items-center justify-center">
-	<h1 class="text-xl font-bold">Anmeldung</h1>
+	<h1 class="text-xl font-bold">Log in</h1>
 	<p class="text-center m-4">
-		Melde dich bitte mit deinem Account an, den du bei der Registrierung für eine Schnitzeljagd
-		verwendet hast.
+		Plase log in with the account credentials you used for the registration for a Scavenger Hunt.
 	</p>
 </div>
 

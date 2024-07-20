@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
-	import HintDisplay from '$lib/components/HintDisplay.svelte';
-	import SolutionFormSelector from '$lib/components/SolutionFormSelector.svelte';
+	import HintDisplay from '$lib/components/hints/HintDisplay.svelte';
+	import SolutionFormSelector from '$lib/components/solutions/SolutionFormSelector.svelte';
+	import SolutionTypeHintDisplay from '$lib/components/solutions/SolutionTypeHintDisplay.svelte';
 	import type { HuntAssignmentResponse } from '$lib/dtos/assignment/HuntAssignmentResponse';
 	import type { HuntLoginResponse } from '$lib/dtos/login/huntLoginResponse';
 	import { playingHunt } from '$lib/stores/playingHunt';
@@ -23,8 +24,8 @@
 		fetchCurrentAssignment();
 	});
 
-	function showSolutionInput() {
-		isSolutionShown = true;
+	function toggleSolutionInput() {
+		isSolutionShown = !isSolutionShown;
 	}
 
 	async function fetchCurrentAssignment() {
@@ -50,20 +51,28 @@
 	}
 </script>
 
-{#if currentHunt}
-	<h1>{currentHunt.title}</h1>
-{/if}
+<div class="h-screen p-4">
+	{#if currentHunt}
+		<h1 class="text-xl font-semibold mb-4 text-center">{currentHunt.title}</h1>
+	{/if}
 
-{#if currentAssignment}
-	{#if isSolutionShown}
-		<div transition:fade={{ delay: 250, duration: 300 }}>
-			<SolutionFormSelector bind:type={currentAssignment.solutionType} bind:data={solutionData} />
-		</div>
-	{:else}
-		<div transition:fade={{ delay: 250, duration: 300 }}>
+	{#if currentAssignment}
+		<div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
 			<HintDisplay bind:type={currentAssignment.hintType} bind:data={currentAssignment.hintData} />
 
-			<Button on:click={showSolutionInput}>Lösung gefunden!</Button>
+			<SolutionTypeHintDisplay bind:type={currentAssignment.solutionType} />
+			<div class="flex flex-col" transition:fade={{ delay: 2000, duration: 250 }}>
+				<Button on:click={toggleSolutionInput}>Answer found!</Button>
+			</div>
+
+			{#if isSolutionShown}
+				<div transition:fade={{ delay: 0, duration: 300 }}>
+					<SolutionFormSelector
+						bind:type={currentAssignment.solutionType}
+						bind:data={solutionData}
+					/>
+				</div>
+			{/if}
 		</div>
 	{/if}
-{/if}
+</div>
