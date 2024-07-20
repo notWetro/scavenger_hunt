@@ -51,9 +51,27 @@ namespace Participants.Infrastructure.Data
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateAsync(Participation participation)
+        public async Task<bool> UpdateAsync(Participation participation)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existingParticipation = await _context.Participations.FindAsync(participation.Id);
+
+                if (existingParticipation is not null)
+                {
+                    _context.Entry(existingParticipation).State = EntityState.Detached;
+                }
+
+                _context.Entry(participation).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return false;
+            }
         }
 
         public async Task<IEnumerable<Participation>> GetByUsernameAsync(string username)

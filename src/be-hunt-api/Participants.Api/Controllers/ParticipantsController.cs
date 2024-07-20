@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Participants.Api.DTOs.Login;
 using Participants.Api.Services;
+using Participants.Domain;
 using Participants.Domain.Entities;
 using Participants.Domain.Repositories;
 using IAuthenticationService = Participants.Api.Services.IAuthenticationService;
@@ -15,16 +16,22 @@ namespace Participants.Api.Controllers
         public required string Password { get; set; }
     }
 
-    public class GetCurrentAssignmentRequest
-    {
-        public required string Token { get; set; }
-    }
-
     public class GetCurrentAssignmentResponse
     {
         public int HintType { get; set; }
         public required string HintData { get; set; }
         public int SolutionType { get; set; }
+    }
+
+    public class PostSubmitSolutionRequest
+    {
+        public required string Data { get; set; }
+    }
+
+    public class PostSubmitSolutionResponse
+    {
+        public bool Success { get; set; }
+        public required string HintData { get; set; }
     }
 
     [Route("api/[controller]")]
@@ -118,11 +125,66 @@ namespace Participants.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost("SubmitSolution")]
-        public Task<IActionResult> SubmitAssignmentSolution()
+        [HttpPost("SubmitSolution/{huntId}")]
+        public async Task<ActionResult<PostSubmitSolutionResponse>> SubmitAssignmentSolution([FromHeader(Name = "Authorization")] string token, int huntId, [FromBody] PostSubmitSolutionRequest data)
         {
-            // TODO
-            throw new NotImplementedException();
+            var username = await AuthenticationHelper.GetUsernameIfValidAsync(_cache, token);
+
+            if (username is null)
+                return Unauthorized("Invalid token!");
+
+            var participation = await _participationRepository.GetByIdAndUsernameAsync(huntId, username);
+
+            if (participation is null)
+                return NotFound("Couldn't find a participation for given hunt.");
+
+            switch (participation.Status)
+            {
+                case ParticipationStatus.Invalid:
+                    return Forbid("Participation-Status is not valid.");
+                case ParticipationStatus.Stopped:
+                case ParticipationStatus.Deleted:
+                    return Forbid("Scavenger Hunt has been stopped.");
+                case ParticipationStatus.Finished:
+                    return Redirect("Scavenger Hunt was already completed!");
+            }
+
+            if (participation.Status != ParticipationStatus.Running)
+                throw new InvalidOperationException("Unexpected participation status.");
+
+            var hunt = await _cache.GetHuntAsync(participation.HuntId);
+
+            if (hunt is null)
+                return NotFound("Couldn't find a hunt for a participation.");
+
+            var currentAssignment = hunt.Assignments.Where(assignment => assignment.Id == participation.CurrentAssignmentId).FirstOrDefault();
+
+            if (currentAssignment is null)
+                return NotFound("Couldn't find a matching current assignment for the given hunt.");
+
+            var isSolutionEqual = AssignmentHelper.CheckAssignmentData(currentAssignment, data.Data);
+
+            if (isSolutionEqual)
+            {
+                var currentAssignmentIndex = hunt.Assignments.ToList().FindIndex(assignment => assignment.Id == currentAssignment.Id);
+                if (currentAssignmentIndex < 0 || currentAssignmentIndex >= hunt.Assignments.Count - 1)
+                {
+                    // No more assignments left, mark the hunt as finished
+                    participation.Status = ParticipationStatus.Finished;
+                }
+                else
+                {
+                    // Move to the next assignment
+                    var nextAssignment = hunt.Assignments.ToList()[currentAssignmentIndex + 1];
+                    participation.CurrentAssignmentId = nextAssignment.Id;
+                }
+
+                await _participationRepository.UpdateAsync(participation);
+
+                var participationNew = await _participationRepository.GetByIdAndUsernameAsync(huntId, username);
+            }
+
+            return Ok(hunt);
         }
     }
 }
