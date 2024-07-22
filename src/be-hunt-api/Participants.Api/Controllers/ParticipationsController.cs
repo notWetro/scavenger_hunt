@@ -13,6 +13,11 @@ namespace Participants.Api.Controllers
         public required string Password { get; set; }
     }
 
+    public sealed class ParticipationStatsDto
+    {
+        public required int ParticipantCount { get; set; }
+        public required int ParticipationCount { get; set; }
+    }
 
     [Route("api/[controller]")]
     [ApiController]
@@ -59,6 +64,21 @@ namespace Participants.Api.Controllers
 
             await _participationRepository.AddAsync(participation);
             return Ok(_mapper.Map<ParticipationGetDto>(participation));
+        }
+
+        [HttpGet("Stats")]
+        public async Task<ActionResult<ParticipationStatsDto>> GetParticipationStats()
+        {
+            var participants = await _participantRepository.GetAll();
+            var paricipations = await _participationRepository.GetAll();
+
+            var participationStats = new ParticipationStatsDto()
+            {
+                ParticipantCount = participants.Count(),
+                ParticipationCount = paricipations.Count()
+            };
+
+            return Ok(participationStats);
         }
     }
 }

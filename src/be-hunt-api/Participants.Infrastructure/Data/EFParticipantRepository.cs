@@ -28,9 +28,17 @@ namespace Participants.Infrastructure.Data
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Participant>> GetAll()
+        public async Task<IEnumerable<Participant>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Participants.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
         }
 
         public async Task<Participant?> GetByUsernameAsync(string username)

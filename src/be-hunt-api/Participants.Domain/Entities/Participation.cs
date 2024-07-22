@@ -3,7 +3,7 @@
     public sealed class Participation
     {
         public int Id { get; set; }
-        
+
         public int ParticipantId { get; set; }
         public required Participant Participant { get; set; }
 

@@ -41,9 +41,17 @@ namespace Participants.Infrastructure.Data
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Participation>> GetAll()
+        public async Task<IEnumerable<Participation>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Participations.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+                return [];
+            }
         }
 
         public Task<Participation?> GetByIdAsync(int id)

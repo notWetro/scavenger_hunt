@@ -1,7 +1,7 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
+﻿using Microsoft.AspNetCore.Mvc;
+using Participants.Api.DTOs.CurrentAssignment;
 using Participants.Api.DTOs.Login;
+using Participants.Api.DTOs.SubmitSolution;
 using Participants.Api.Services;
 using Participants.Domain;
 using Participants.Domain.Entities;
@@ -10,30 +10,6 @@ using IAuthenticationService = Participants.Api.Services.IAuthenticationService;
 
 namespace Participants.Api.Controllers
 {
-    public class LoginRequest
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
-    }
-
-    public class GetCurrentAssignmentResponse
-    {
-        public int HintType { get; set; }
-        public required string HintData { get; set; }
-        public int SolutionType { get; set; }
-    }
-
-    public class PostSubmitSolutionRequest
-    {
-        public required string Data { get; set; }
-    }
-
-    public class PostSubmitSolutionResponse
-    {
-        public bool Success { get; set; }
-        public required string HintData { get; set; }
-    }
-
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ParticipantsController(IAuthenticationService authService, ICache cache, IParticipationRepository participationRepository) : ControllerBase
@@ -43,7 +19,7 @@ namespace Participants.Api.Controllers
         private readonly IParticipationRepository _participationRepository = participationRepository;
 
         [HttpPost("Login")]
-        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginRequest loginRequest)
+        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginRequestDto loginRequest)
         {
             var token = await _authService.Authenticate(loginRequest.Username, loginRequest.Password);
             if (token is null || token == "")
@@ -58,7 +34,7 @@ namespace Participants.Api.Controllers
             var hunts = await Task.WhenAll(participations.Select(async participation =>
             {
                 var hunt = await _cache.GetHuntAsync(participation.HuntId);
-                return hunt != null ? new HuntLoginDto { Id = participation.HuntId, Title = hunt.Title } : null;
+                return hunt != null ? new HuntLoginDto { Id = participation.HuntId, Title = hunt.Title, ParticipationStatus = participation.Status } : null;
             }));
 
             var validHunts = hunts.Where(hunt => hunt is not null).Select(hunt => hunt!).ToList();
@@ -73,7 +49,7 @@ namespace Participants.Api.Controllers
         }
 
         [HttpGet("CurrentAssignment/{huntId}")]
-        public async Task<ActionResult<GetCurrentAssignmentResponse>> GetCurrentAssignment([FromHeader(Name = "Authorization")] string token, int huntId)
+        public async Task<ActionResult<CurrentAssignmentResponseDto>> GetCurrentAssignment([FromHeader(Name = "Authorization")] string token, int huntId)
         {
             if (string.IsNullOrEmpty(token))
                 return Unauthorized("Authorization-Token is missing!");
@@ -88,15 +64,15 @@ namespace Participants.Api.Controllers
             if (participation is null)
                 return NotFound("Couldn't find a participation for given hunt.");
 
-            switch(participation.Status)
+            switch (participation.Status)
             {
                 case ParticipationStatus.Invalid:
-                    return Forbid("Participation-Status is not valid.");
+                    return NotFound("Participation-Status is not valid.");
                 case ParticipationStatus.Stopped:
                 case ParticipationStatus.Deleted:
-                    return Forbid("Scavenger Hunt has been stopped.");
+                    return NotFound("Scavenger Hunt has been stopped.");
                 case ParticipationStatus.Finished:
-                    return Redirect("Scavenger Hunt was already completed!");
+                    return new HuntFinishedActionResult(269, "Scavenger Hunt was already completed!");
             }
 
             if (participation.Status != ParticipationStatus.Running)
@@ -115,7 +91,7 @@ namespace Participants.Api.Controllers
                 return NotFound("Couldn't find an assignment");
             }
 
-            var response = new GetCurrentAssignmentResponse()
+            var response = new CurrentAssignmentResponseDto()
             {
                 HintType = assignment.Hint.HintType,
                 HintData = assignment.Hint.Data,
@@ -126,7 +102,7 @@ namespace Participants.Api.Controllers
         }
 
         [HttpPost("SubmitSolution/{huntId}")]
-        public async Task<ActionResult<PostSubmitSolutionResponse>> SubmitAssignmentSolution([FromHeader(Name = "Authorization")] string token, int huntId, [FromBody] PostSubmitSolutionRequest data)
+        public async Task<ActionResult<SubmitSolutionResponseDto>> SubmitAssignmentSolution([FromHeader(Name = "Authorization")] string token, int huntId, [FromBody] SubmitSolutionRequestDto data)
         {
             var username = await AuthenticationHelper.GetUsernameIfValidAsync(_cache, token);
 
@@ -141,12 +117,12 @@ namespace Participants.Api.Controllers
             switch (participation.Status)
             {
                 case ParticipationStatus.Invalid:
-                    return Forbid("Participation-Status is not valid.");
+                    return NotFound("Participation-Status is not valid.");
                 case ParticipationStatus.Stopped:
                 case ParticipationStatus.Deleted:
-                    return Forbid("Scavenger Hunt has been stopped.");
+                    return NotFound("Scavenger Hunt has been stopped.");
                 case ParticipationStatus.Finished:
-                    return Redirect("Scavenger Hunt was already completed!");
+                    return new HuntFinishedActionResult(269, "Scavenger Hunt was already completed!");
             }
 
             if (participation.Status != ParticipationStatus.Running)
@@ -162,29 +138,84 @@ namespace Participants.Api.Controllers
             if (currentAssignment is null)
                 return NotFound("Couldn't find a matching current assignment for the given hunt.");
 
-            var isSolutionEqual = AssignmentHelper.CheckAssignmentData(currentAssignment, data.Data);
+            var isSolutionValid = AssignmentHelper.CheckIfValidSolution(currentAssignment, data.Data);
 
-            if (isSolutionEqual)
+            if (isSolutionValid)
             {
-                var currentAssignmentIndex = hunt.Assignments.ToList().FindIndex(assignment => assignment.Id == currentAssignment.Id);
-                if (currentAssignmentIndex < 0 || currentAssignmentIndex >= hunt.Assignments.Count - 1)
-                {
-                    // No more assignments left, mark the hunt as finished
-                    participation.Status = ParticipationStatus.Finished;
-                }
-                else
-                {
-                    // Move to the next assignment
-                    var nextAssignment = hunt.Assignments.ToList()[currentAssignmentIndex + 1];
-                    participation.CurrentAssignmentId = nextAssignment.Id;
-                }
+                await AdvanceToNextAssignmentAsync(_participationRepository, hunt, participation, currentAssignment);
 
-                await _participationRepository.UpdateAsync(participation);
+                var submitSolutionResponse = new SubmitSolutionResponseDto()
+                {
+                    Success = true,
+                    HintData = string.Empty
+                };
 
-                var participationNew = await _participationRepository.GetByIdAndUsernameAsync(huntId, username);
+                return Ok(submitSolutionResponse);
+            }
+            else
+            {
+                // Give the user some hint to give feedback if he is going to the right direction
+                var hintData = GetHintForCurrentAssignment(data.Data, currentAssignment.Solution.Data, currentAssignment.Solution.SolutionType);
+
+                var submitSolutionResponse = new SubmitSolutionResponseDto()
+                {
+                    Success = false,
+                    HintData = hintData
+                };
+
+                return Ok(submitSolutionResponse);
+            }
+        }
+
+        private string GetHintForCurrentAssignment(string userSolutionData, string actualSolutionData, int actualSolutionType) => actualSolutionType switch
+        {
+            1 => $"{DetermineCharacterDifference(userSolutionData, actualSolutionData)}",
+            2 => $"{DetermineLocationDistance(userSolutionData, actualSolutionData)}",
+            _ => string.Empty,
+        };
+
+        private int DetermineCharacterDifference(string userSolutionData, string actualSolutionData) => LevenshteinUtils.LevenshteinDistance(userSolutionData, actualSolutionData);
+
+        private double DetermineLocationDistance(string userSolutionData, string actualSolutionData)
+        {
+            // Split the input strings to extract latitude and longitude
+            var givenCoords = userSolutionData.Split(';');
+            var actualCoords = actualSolutionData.Split(';');
+
+            if (givenCoords.Length != 2 || actualCoords.Length != 2)
+            {
+                throw new ArgumentException("Input data must be in the format 'lat;lon'");
             }
 
-            return Ok(hunt);
+            // Parse latitude and longitude
+            double givenLat = double.Parse(givenCoords[0]);
+            double givenLon = double.Parse(givenCoords[1]);
+            double actualLat = double.Parse(actualCoords[0]);
+            double actualLon = double.Parse(actualCoords[1]);
+
+            // Calculate the distance using the Haversine formula
+            double distance = GeoLocatorHelper.Haversine(givenLat, givenLon, actualLat, actualLon);
+
+            // Check if the distance is within the specified area
+            return distance;
+        }
+
+        private static async Task AdvanceToNextAssignmentAsync(IParticipationRepository participationRepository, Hunt hunt, Participation participation, Assignment currentAssignment)
+        {
+            var currentAssignmentIndex = hunt.Assignments.ToList().FindIndex(assignment => assignment.Id == currentAssignment.Id);
+            if (currentAssignmentIndex < 0 || currentAssignmentIndex >= hunt.Assignments.Count - 1)
+            {
+                // No more assignments left, mark the hunt as finished
+                participation.Status = ParticipationStatus.Finished;
+            }
+            else
+            {
+                // Move to the next assignment
+                var nextAssignment = hunt.Assignments.ToList()[currentAssignmentIndex + 1];
+                participation.CurrentAssignmentId = nextAssignment.Id;
+            }
+
+            await participationRepository.UpdateAsync(participation);
         }
     }
 }
