@@ -30,8 +30,8 @@
 	};
 
 	// Function to reverse map the assignments to the original format so that strings are displayed instead of numbers
-	function reverseMapAssignments(assignments) {
-		return assignments.map((assignment) => ({
+	function reverseMapAssignments(assignments: any) {
+		return assignments.map((assignment: any) => ({
 			...assignment,
 			solution: {
 				...assignment.solution,
@@ -152,7 +152,7 @@
 			const file = input.files[0];
 			const reader = new FileReader();
 
-			reader.onload = (e) => {
+			reader.onload = (e: any) => {
 				const base64String = e.target.result as string;
 				// Find the item by itemId and update its hint.data with the base64 string
 				items = items.map((item) => {
