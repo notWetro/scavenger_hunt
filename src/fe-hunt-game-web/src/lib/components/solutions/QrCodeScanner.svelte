@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { Alert } from 'flowbite-svelte';
 	import { Html5Qrcode } from 'html5-qrcode';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
 	export let data: string = '';
 
 	onMount(() => {
-		console.log('HEK');
+		console.log('SOOOSEE');
 		startScanner();
+	});
+
+	onDestroy(() => {
+		console.log('EESOOOS');
+		try {
+			stopScanner();
+		} catch (error) {
+			/* Ignore, doesn't matter */
+		}
 	});
 
 	$: {

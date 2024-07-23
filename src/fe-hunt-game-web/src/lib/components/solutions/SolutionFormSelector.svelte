@@ -6,6 +6,10 @@
 	import { playingHunt } from '$lib/stores/playingHunt';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { token } from '$lib/stores/tokenStore';
+	import { createEventDispatcher } from 'svelte';
+	import SubmissionHintDisplay from './SubmissionHintDisplay.svelte';
+
+	const dispatch = createEventDispatcher();
 
 	enum SubmissionStatus {
 		NotSubmitted,
@@ -15,6 +19,7 @@
 
 	export let type: number;
 	export let data: string;
+	let hintData: string = '';
 
 	let submissionStatus: SubmissionStatus = SubmissionStatus.NotSubmitted;
 
@@ -40,14 +45,18 @@
 		);
 
 		if (response.ok) {
-			var responseStatus = await response.json();
+			let responseStatus = await response.json();
 
 			if (responseStatus.success === true) {
 				submissionStatus = SubmissionStatus.ValidSubmission;
+				dispatch('OnNext');
 				return;
+			} else {
+				submissionStatus = SubmissionStatus.InvalidSubmission;
+				hintData = responseStatus.hintData;
+				console.log(hintData);
 			}
 		}
-		submissionStatus = SubmissionStatus.InvalidSubmission;
 	}
 </script>
 
@@ -68,7 +77,7 @@
 {/if}
 
 {#if submissionStatus === SubmissionStatus.InvalidSubmission}
-	<Alert color="red">Unfortunately the submission isn't correct!<br /> Try again!</Alert>
+	<SubmissionHintDisplay {hintData} {type} />
 {:else if submissionStatus === SubmissionStatus.ValidSubmission}
 	<Alert color="green">You are correct!</Alert>
 {/if}

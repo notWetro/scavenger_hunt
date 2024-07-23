@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import CheerDisplay from '$lib/components/CheerDisplay.svelte';
 	import HintDisplay from '$lib/components/hints/HintDisplay.svelte';
 	import SolutionFormSelector from '$lib/components/solutions/SolutionFormSelector.svelte';
 	import SolutionTypeHintDisplay from '$lib/components/solutions/SolutionTypeHintDisplay.svelte';
@@ -18,6 +19,8 @@
 		console.log(solutionData);
 	}
 	let isSolutionShown: boolean = false;
+	let isNextButtonShown: boolean = false;
+	let isFinished: boolean = false;
 
 	onMount(() => {
 		currentHunt = $playingHunt;
@@ -26,6 +29,10 @@
 
 	function toggleSolutionInput() {
 		isSolutionShown = !isSolutionShown;
+	}
+
+	function showNextButton() {
+		isNextButtonShown = true;
 	}
 
 	async function fetchCurrentAssignment() {
@@ -42,21 +49,40 @@
 			}
 		);
 
-		if (response.ok) {
-			const responseData = (await response.json()) as HuntAssignmentResponse;
-			currentAssignment = responseData;
-		} else {
+		if (!response.ok) {
 			throw Error('An error occured!');
 		}
+
+		if (response.status === 269) {
+			isFinished = true;
+		} else {
+			const responseData = (await response.json()) as HuntAssignmentResponse;
+			currentAssignment = responseData;
+		}
+	}
+
+	function resetState() {
+		isSolutionShown = false;
+		isNextButtonShown = false;
+		solutionData = '';
+	}
+
+	async function fetchNextAssignment() {
+		resetState();
+		await fetchCurrentAssignment();
 	}
 </script>
 
 <div class="h-screen p-4">
 	{#if currentHunt}
-		<h1 class="text-xl font-semibold mb-4 text-center">{currentHunt.title}</h1>
+		<h1 class="text-xl font-semibold mb-4 text-center">
+			<a href="/home">{currentHunt.title}</a>
+		</h1>
 	{/if}
 
-	{#if currentAssignment}
+	{#if isFinished}
+		<CheerDisplay />
+	{:else if currentAssignment}
 		<div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
 			<HintDisplay bind:type={currentAssignment.hintType} bind:data={currentAssignment.hintData} />
 
@@ -70,7 +96,14 @@
 					<SolutionFormSelector
 						bind:type={currentAssignment.solutionType}
 						bind:data={solutionData}
+						on:OnNext={showNextButton}
 					/>
+				</div>
+			{/if}
+
+			{#if isNextButtonShown}
+				<div class="flex flex-col" transition:fade={{ delay: 0, duration: 250 }}>
+					<Button on:click={fetchNextAssignment}>Next hint!</Button>
 				</div>
 			{/if}
 		</div>

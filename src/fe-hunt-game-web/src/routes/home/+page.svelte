@@ -13,7 +13,7 @@
 	}
 </script>
 
-<Tabs tabStyle="underline" contentClass="p-4 mt-4 h-screen">
+<Tabs tabStyle="underline" class="-m-4" contentClass="p-4 mt-4 h-screen">
 	<TabItem open>
 		<div slot="title" class="flex items-center gap-2">
 			<PackageOpenIcon />
