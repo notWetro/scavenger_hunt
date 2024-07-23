@@ -23,9 +23,8 @@ npm create svelte@latest my-app
 In order to successfully run the application, a set of environment-variables needs to be defined. Simply create a new `.env` file inside the root directory of this project. Open it and add the content below.
 
 ```env
-PUBLIC_HUNT_API_ADRESS="https://localhost:7161/api"
-PUBLIC_DEMO_MODE="False"
-#PUBLIC_DEMO_MODE="True"
+PUBLIC_HUNT_API_URL=http://localhost:5500/hunts/api
+PUBLIC_PARTICIPANT_API_URL=http://localhost:5500/participants/api
 ```
 
 ### Running or building web app

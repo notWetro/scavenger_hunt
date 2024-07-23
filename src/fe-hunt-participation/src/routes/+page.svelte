@@ -1,18 +1,51 @@
 <script lang="ts">
-	import { Button } from 'flowbite-svelte';
-	import { MessageCircleDashed } from 'lucide-svelte';
+	import type { Stats } from '$lib/models/stats';
+	import type { PageData } from './$types';
+	import StatsDisplay from '$lib/components/StatsDisplay.svelte';
+	import type { Organisator } from '$lib/models/organisator';
+	import OrganisatorCard from '$lib/components/OrganisatorCard.svelte';
 
-	function showNotification() {
-		window.alert('Hello there!');
-	}
+	export let data: PageData;
+	$: stats = data.stats as Stats;
+
+	const organisators: Organisator[] = [
+		{
+			name: 'Marc H.',
+			email: 'marc.hermann@hs-aalen.de'
+		},
+		{
+			name: 'Lukas S.',
+			email: 'lukas.steckbauer@studmail.htw-aalen.de'
+		},
+		{
+			name: 'Rosario A.',
+			email: 'rosario.aranzulla@studmail.htw-aalen.de'
+		}
+	];
 </script>
 
-<main class="p-4">
-	<div class="flex flex-col justify-center">
-		<h1 class="text-2xl font-bold text-center">Hello, world!</h1>
-		<Button class="btn btn-primary" on:click={showNotification}>
-			<MessageCircleDashed />
-			Press me
-		</Button>
+<main class="p-4 h-screen">
+	<div class="flex flex-col justify-center p-2">
+		<h1 class="text-xl font-bold text-center tracking-tight mb-2">Welcome</h1>
+
+		<p class="mb-4">Join fun and exciting scavenger hunts around your city!</p>
+
+		<StatsDisplay {stats} />
+
+		<h1 class="text-xl font-bold text-center tracking-tight mb-2">How to enter</h1>
+
+		<p class="mb-2">
+			In order to join a Scavenger Hunt you'll need to ask for a participation invite link or
+			QR-Code.
+		</p>
+		<p class="mb-2">Ask an organisator below:</p>
+
+		<div class="snap-x overflow-x-auto flex flex-row gap-2">
+			{#each organisators as organisator}
+				<div class="snap-start">
+					<OrganisatorCard {organisator} />
+				</div>
+			{/each}
+		</div>
 	</div>
 </main>
