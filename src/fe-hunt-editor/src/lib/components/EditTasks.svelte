@@ -14,6 +14,7 @@
 	import { SolutionType } from '$lib/models/Solution';
 	import { createEventDispatcher } from 'svelte';
 	import { huntStore } from '$lib/stores/huntStore';
+	import Map from '$lib/components/Map.svelte';
 
 	// Mapping of the solutionType and hintType strings to numbers
 	const reverseSolutionTypeMapping = {
@@ -53,6 +54,20 @@
 	let file: File | null;
 
 	let isValidData: boolean;
+
+	let lng: number | null = null;
+	let lat: number | null = null;
+
+	$: {
+		if (lat !== null && lng !== null) {
+			const locationData = `${lat};${lng}`;
+			let currentAssignment = items.find((item) => item.id === expandedItem);
+
+			if (currentAssignment) {
+				currentAssignment.solution.data = locationData;
+			}
+		}
+	}
 
 	// reactive statement to check if all assignments have valid data
 	$: isValidData = items.every((item) => {
@@ -240,11 +255,12 @@
 								class="mt-2"
 							/>
 						{:else if item.solution.solutionType === SolutionType.Location}
-							<div class="flex space-x-2">
-								<!--  TODO: fix displaying of latitude and longitude by splitting data at ";"-->
+							<Map bind:lat bind:lng />
+
+							<!-- <div class="flex space-x-2">
 								<Input bind:value={item.solution.data} placeholder="Latitude" class="mt-2" />
 								<Input bind:value={item.solution.data} placeholder="Longitude" class="mt-2" />
-							</div>
+							</div> -->
 						{/if}
 					</div>
 				</div>

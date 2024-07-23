@@ -41,6 +41,7 @@
 		"flowbite-svelte": "^0.46.11",
 		"lucide-svelte": "^0.397.0",
 		"qrcode": "^1.5.3",
+		"svelte-maplibre": "^0.9.9",
 		"tailwind-merge": "^2.3.0",
 		"uuid": "^10.0.0"
 	}
