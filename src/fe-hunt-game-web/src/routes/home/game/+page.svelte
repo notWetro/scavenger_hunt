@@ -11,6 +11,7 @@
 	import { Button } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import { XIcon } from 'lucide-svelte';
 
 	let currentHunt: HuntLoginResponse;
 	let currentAssignment: HuntAssignmentResponse;
@@ -75,6 +76,9 @@
 
 <div class="h-screen p-4">
 	{#if currentHunt}
+		<Button class="absolute top-4 right-4 bg-none" href="/home">
+			<XIcon class="w-6 h-6" />
+		</Button>
 		<h1 class="text-xl font-semibold mb-4 text-center">
 			<a href="/home">{currentHunt.title}</a>
 		</h1>

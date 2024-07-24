@@ -12,7 +12,7 @@
 </div>
 
 <div class="m-4 text-end">
-	<h1 class="text-xl font-bold mb-8">Ze Schnitzeljagd Game</h1>
+	<h1 class="text-xl font-bold mb-8">The Schnitzeljagd Game</h1>
 	<p class="font-semibold mb-2">Discover Aalen University in a fun way!</p>
 	<p class="mb-4">
 		Log in here and experience our interactive scavenger hunt - an exciting way to explore the
@@ -23,8 +23,6 @@
 		<ArrowRightIcon class="ml-4" />
 	</Button>
 </div>
-
-<div class="button-container m-4"></div>
 
 <div class="w-11/12 m-4">
 	<h1 class="text-xl font-bold">Project Roadmap</h1>
@@ -43,7 +41,7 @@
 			<p class="text-base font-normal text-gray-500 dark:text-gray-400">First implementation.</p>
 		</TimelineItem>
 		<TimelineItem title="Submission" date="August 2024">
-			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Project submission</p>
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Project submission.</p>
 		</TimelineItem>
 	</Timeline>
 </div>

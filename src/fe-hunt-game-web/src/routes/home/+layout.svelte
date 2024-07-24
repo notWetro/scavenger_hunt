@@ -7,9 +7,7 @@
 	let isLoggedIn: boolean = false;
 
 	onMount(() => {
-		const savedToken = $token;
-		console.log('LMAO', savedToken);
-		if (savedToken !== '') {
+		if ($token !== '') {
 			isLoggedIn = true;
 		}
 	});
@@ -20,7 +18,7 @@
 	{#if isLoggedIn}
 		<slot />
 	{:else}
-		<h1 class="text-xl font-bold m-2">Womp Womp</h1>
+		<h1 class="text-xl font-bold m-2">Welcome!</h1>
 
 		<p class="text-center m-4">
 			In order to participate to open Scavenger-Hunts you need to be logged in!

@@ -25,9 +25,8 @@
 
 	async function submitSolution() {
 		if (!data) throw Error('data is not defined!');
-
-		const huntId = $playingHunt.id;
 		const token = $token;
+		const huntId = $playingHunt.id;
 		console.log('huntId = ', huntId);
 		console.log('token = ', token);
 		console.log('data = ', data);
