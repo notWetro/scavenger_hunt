@@ -22,22 +22,17 @@
 
 <div class="flex flex-col">
 	<div class="mb-3">
-		<Label for="title">Titel der Schnitzeljagd</Label>
-		<Input bind:value={title} id="title" type="text" placeholder="Titel eingeben" />
+		<Label for="title">Title of the scavenger hunt</Label>
+		<Input bind:value={title} id="title" type="text" placeholder="Enter title" />
 	</div>
 
 	<div class="mb-5">
-		<Label for="description">Beschreibung der Schnitzeljagd</Label>
-		<Input
-			bind:value={description}
-			id="description"
-			type="text"
-			placeholder="Beschreibung eingeben"
-		/>
+		<Label for="description">Description of the scavenger hunt</Label>
+		<Input bind:value={description} id="description" type="text" placeholder="Enter description" />
 	</div>
 
 	<Button on:click={updateWithBasicData} disabled={!title || !description}>
-		Weiter
+		Next
 		<ArrowRight class="ml-2" />
 	</Button>
 </div>

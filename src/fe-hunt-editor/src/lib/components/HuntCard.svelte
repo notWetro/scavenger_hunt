@@ -22,20 +22,22 @@
 	}
 </script>
 
-<Card class="w-96 bg-base-100 shadow-xl rounded-xl">
-	<img src="/src/lib/images/scav-hunt-icon.jpg" alt="scav-hunt-logo" class="object-fill" />
-	<div class="">
-		<h2 class="text-xl font-bold text-black">{hunt.title}</h2>
-		<p>{hunt.description}</p>
-		<div class="flex justify-end gap-3">
-			<Button href="/edit/{hunt.id}">
-				<Edit class="mr-1" />
-				Edit
-			</Button>
-			<Button on:click={deleteHunt}>
-				<Trash class="mr-1" />
-				Delete
-			</Button>
+<Card class="flex flex-col justify-between w-[22.5rem] bg-base-100 shadow-lg rounded-xl md:w-96">
+	<div>
+		<img src="/src/lib/images/scav-hunt-icon.jpg" alt="scav-hunt-logo" class="object-fill" />
+		<div class="p-4">
+			<h2 class="text-xl font-bold text-black">{hunt.title}</h2>
+			<p>{hunt.description}</p>
 		</div>
+	</div>
+	<div class="flex justify-end gap-2">
+		<Button href="/edit/{hunt.id}">
+			<Edit class="mr-1" />
+			Edit
+		</Button>
+		<Button on:click={deleteHunt}>
+			<Trash class="mr-1" />
+			Delete
+		</Button>
 	</div>
 </Card>

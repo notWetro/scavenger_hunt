@@ -2,4 +2,6 @@
 	import HuntGrid from '$lib/components/HuntGrid.svelte';
 </script>
 
-<HuntGrid />
+<div class="flex items-center">
+	<HuntGrid />
+</div>

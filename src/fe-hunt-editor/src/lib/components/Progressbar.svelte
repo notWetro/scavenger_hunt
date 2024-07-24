@@ -3,10 +3,10 @@
 	import type { Writable } from 'svelte/store';
 
 	const stepText = {
-		1: 'Basisdaten eingeben.',
-		2: 'Aufgaben und Lösungen hinzufügen.',
-		3: 'Übersicht.',
-		4: 'Fertig!'
+		1: 'Enter Basic data.',
+		2: 'Add hints and solutions.',
+		3: 'Overview.',
+		4: 'Done!'
 	};
 
 	export let currentStep: Writable<number>;

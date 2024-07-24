@@ -8,8 +8,11 @@
 		MapEvents,
 		MapLibre
 	} from 'svelte-maplibre';
+	import { createEventDispatcher } from 'svelte';
 
 	let marker: any | null;
+
+	const dispatch = createEventDispatcher();
 
 	export let lat: number | null = null;
 	export let lng: number | null = null;
@@ -22,6 +25,7 @@
 
 	export function addMarker(e: CustomEvent) {
 		marker = { lngLat: e.detail.lngLat };
+		dispatch('markerAdded');
 	}
 
 	function removeMarker() {

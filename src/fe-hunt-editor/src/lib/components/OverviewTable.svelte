@@ -14,12 +14,6 @@
 
 	export let qrCodes: [];
 
-	// reactive statement to check if any assignment has a qr code solution
-	// needed to determine if displaying the download button is necessary
-	$: hasQRCodeSolution = hunt.assignments.some(
-		(assignment) => assignment.solution.solutionType === 'QRCode'
-	);
-
 	async function downloadQRCode(id: number, qrUrl) {
 		try {
 			const response = await fetch(qrUrl);
@@ -42,13 +36,11 @@
 <Table>
 	<TableHead>
 		<TableHeadCell>Id</TableHeadCell>
-		<TableHeadCell>Hinweistyp</TableHeadCell>
-		<TableHeadCell>Hinweis</TableHeadCell>
-		<TableHeadCell>Lösungstyp</TableHeadCell>
-		<TableHeadCell>Lösung</TableHeadCell>
-		{#if hasQRCodeSolution}
-			<TableHeadCell>Aktion</TableHeadCell>
-		{/if}
+		<TableHeadCell>Hint type</TableHeadCell>
+		<TableHeadCell>Hint</TableHeadCell>
+		<TableHeadCell>Solution type</TableHeadCell>
+		<TableHeadCell>Solution</TableHeadCell>
+		<TableHeadCell>Action</TableHeadCell>
 	</TableHead>
 	<TableBody tableBodyClass="divide-y">
 		{#each hunt.assignments as assignment}
@@ -75,8 +67,8 @@
 						<img src={qrCodes.find((qr) => qr.id === assignment.id)?.qrUrl || ''} alt="QR Code" />
 					{/if}
 				</TableBodyCell>
-				{#if hasQRCodeSolution && assignment.solution.solutionType === 'QRCode'}
-					<TableBodyCell>
+				<TableBodyCell>
+					{#if assignment.solution.solutionType === 'QRCode'}
 						<!--						TODO: check if this error is important-->
 						<Button
 							on:click={() =>
@@ -87,8 +79,8 @@
 						>
 							<Download />
 						</Button>
-					</TableBodyCell>
-				{/if}
+					{/if}
+				</TableBodyCell>
 			</TableBodyRow>
 		{/each}
 	</TableBody>
