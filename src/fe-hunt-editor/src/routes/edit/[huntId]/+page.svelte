@@ -5,9 +5,9 @@
 	import AddBasicData from '$lib/components/AddBasicData.svelte';
 	import { writable } from 'svelte/store';
 	import { Button } from 'flowbite-svelte';
-	import EditTasks from '$lib/components/EditTasks.svelte';
 	import ProgressBar from '$lib/components/Progressbar.svelte';
 	import OverviewEdit from '$lib/components/OverviewEdit.svelte';
+	import AssignmentsEditor from '$lib/components/assignments/AssignmentsEditor.svelte';
 
 	// needed for huntId from params
 	export let data: PageData;
@@ -42,7 +42,7 @@
 {/if}
 
 {#if $currentStep === 2}
-	<EditTasks on:Finished={advanceToNextStep} />
+	<AssignmentsEditor assignments={$huntStore.assignments} on:assignmentsSaved={advanceToNextStep} />
 {/if}
 
 {#if $currentStep === 3}

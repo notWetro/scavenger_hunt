@@ -2,10 +2,10 @@
 	import ProgressBar from '$lib/components/Progressbar.svelte';
 	import { writable } from 'svelte/store';
 	import AddBasicData from '$lib/components/AddBasicData.svelte';
-	import EditTasks from '$lib/components/EditTasks.svelte';
 	import Overview from '$lib/components/Overview.svelte';
 	import { Button } from 'flowbite-svelte';
 	import { huntStore } from '$lib/stores/huntStore';
+	import AssignmentsEditor from '$lib/components/assignments/AssignmentsEditor.svelte';
 
 	// make sure that huntStore is reset before trying to create a new hunt
 	huntStore.set({
@@ -40,7 +40,8 @@
 {/if}
 
 {#if $currentStep === 2}
-	<EditTasks on:Finished={advanceToNextStep} />
+	<AssignmentsEditor on:assignmentsSaved={advanceToNextStep} />
+	<!-- <EditTasks on:Finished={advanceToNextStep} /> -->
 {/if}
 
 {#if $currentStep === 3}

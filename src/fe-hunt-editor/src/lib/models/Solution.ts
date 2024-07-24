@@ -4,7 +4,7 @@ export interface Solution {
 }
 
 export enum SolutionType {
-	QRCode = 'QRCode',
-	Text = 'Text',
-	Location = 'Location'
+	QRCode,
+	Text,
+	Location
 }

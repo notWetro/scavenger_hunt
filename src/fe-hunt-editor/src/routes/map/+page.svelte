@@ -1,5 +1,5 @@
 <script>
-	import Map from '$lib/components/Map.svelte';
+	import MapSelector from '$lib/components/MapSelector.svelte';
 </script>
 
-<Map />
+<MapSelector />

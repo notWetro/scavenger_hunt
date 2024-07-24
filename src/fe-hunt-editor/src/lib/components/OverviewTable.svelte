@@ -10,11 +10,14 @@
 	} from 'flowbite-svelte';
 	import { Download } from 'lucide-svelte';
 	import { huntStore } from '$lib/stores/huntStore';
+	import { HintType } from '$lib/models/Hint';
+	import { SolutionType } from '$lib/models/Solution';
+	import { mapHintTypeToText, mapSolutionTypeToText } from '$lib/utils/typeMappingUtil';
 	$: hunt = $huntStore;
 
-	export let qrCodes: [];
+	export let qrCodes: any[];
 
-	async function downloadQRCode(id: number, qrUrl) {
+	async function downloadQRCode(id: number, qrUrl: any) {
 		try {
 			const response = await fetch(qrUrl);
 			const blob = await response.blob();
@@ -46,29 +49,29 @@
 		{#each hunt.assignments as assignment}
 			<TableBodyRow>
 				<TableBodyCell>{assignment.id}</TableBodyCell>
-				<TableBodyCell>{assignment.hint.hintType}</TableBodyCell>
+				<TableBodyCell>{mapHintTypeToText(assignment.hint.hintType)}</TableBodyCell>
 				<TableBodyCell>
-					{#if assignment.hint.hintType === 'Text'}
+					{#if assignment.hint.hintType === HintType.Text}
 						{assignment.hint.data}
-					{:else if assignment.hint.hintType === 'Image'}
+					{:else if assignment.hint.hintType === HintType.Image}
 						<img src={`${assignment.hint.data}`} alt="Hint as Img" class="object-scale-down w-28" />
 					{/if}
 				</TableBodyCell>
-				<TableBodyCell>{assignment.solution.solutionType}</TableBodyCell>
+				<TableBodyCell>{mapSolutionTypeToText(assignment.solution.solutionType)}</TableBodyCell>
 				<TableBodyCell>
-					{#if assignment.solution.solutionType === 'Text'}
+					{#if assignment.solution.solutionType === SolutionType.Text}
 						{assignment.solution.data}
-					{:else if assignment.solution.solutionType === 'Location'}
+					{:else if assignment.solution.solutionType === SolutionType.Location}
 						Latitude: {assignment.solution.data.split(';')[0]}, Longitude: {assignment.solution.data.split(
 							';'
 						)[1]}
-					{:else if assignment.solution.solutionType === 'QRCode'}
+					{:else if assignment.solution.solutionType === SolutionType.QRCode}
 						<!--						TODO: check if this error is important-->
 						<img src={qrCodes.find((qr) => qr.id === assignment.id)?.qrUrl || ''} alt="QR Code" />
 					{/if}
 				</TableBodyCell>
 				<TableBodyCell>
-					{#if assignment.solution.solutionType === 'QRCode'}
+					{#if assignment.solution.solutionType === SolutionType.QRCode}
 						<!--						TODO: check if this error is important-->
 						<Button
 							on:click={() =>

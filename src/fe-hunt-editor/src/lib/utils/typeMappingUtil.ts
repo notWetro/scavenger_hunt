@@ -1,3 +1,6 @@
+import type { HintType } from '$lib/models/Hint';
+import type { SolutionType } from '$lib/models/Solution';
+
 // Mapping of the solutionType and hintType strings to numbers
 const reverseSolutionTypeMapping = {
 	0: 'QRCode',
@@ -11,17 +14,10 @@ const reverseHintTypeMapping = {
 	1: 'Image'
 };
 
-// Function to reverse map the assignments to the original format so that strings are displayed instead of numbers
-export function reverseMapAssignments(assignments: any) {
-	return assignments.map((assignment: any) => ({
-		...assignment,
-		solution: {
-			...assignment.solution,
-			solutionType: reverseSolutionTypeMapping[assignment.solution.solutionType]
-		},
-		hint: {
-			...assignment.hint,
-			hintType: reverseHintTypeMapping[assignment.hint.hintType]
-		}
-	}));
+export function mapSolutionTypeToText(solutionType: SolutionType): string {
+	return reverseSolutionTypeMapping[solutionType];
+}
+
+export function mapHintTypeToText(hintType: HintType): string {
+	return reverseHintTypeMapping[hintType];
 }

@@ -7,8 +7,9 @@
 	import { Goal } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
+	import { SolutionType } from '$lib/models/Solution';
 
-	let qrCodes = [];
+	let qrCodes: any[] = [];
 
 	// Subscribe to huntStore to access its current state
 	$: hunt = $huntStore;
@@ -22,7 +23,7 @@
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
-				if (assignment.solution.solutionType === 'QRCode') {
+				if (assignment.solution.solutionType === SolutionType.QRCode) {
 					const qrText = `scavhunt-${uuidv4()}`;
 					try {
 						const qrUrl = await QRCode.toDataURL(qrText);
@@ -42,24 +43,10 @@
 
 	async function submitHunt() {
 		console.log('Hunt:', hunt);
-		// Map solutionType and hintType strings to numbers
-		const solutionTypeMapping = { QRCode: 0, Text: 1, Location: 2 };
-		const hintTypeMapping = { Text: 0, Image: 1 };
 
 		// Create a new huntData object with modified assignments
 		const huntData = {
-			...hunt,
-			assignments: hunt.assignments.map((assignment) => ({
-				...assignment,
-				solution: {
-					...assignment.solution,
-					solutionType: solutionTypeMapping[assignment.solution.solutionType]
-				},
-				hint: {
-					...assignment.hint,
-					hintType: hintTypeMapping[assignment.hint.hintType]
-				}
-			}))
+			...hunt
 		};
 
 		const response = await fetch(`${PUBLIC_API_URL}/hunts`, {

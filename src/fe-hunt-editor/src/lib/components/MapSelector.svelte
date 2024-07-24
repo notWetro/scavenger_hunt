@@ -8,11 +8,26 @@
 		MapEvents,
 		MapLibre
 	} from 'svelte-maplibre';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+
+	onMount(() => {
+		if (textValue !== '') {
+			lat = parseFloat(textValue.split(';')[0]);
+			lng = parseFloat(textValue.split(';')[1]);
+			marker = {
+				lngLat: [lng, lat]
+			};
+		}
+		console.log(textValue);
+		console.log(lat);
+		console.log(lng);
+	});
 
 	let marker: any | null;
 
 	const dispatch = createEventDispatcher();
+
+	export let textValue: string = '';
 
 	export let lat: number | null = null;
 	export let lng: number | null = null;
@@ -20,6 +35,7 @@
 		if (marker) {
 			lat = marker.lngLat.lat;
 			lng = marker.lngLat.lng;
+			textValue = `${lat};${lng}`;
 		}
 	}
 
