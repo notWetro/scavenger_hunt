@@ -46,10 +46,27 @@
 % ---------------------------------------------------------------------------------
 
 % \RequirePackage{ucs} % incompatible to biblatex
-% \RequirePackage[utf8]{inputenc}  % use utf8 instead of utf8x 
+%\RequirePackage[utf8]{inputenc}  % use utf8 instead of utf8x 
 \RequirePackage[T1]{fontenc}
 \RequirePackage[ngerman, english]{babel}
 \RequirePackage[babel, german=quotes]{csquotes}
+
+% Literaturverzeichnis
+\PassOptionsToPackage{toc=bib}{biblatex}
+\usepackage[%
+            style=numeric,%
+            %style=alphabetic,%
+            %style=authoryear,%
+            %style=authortitle,%
+            %style=verbose,%
+            %style=draft,%
+            %autocite=plain,%
+            %autocite=inline,%
+            %autocite=footnote,%
+            %autocite=supercript,%
+            sorting=none,
+            backend=biber
+            ]{biblatex}
 
 % Translation Helpers
 \newcommand{\german}[2][ngerman]{%
@@ -217,6 +234,20 @@
 		{ä}{{\"a}}1 
 		{ö}{{\"o}}1
 		}
+}
+
+\lstset{ 
+    basicstyle=\ttfamily,
+    columns=fullflexible,
+    keepspaces=true,
+    escapeinside={(*@}{@*)},
+    breaklines=true,
+    frame=single,
+    showstringspaces=false,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    morekeywords={button, class, onclick, dialog, id, div, h3, p, form, method} % Add more keywords as necessary
 }
 
 \lstdefinelanguage{R}{% https://stat.ethz.ch/pipermail/r-help/2006-September/113688.html
