@@ -4,7 +4,16 @@ const config = {
     './node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
   ],
 
-  plugins: [require('flowbite/plugin')],
+  plugins: [
+    require('flowbite/plugin'),
+    function ({ addUtilities }) {
+      addUtilities({
+        '.grid-area-custom': {
+          'grid-area': '1 / 1'
+        },
+      });
+    }
+  ],
 
   darkMode: 'class',
 

@@ -4,10 +4,12 @@
 	import { ScanQrCodeIcon } from 'lucide-svelte';
 
 	import { createEventDispatcher } from 'svelte';
+	import QrCodeReader from '../qr-code-reader/QRCodeReader.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let data: string;
+	let displayText: string = 'FOUND YOU!';
 
 	async function submitSolution() {
 		dispatch('SubmitData');
@@ -24,7 +26,29 @@
 		</h5>
 	</div>
 
-	<QrCodeScanner bind:data on:Finished={submitSolution} />
+	<div class="qr-code-container">
+		<QrCodeReader bind:data bind:displayText on:Finished={submitSolution} />
+	</div>
+
 	<p class="p-4">Once the QR-Code has been scanned it will be submitted.</p>
-	<p class="p-4">{data}</p>
+	<!-- <p class="p-4">{data}</p> -->
 </Card>
+
+<style>
+	.qr-code-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden; /* Hide any overflow */
+		position: relative; /* For positioning the QR code within the container */
+		height: 200px; /* Set a fixed height or use relative units */
+		width: 100%; /* Make the container take full width */
+	}
+
+	.qr-code-container > :first-child {
+		position: absolute; /* Position the QR code in the center */
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%); /* Center the QR code */
+	}
+</style>
