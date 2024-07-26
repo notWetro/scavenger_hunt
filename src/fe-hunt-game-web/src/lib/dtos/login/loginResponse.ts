@@ -1,6 +1,6 @@
-import type { HuntLoginResponse } from "./huntLoginResponse";
+import type { HuntLoginResponse } from './huntLoginResponse';
 
 export interface LoginResponse {
-    token: string,
-    hunts: HuntLoginResponse[]
+	token: string;
+	hunts: HuntLoginResponse[];
 }

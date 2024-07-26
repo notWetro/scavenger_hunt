@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Card } from 'flowbite-svelte';
-	import QrCodeScanner from './QrCodeScanner.svelte';
 	import { ScanQrCodeIcon } from 'lucide-svelte';
 
 	import { createEventDispatcher } from 'svelte';
@@ -10,9 +9,13 @@
 
 	export let data: string;
 	let displayText: string = 'FOUND YOU!';
+	let isSend = false;
 
 	async function submitSolution() {
-		dispatch('SubmitData');
+		if (!isSend) {
+			dispatch('SubmitData');
+			isSend = true;
+		}
 	}
 </script>
 
@@ -43,12 +46,5 @@
 		position: relative; /* For positioning the QR code within the container */
 		height: 200px; /* Set a fixed height or use relative units */
 		width: 100%; /* Make the container take full width */
-	}
-
-	.qr-code-container > :first-child {
-		position: absolute; /* Position the QR code in the center */
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%); /* Center the QR code */
 	}
 </style>

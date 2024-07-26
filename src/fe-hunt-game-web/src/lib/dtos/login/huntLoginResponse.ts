@@ -1,4 +1,4 @@
 export interface HuntLoginResponse {
-    id: number,
-    title: string
+	id: number;
+	title: string;
 }

@@ -6,7 +6,6 @@ In order to run the web app, you'll need to create an `.env` file inside the roo
 PUBLIC_API_URL=http://localhost:5500/participants/api
 ```
 
-
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).

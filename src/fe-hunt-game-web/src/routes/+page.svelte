@@ -45,9 +45,3 @@
 		</TimelineItem>
 	</Timeline>
 </div>
-
-<style>
-	.button-container {
-		text-align: center;
-	}
-</style>
