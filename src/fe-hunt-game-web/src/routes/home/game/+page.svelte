@@ -76,9 +76,9 @@
 
 <div class="h-screen p-4">
 	{#if currentHunt}
-		<Button class="absolute top-4 right-4 bg-none" href="/home">
+		<!-- <Button class="absolute top-4 right-4 bg-none" href="/home">
 			<XIcon class="w-6 h-6" />
-		</Button>
+		</Button> -->
 		<h1 class="text-xl font-semibold mb-4 text-center">
 			<a href="/home">{currentHunt.title}</a>
 		</h1>
