@@ -1,8 +1,8 @@
 import type { HuntLoginResponse } from '$lib/dtos/login/huntLoginResponse';
 import { writable } from 'svelte/store';
 
-export const registeredHunts = writable<HuntLoginResponse[]>([]);
+export const ongoingHunts = writable<HuntLoginResponse[]>([]);
 
-registeredHunts.subscribe((value) => {
+ongoingHunts.subscribe((value) => {
 	console.log(value);
 });

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import type { LoginResponse } from '$lib/dtos/login/loginResponse';
-	import { registeredHunts } from '$lib/stores/registeredHunts';
+	import { completeHunts } from '$lib/stores/completeHunts';
+	import { expiredHunts } from '$lib/stores/expiredHunts';
+	import { ongoingHunts } from '$lib/stores/ongoingHunts';
 	import { token } from '$lib/stores/tokenStore';
 	import { wait } from '$lib/utils/wait';
 	import { Button, Input } from 'flowbite-svelte';
@@ -33,7 +35,25 @@
 		if (response.ok) {
 			const responseData = (await response.json()) as LoginResponse;
 			token.set(responseData.token);
-			registeredHunts.set(responseData.hunts);
+
+			const expiredHuntsResponse = responseData.hunts.filter(
+				(hunt) =>
+					hunt.participationStatus === 0 ||
+					hunt.participationStatus === 1 ||
+					hunt.participationStatus === 4
+			);
+			if (expiredHuntsResponse) expiredHunts.set(expiredHuntsResponse);
+
+			const ongoingHuntsResponse = responseData.hunts.filter(
+				(hunt) => hunt.participationStatus === 2
+			);
+			if (ongoingHuntsResponse) ongoingHunts.set(ongoingHuntsResponse);
+
+			const completeHuntsResponse = responseData.hunts.filter(
+				(hunt) => hunt.participationStatus === 3
+			);
+			if (completeHuntsResponse) completeHunts.set(completeHuntsResponse);
+
 			dispatch('loginSuccess');
 		} else {
 			isLastFail = true;
