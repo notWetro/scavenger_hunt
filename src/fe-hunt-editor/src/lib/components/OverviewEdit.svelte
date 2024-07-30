@@ -7,6 +7,7 @@
 	import { Goal } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
+	import { SolutionType } from '$lib/models/Solution';
 
 	let qrCodes = [];
 
@@ -22,7 +23,7 @@
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
-				if (assignment.solution.solutionType === 'QRCode') {
+				if (assignment.solution.solutionType === SolutionType.QRCode) {
 					const qrText = `scavhunt-${uuidv4()}`;
 					try {
 						const qrUrl = await QRCode.toDataURL(qrText);
