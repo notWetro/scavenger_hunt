@@ -52,22 +52,24 @@
 </script>
 
 <main>
-	<div class="flex gap-2 flex-col mb-4">
-		<h1 class="text-2xl font-bold text-center underline">Register for Scavenger Hunt:</h1>
-		<span class="text-center">{hunt.title}</span>
+	<div class="flex gap-2 flex-col mb-4 items-center">
+		<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
+		<span>{hunt.title}</span>
 	</div>
-
-	<Card>
-		<h2 class="mb-2 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
-		<p class="text-gray-600 leading-tight font-normal mb-3">{hunt.description}</p>
-		<Button on:click={() => (showModal = true)} disabled={success === true}>
-			{#if success}
-				<Check />
-			{:else}
-				Participate!
-			{/if}
-		</Button>
-	</Card>
+	<div class="flex flex-col items-center">
+		<Card>
+			<h2 class="mb-2 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
+			<p class="text-gray-600 leading-tight font-normal mb-3">{hunt.description}</p>
+			<Button on:click={() => (showModal = true)} disabled={success === true}>
+				{#if success}
+					<Check />
+				{:else}
+					Participate!
+				{/if}
+			</Button>
+		</Card>
+	</div>
+	
 
 	<Modal
 		bind:open={showModal}
