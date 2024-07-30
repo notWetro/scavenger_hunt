@@ -18,6 +18,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ausarbeitung}[2008/07/02 Ausarbeitung HS Aalen]
 
+% Add the scrhack package to avoid warnings related to deprecated \float@listhead
+\RequirePackage{scrhack}
+
 \PassOptionsToClass{%
 	12pt, % Schriftgröße [10pt, 11pt, 12pt]
 	a4paper, % Papierformat [a4paper, a5paper, b5paper, letterpaper, legalpaper]

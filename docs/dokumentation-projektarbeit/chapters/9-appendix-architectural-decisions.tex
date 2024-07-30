@@ -1,0 +1,88 @@
+\chapter{Anhang: Entscheidungen bei der Implementierung}
+
+\section{Architektonische Entscheidungen}
+
+\subsection{Wahl eines Message-Bus für das Hunt-Api Backend}
+
+% TODO: Beschreiben was für ein grund das hat, aka nicht valide teilnahmen erkennen.
+
+\subsection{Wahl eines Api-Gateways für das Hunt-Api Backend}
+
+% TODO: Beschreiben was das auf sich hat, aka nicht services einzelnd pingen aber einheitliche schnittstelle + eventuelle service sicherheit die später kommt durch sonder headers and stuff wenn wir das machen aber architektonisch einfach bessere wahl, ja der text macht grad wenig sinn weil ich aus irgwend nem grund irgendwas tippen will, bitte lächeln 
+
+\subsection{Hinweise und Lösungen ohne Abstrakte Klassen} \label{appendix:adr:er}
+
+\subsubsection{Kontext}
+
+Für das Speichern der Aufgaben (\textit{Assignments}) einer Schnitzeljagd soll es möglich sein, aus unterschiedlichen Arten von Hinweisen (\textit{Hints}) und Lösungen (\textit{Solutions}) zu wählen.
+
+\subsubsection{Entscheidung}
+
+Statt für jeden Hinweis-Typ und Lösungs-Typ unterschiedliche abstrakte Datenklassen zu definieren, werden diese lediglich als Daten-String gespeichert.
+
+\subsubsection{Begründung}
+
+Es wurde im Rahmen der Projektdurchführung versucht, mit abstrakten Datenklassen zu arbeiten. Jedoch erhöht dies die Komplexität enorm.
+
+Zudem ist diese Lösung nicht skalierbar, denn es wird mehr Aufwand erfordert, einen neuen Hinweis-Typ oder Lösungs-Typ in das System einzubauen. Zunächst muss eine neue Datenklasse definiert werden, Dann muss diese in das Datenbank-Modell als konkrete neue Tabelle eingefügt werden.
+
+In den meisten Fällen unterscheiden sich die Hinweis-Typen oder Lösungs-Typen kaum am Datenformat. Texte oder Bilder werden im System als String gespeichert. Daher entspringt die zentrale Frage: Wieso überhaupt mit abstrakten Klassen alles verkomplizieren?
+
+\subsubsection{Konsequenzen}
+
+\begin{itemize}
+    \item \textbf{Keine Type-Safety}: Geo-Locations im Format \textit{lat;lon} werden als verketteter String gespeichert und müssen beim Ausleseprozess jeweils umgewandelt werden, was sehr fehleranfällig ist.
+\end{itemize}
+
+\section{Entscheidungen im Frontend}
+
+\subsection{Wahl von Flowbite statt DaisyUI} \label{appendix:adr:daisy}
+
+\subsubsection{Unterschied zwischen Flowbite-Svelte und DaisyUI}
+
+\textbf{DaisyUI} ist eine Komponentenbibliothek für Tailwind CSS, die eine Vielzahl von vorgefertigten UI-Komponenten bereitstellt. Es ist darauf ausgelegt, die Nutzung von Tailwind CSS zu vereinfachen, indem es gebrauchsfertige Klassen und Designs bietet. DaisyUI ist besonders bekannt für seine einfache Integration und die Möglichkeit, schnell und effizient ästhetisch ansprechende Benutzeroberflächen zu erstellen, ohne viel eigene CSS-Regeln schreiben zu müssen. 
+
+Im Folgenden ein Beispiel für die Verwendung von DaisyUI, um ein Modal zu erstellen:
+
+\begin{lstlisting}[language=html, caption={Code Ausschnitt DaisyUI Beispiel}]
+<button class="btn" onclick="my_modal_1.showModal()">open modal</button>
+<dialog id="my_modal_1" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Hello!</h3>
+    <p class="py-4">Press ESC key or click the button below to close</p>
+    <div class="modal-action">
+      <form method="dialog">
+        <!-- if there is a button in form, it will close the modal -->
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+\end{lstlisting}
+
+\textbf{Flowbite-Svelte} ist eine auf Tailwind CSS basierende UI-Komponentenbibliothek, die speziell für die Integration mit Svelte entwickelt wurde. Sie bietet eine umfassende Sammlung von UI-Komponenten wie Buttons, Modale, Formulare und vieles mehr. Flowbite-Svelte kombiniert die Leistungsfähigkeit von Tailwind CSS mit der reaktiven Natur von Svelte, um die Entwicklung dynamischer und interaktiver Webanwendungen zu erleichtern. Zudem bietet Flowbite-Svelte eine nahtlose Svelte-Integration, was bedeutet, dass die Komponenten als echte Svelte-Komponenten bereitgestellt werden, die sich perfekt in das Svelte-Ökosystem einfügen. 
+
+Im Folgenden ein Beispiel für die Verwendung von Flowbite-Svelte, das das gleiche Modal erstellt wie im DaisyUI-Beispiel:
+
+\begin{lstlisting}[language=html, caption={Code Ausschnitt Flowbite-Svelte Beispiel}]
+<script>
+  import { Button, Modal } from 'flowbite-svelte';
+  let defaultModal = false;
+</script>
+
+<Button on:click={() => (defaultModal = true)}>open modal</Button>
+<Modal title="Hello!" bind:open={defaultModal} autoclose>
+  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Press ESC key or click the button below to close</p>
+  <svelte:fragment slot="footer">
+    <Button on:click={() => (defaultModal = false)}>Close</Button>
+  </svelte:fragment>
+</Modal>
+\end{lstlisting}
+
+\subsubsection{Begründung für den Wechsel zu Flowbite-Svelte}
+
+Der Wechsel von DaisyUI zu Flowbite-Svelte ist aus mehreren Gründen gerechtfertigt. Erstens bietet Flowbite-Svelte eine speziell auf Svelte abgestimmte Komponentenbibliothek, die eine engere und effizientere Integration ermöglicht. Dies bedeutet, dass die UI-Komponenten in Flowbite-Svelte als native Svelte-Komponenten verfügbar sind, was die Entwicklungsarbeit vereinfacht und die Nutzung von Svelte-spezifischen Features erleichtert.
+
+Zweitens ist die Anpassungsfähigkeit und Erweiterbarkeit von Flowbite-Svelte ein wesentlicher Vorteil. Während DaisyUI zwar eine einfache Möglichkeit bietet, Tailwind CSS zu nutzen, ist Flowbite-Svelte besser darauf ausgelegt, komplexere und dynamischere Benutzeroberflächen zu unterstützen. Dies ist besonders wichtig für eine Anwendung wie den Schnitzeljagd-Editor, die eine hohe Interaktivität und eine benutzerfreundliche Oberfläche erfordert.
+
+Darüber hinaus bietet Flowbite-Svelte eine breitere Palette an vorgefertigten Komponenten und Layout-Optionen, was die Entwicklung beschleunigt und gleichzeitig die Konsistenz und Qualität der Benutzeroberfläche verbessert. Dies trägt dazu bei, dass die Anwendung nicht nur funktional, sondern auch optisch ansprechend und intuitiv zu bedienen ist.

@@ -1,0 +1,81 @@
+\section{Technologien}
+
+Für die Implementierung wurden zahlreiche Technologien der Software-Entwicklung in Betracht gezogen. In diesem Abschnitt werden die für das Projekt relevanten Frameworks und Plattformen beschrieben.
+
+\subsection{ASP.NET}
+
+ASP.NET ist ein Open-Source-Web-Framework, das von Microsoft entwickelt wurde und die Erstellung moderner, skalierbarer und leistungsfähiger Webanwendungen ermöglicht. Zudem werden in ASP.NET moderne Webtechnologien und -standards unterstützt, wodurch sich die Entwicklung von interaktiven und responsiven Webanwendungen erleichtert. Dies schließt auch APIs und Echtzeit-Kommunikation ein, die für die Anwendung relevant sein könnten. Diese Merkmale ermöglichen es auch, die Anwendung modular zu ergänzen, indem externe APIs wie OpenStreetMaps oder andere Dienste einfach angebunden werden können.
+
+\subsubsection{Entity Framework Core}
+
+\ac{efcore} ist ein leichtgewichtiges, erweiterbares und Open-Source-\ac{orm} Framework für .NET, das entwickelt wurde, um den Datenzugriff und die Datenmanipulation in .NET-Anwendungen zu vereinfachen. \ac{efcore} bietet Datenbankunabhängigkeit, da es verschiedene Datenbanksysteme wie SQL Server, MySQL, PostgreSQL und SQLite unterstützt.
+
+Ein weiterer Vorteil von \ac{efcore} ist Möglichkeit, das Datenbankschema aus konkreten Models über Source-Code zu generieren, ohne \textit{Create-Table} SQL-Statements schreiben zu müssen. \ac{efcore} bietet hierbei eine einfach zu verstehende \textit{Fluent-API} an. Zudem ermöglicht \ac{efcore} die einfache Verwaltung von Datenbankmigrationen, was es erlaubt, Änderungen am Datenmodell nachzuverfolgen und auf die Datenbank anzuwenden. Dies erleichtert die Wartung und Weiterentwicklung erheblich.
+
+Ein zusätzliches Merkmal von \ac{efcore} ist die Integration von \ac{linq}, die es ermöglicht, komplexe Abfragen auf eine intuitive und typsichere Weise zu schreiben. Dies verbessert die Lesbarkeit und Wartbarkeit des Codes erheblich. Schließlich bietet \ac{efcore} verschiedene Mechanismen zur Performanceoptimierung, wie zum Beispiel asynchrone Abfragen und Caching-Strategien.
+
+\subsection{Unity und Mobile-Apps}
+
+Unity ist eine Plattform zur Entwicklung und Darstellung interaktiver 3D-Inhalte, die in vielen Bereichen wie Spieleentwicklung, Filmproduktion, Architekturvisualisierung und Virtual Reality (VR) eingesetzt wird. Sie ist eine der am weitesten verbreiteten Spiel-Engines weltweit und bietet eine Vielzahl an Werkzeugen und Funktionen, für das implementieren immersiver und realistischer Umgebungen.
+
+Unity basiert auf einer Engine, die eine umfassende Sammlung von Software-Bibliotheken bereitstellt. Diese Bibliotheken ermöglichen die Verarbeitung von Grafiken, Physik, Sound und Benutzereingaben. Der Kern der Engine ist für die Rendern von 2D- und 3D-Grafiken verantwortlich, die in Echtzeit berechnet und auf dem Bildschirm angezeigt werden. Unity unterstützt die Programmiersprachen C\# und UnityScript (eine Art JavaScript, welche allerdings nicht mehr weiterentwickelt wird), wobei C\#  die primäre Sprache für die Entwicklung in Unity ist.
+
+\subsubsection{AR-Foundation}
+
+Für das Erstellen von Augmented-Reality Anwendungen bietet Unity unter der \textit{AR Foundation} grundlegende Bausteine an. Über vorgefertigte Projekt-Templates lässt sich eine funktionierende und ausführbare Demo-Anwendung für Android-Geräte generieren. Das AR Foundation Framework ermöglicht das Einbinden von Features wie beispielsweise Oberflächen-Erkennung, Objekt-, Bild- und Gesicht-Verfolgung sowie Sitzungs- und Geräte-Management \autocite{Unity2024}.
+
+\subsubsection{Nützliche Bibliotheken}
+
+\textit{Newtonsoft.Json.NET} ist eine in der Praxis verwendete Bibliothek in C\# bzw. .NET Anwendungen für das Serialisieren und Deserialisieren von Objekten im JSON-Format. Für die Verwendung in Unity-Anwendungen existiert ein GitHub-Fork (\textit{Json.Net.Unity3D}) und ermöglicht das Einbinden über eine \lstinline{.unitypackage} Datei. \autocite{SaladLab2024}
+
+\textit{AR+GPS Location} ist eine Utility aus dem Unity-Asset-Store und ermöglicht eine Übersetzung von GPS-Koordinaten im Unity-Raum. Hierdurch können Objekte über die Angabe eines realen GPS-Standorts im Unity-Raum plaziert werden. Wenn die Anwendung an der realen Stelle des angegebenen GPS-Standorts geöffnet wird, wird das in Unity angelegte Objekt am richtigen Ort angezeigt. \autocite{ArGpsLocation}
+
+\subsection{Svelte und Web-Apps} \label{cha:grundlagen:swtech:svelte}
+
+\textbf{Svelte} ist ein modernes JavaScript-Framework zur Erstellung von Benutzeroberflächen. Im Gegensatz zu herkömmlichen Frameworks wie React oder Vue, die den Großteil ihrer Arbeit im Browser ausführen, verschiebt Svelte diese Arbeit in die Kompilierungsphase. Dies bedeutet, dass der Code während des Build-Prozesses in effizientes, optimiertes JavaScript umgewandelt wird, das direkt im Browser ausgeführt wird. Dadurch wird die Laufzeitbelastung erheblich reduziert, was zu einer besseren Performance und geringeren Ladezeiten führt \autocite{Svelte2024}.
+
+Ein wesentlicher Vorteil von Svelte ist seine einfache Syntax, die es Entwicklern ermöglicht, reaktiven Code zu schreiben, ohne auf komplexe State-Management-Lösungen zurückzugreifen. Die Komponenten in Svelte bestehen aus HTML, CSS und JavaScript, was die Lernkurve für neue Benutzer verringert und die Entwicklungserfahrung vereinfacht \autocite{Svelte2024}.
+
+\textbf{SvelteKit} ist ein Framework für den Aufbau von Svelte-Anwendungen. Es erweitert die Fähigkeiten von Svelte, indem es zusätzliche Werkzeuge und Funktionen bereitstellt, die speziell für die Entwicklung komplexer, leistungsstarker Webanwendungen notwendig sind. SvelteKit vereinfacht die Einrichtung und Strukturierung von Projekten und bietet Funktionen wie Routing, \ac{ssr}, statische Seitengenerierung und eine integrierte Entwicklungsumgebung \autocite{Svelte2024}.
+
+\subsubsection{Vorteile}
+
+Svelte integriert CSS-Styles direkt in die Komponenten mittels \textit{<style>-Tags}. Dies eliminiert die Notwendigkeit zusätzlicher Setups.
+
+Alternativ kann auf bereits existierende CSS-Bibliotheken wie TailwindCSS zurückgegriffen werden. Standardmäßig werden Styles scoped angelegt, sodass keine Konflikte zwischen den Komponenten entstehen. Dies sorgt für eine sichere und wartbare Codebase einzelner Komponenten aufgrund der reduzierten Abhängigkeiten.
+
+Svelte-Pages sind standardmäßig mit einem einfachen Prerendering ausgestattet, das sich über das Setzen eines Attributes steuern lässt. SvelteKit bietet zudem einfache Einstellungen, um verschiedene Startpfade für das Prerendering zu definieren, was die Flexibilität bei der Konfiguration erhöht.
+
+Ein weiteres zentrales Feature von Svelte ist die Reaktivität. Durch das Definieren von sogenannten \textit{Reactive Statements} kann ein Ablauf beschrieben werden, der ausgeführt wird, wenn eine Abhängigkeit innerhalb dieses Blocks aktualisiert wird. Dies erleichtert das Management von Zustandsänderungen und sorgt für reaktive und dynamische Benutzeroberflächen.
+
+Svelte besitzt eingebaute Prüfungen für Barrierefreiheit (\textit{Accessibility-Linting}), die auf offensichtliche und auch auf komplexere Probleme hinweisen. Dies unterstützt Entwickler dabei, von Anfang an barrierefreie Anwendungen zu erstellen.
+
+Letztendlich reduziert sich die Menge des notwendigen Codes erheblich durch die deklarative Natur von Svelte. Diese führt zu einer klareren und übersichtlicheren Codebasis, was die Entwicklung und Wartung von Anwendungen vereinfacht \autocite{SvelteExperienceBespoyasov}.
+
+\subsubsection{Nachteile}
+
+Die Community-Größe von Svelte ist im Vergleich zu bekannteren JavaScript-Frameworks wie React oder Angular aufgrund der Neuheit des Frameworks noch relativ klein. Dies kann die Problemlösung erschweren, da einige Fehler möglicherweise nicht so gut dokumentiert oder gelöst sind und somit weniger Ressourcen auf Foren wie Stack Overflow zur Verfügung stehen.
+
+Ein weiterer Nachteil ist das fehlende Entwickler-Tooling oder eine \ac{cli}. Bei Angular können Komponenten oder Dienste beispielsweise über die Angular \ac{cli} schnell und effizient erstellt werden. Diese Art von Tooling fehlt bei Svelte, was den Entwicklungsprozess etwas weniger komfortabel machen kann.
+
+Zudem ist die Verfügbarkeit und Nutzbarkeit von bereits vorhandenen Libraries eingeschränkt. Obwohl diese Libraries nahtlos mit einem Paketmanager (z.B. npm von Node.js) installiert werden können, erfordert es oft zusätzlichen Aufwand, um sie in Svelte-Komponenten zu integrieren \autocite{SvelteVsSvelteKit2023}.
+
+\subsubsection{Pages \& Routes}
+
+Eine Svelte-Anwendung ist verzeichnisbasiert aufgebaut. Jedes Verzeichnis entspricht einer Route und kann ein oder mehrere Unterverzeichnisse haben, die die Route erweitern. Jede Route kann eine Seite haben, die immer den Namen \textit{+page.svelte} trägt. Svelte verwendet diese Seiten als Hauptanzeige, wenn zur zugehörigen Route navigiert wird.
+
+\subsubsection{UI Components}
+
+Für die Darstellung, Wiederverwendbarkeit und Konsistenz über verschiedene Seiten hinweg werden Svelte-Komponenten verwendet. Diese bilden die Bausteine zur Anzeige unterschiedlicher Daten. Zusätzlich können UI Component Libraries wie beispielsweise \textit{flowbite-svelte} eingebunden werden, um standardisierte und ansprechende Benutzeroberflächenelemente wie Buttons, Inputs oder Tabellen zu implementieren. Das Benutzen einer vorgefertigten Bibliothek erleichtert zudem die Entwicklung und trägt dazu bei, eine einheitliche und intuitive Benutzererfahrung sicherzustellen.
+
+Jede Svelte-Komponente besteht aus einem Skript-Teil und einem Design-/Style-Teil. Eine Komponente kann auch weitere Komponenten einbinden. In diesem Fall fungiert die übergeordnete Komponente als Elternteil (Parent), während die eingebundenen Komponenten als Kinder (Children) bezeichnet werden.
+
+\subsubsection{Stores}
+
+Um während des Erstellungs- und Bearbeitungsprozesses Daten zu speichern, wird ein Svelte Store verwendet. Dies ermöglicht es verschiedenen Komponenten, auf diese Daten zuzugreifen.
+
+\subsubsection{Node \& Node Modules}
+
+\textit{Node.js} ist eine JavaScript-Laufzeitumgebung, die serverseitige Anwendungen ermöglicht. Sie stellt über den Paketmanager "\textit{npm}" Werkzeuge zur Verwaltung und Bereitstellung von externen Paket-Abhängigkeiten sowie Entwickler-Tools bereit. Neben dem Betrieb eines Webservers ermöglicht \textit{Node.js} auch die serverseitige Verarbeitung von API-Anfragen und die Anbindung an Datenbanken.
+
+\subsection{Docker} \label{cha:grundlagen:swtech:docker}
