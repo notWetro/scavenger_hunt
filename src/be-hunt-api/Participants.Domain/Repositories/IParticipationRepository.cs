@@ -19,6 +19,11 @@ namespace Participants.Domain.Repositories
         /// <returns>A similar participation that the user is trying to do.</returns>
         public Task<Participation?> GetByIdAndUsernameAsync(int huntId, string username);
 
+        /// <summary>
+        /// Makes participations by given id invalid.
+        /// </summary>
+        /// <param name="huntId">Identifier of hunt.</param>
+        public Task MakeInvalidByHuntIdAsync(int huntId);
 
         /// <summary>
         /// Get a participation.

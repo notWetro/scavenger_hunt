@@ -9,6 +9,7 @@ namespace Hunts.Api.Profiles
         public HintProfile()
         {
             CreateMap<Hint, HintInnerGetDto>();
+            CreateMap<HintInnerUpdateDto, Hint>();
             CreateMap<HintInnerCreateDto, Hint>();
             CreateMap<Hint, HintPublishDto>();
             CreateMap<HintPublishDto, Hint>();

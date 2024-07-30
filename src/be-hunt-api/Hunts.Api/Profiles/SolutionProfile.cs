@@ -9,6 +9,7 @@ namespace Hunts.Api.Profiles
         public SolutionProfile()
         {
             CreateMap<Solution, SolutionInnerGetDto>();
+            CreateMap<SolutionInnerUpdateDto, Solution>();
             CreateMap<SolutionInnerCreateDto, Solution>();
             CreateMap<Solution, SolutionPublishDto>();
             CreateMap<SolutionPublishDto, Solution>();

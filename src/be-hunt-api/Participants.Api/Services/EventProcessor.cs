@@ -18,15 +18,6 @@ namespace Participants.Api.Services
             string decodedString = Regex.Unescape(message);
             Console.WriteLine(decodedString);
 
-            // TODO: Do stuff with the message.
-            // Created => Add new KVP to Redis store or sth like that
-            // Updated => Replace current KVP with new one + check for conflicts
-            // Deleted => Remove current KVP + check for conflicts
-
-            // TODO: THINGS TO CONSIDER for Updated/Deleted
-            // 1) Participant has done assignment that now doesn't exist anymore => Set flag of participation to invalid, Controllers should return that too
-            // 2) When a Hunt was deleted all Participations should be deleted aswell
-
             var evenType = DetermineEvent(message);
             var hunt = DetermineHunt(message);
             if (hunt is null)
@@ -39,11 +30,17 @@ namespace Participants.Api.Services
                     break;
                 case EventType.HuntUpdated:
 
-                    // TODO: Retrieve old hunt (if exists). Retrieve participations with said hunt.
-                    // TODO: Check if a participation has done assignment that now doesn't exist anymore.
-                    // TODO: Change status of a participation to "invalid" if so.
+                    var updatingHunt = _cache.GetHuntAsync(hunt.Id).Result;
+                    if (updatingHunt is not null)
+                    {
+                        using (var scope = _serviceProvider.CreateScope())
+                        {
+                            var participationService = scope.ServiceProvider.GetService<IParticipationRepository>();
+                            participationService?.MakeInvalidByHuntIdAsync(hunt.Id).Wait();
+                        }
+                    }
 
-                    _cache.UpdateHuntAsync(hunt.Id, hunt.Assignments);
+                    _cache.UpdateHuntAsync(hunt.Id, hunt.Title, hunt.Assignments);
                     break;
 
                 case EventType.HuntCreated:
@@ -52,8 +49,11 @@ namespace Participants.Api.Services
 
                 case EventType.HuntDeleted:
                     _cache.DeleteHuntAsync(hunt.Id);
-                    var participationService = _serviceProvider.GetService<IParticipationRepository>();
-                    participationService?.DeleteByIdAsync(hunt.Id);
+                    using (var scope = _serviceProvider.CreateScope())
+                    {
+                        var participationService = scope.ServiceProvider.GetService<IParticipationRepository>();
+                        participationService?.DeleteByIdAsync(hunt.Id);
+                    }
                     break;
             }
         }

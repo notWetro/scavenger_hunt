@@ -1,4 +1,6 @@
-﻿namespace Hunts.Api.DTOs.Hunt
+﻿using Hunts.Api.DTOs.Assignment;
+
+namespace Hunts.Api.DTOs.Hunt
 {
     public sealed class HuntUpdateDto
     {
@@ -16,5 +18,7 @@
         /// A description usually contains additional information of a hunt.
         /// </summary>
         public string Description { get; set; } = string.Empty;
+
+        public ICollection<AssignmentInnerUpdateDto> Assignments { get; set; } = [];
     }
 }

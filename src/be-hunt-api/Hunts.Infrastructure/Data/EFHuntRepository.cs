@@ -1,6 +1,8 @@
 ﻿using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.Design;
 
 namespace Hunts.Infrastructure.Data
 {
@@ -63,16 +65,37 @@ namespace Hunts.Infrastructure.Data
         {
             try
             {
-                var existingHunt = await _context.ScavengerHunts.FindAsync(hunt.Id);
+                var existingHunt = await _context.ScavengerHunts
+                                         .Include(h => h.Assignments)
+                                         .FirstOrDefaultAsync(h => h.Id == hunt.Id);
 
-                if (existingHunt is not null)
+                if (existingHunt is null)
+                    return false;
+                
+                _context.Entry(existingHunt).State = EntityState.Detached;
+
+                // Update the main entity
+                _context.Entry(hunt).State = EntityState.Modified;
+
+                // Handle Assignments
+                foreach (var assignment in existingHunt.Assignments.ToList())
                 {
-                    _context.Entry(existingHunt).State = EntityState.Detached;
+                    // Remove hunts to maintain order
+                    _context.Assignments.Remove(assignment);
                 }
 
-                _context.Entry(hunt).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                foreach (var assignment in hunt.Assignments)
+                {
+                    var existingAssignment = existingHunt.Assignments.FirstOrDefault(a => a.Id == assignment.Id);
+                    
+                    if (existingAssignment is null)
+                        _context.Assignments.Add(assignment);
+                    
+                    else
+                        _context.Entry(existingAssignment).CurrentValues.SetValues(assignment);
+                }
 
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)

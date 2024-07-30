@@ -116,5 +116,23 @@ namespace Participants.Infrastructure.Data
                 return [];
             }
         }
+
+        public async Task MakeInvalidByHuntIdAsync(int huntId)
+        {
+            try
+            {
+                var participations = await _context.Participations.Where(p => p.HuntId == huntId).ToListAsync();
+
+                foreach (var participation in participations)
+                    participation.Status = ParticipationStatus.Invalid;
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _ = ex.Message;
+            }
+        }
     }
 }

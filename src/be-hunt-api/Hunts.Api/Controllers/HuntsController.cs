@@ -68,17 +68,20 @@ namespace Hunts.Api.Controllers
             if (hunt is null)
                 return NotFound();
 
-            hunt.Title = scavengerHuntDto.Title;
-            hunt.Description = scavengerHuntDto.Description;
+            var updatedHunt = _mapper.Map<Hunt>(scavengerHuntDto);
 
-            var res = await _huntRepository.UpdateAsync(hunt);
+            if(updatedHunt is null)
+                return BadRequest();
+            
+            var res = await _huntRepository.DeleteByIdAsync(id);
+            var res2 = await _huntRepository.AddAsync(updatedHunt);
 
-            if (!res)
+            if(res2 == -1)
                 return BadRequest();
 
             try
             {
-                var huntPublish = _mapper.Map<HuntPublishDto>(hunt);
+                var huntPublish = _mapper.Map<HuntPublishDto>(updatedHunt);
                 huntPublish.Event = "Hunt_Updated";
                 messageBus.PublishNewHunt(huntPublish);
             }
@@ -87,7 +90,7 @@ namespace Hunts.Api.Controllers
                 Console.WriteLine($"Couldn't publish new hunt to message bus: {ex.Message}");
             }
 
-            return Ok(res);
+            return Ok(true);
         }
 
         #endregion

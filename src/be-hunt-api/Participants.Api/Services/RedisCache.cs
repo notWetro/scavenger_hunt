@@ -38,9 +38,16 @@ namespace Participants.Api.Services
             await Task.WhenAll(tasks);
         }
 
-        public Task UpdateHuntAsync(int huntId, ICollection<Assignment> assignments)
+        public async Task UpdateHuntAsync(int huntId, string title, ICollection<Assignment> assignments)
         {
-            throw new NotImplementedException();
+            var hunt = await this.DeleteHuntAsync(huntId);
+
+            if(hunt is not null)
+            {
+                hunt.Title = title;
+                hunt.Assignments = assignments;
+                await this.SaveHuntAsync(hunt);
+            }
         }
 
         public async Task<Hunt?> GetHuntAsync(int huntId)
