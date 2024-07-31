@@ -6,12 +6,10 @@
 	export let data: string = '';
 
 	onMount(() => {
-		console.log('SOOOSEE');
 		startScanner();
 	});
 
 	onDestroy(() => {
-		console.log('EESOOOS');
 		try {
 			stopScanner();
 		} catch (error) {
@@ -66,7 +64,6 @@
 						{ facingMode: 'environment' },
 						{
 							fps: 10
-							// qrbox: getDynamicQrBoxSize
 						},
 						onScanSuccess,
 						onScanFailure

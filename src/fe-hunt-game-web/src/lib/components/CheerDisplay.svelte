@@ -10,7 +10,7 @@
 	<p>You completed the Scavenger Hunt!</p>
 	<p>You are the best!</p>
 
-	<Confetti colorArray={['#6D49FC', '#00AAF9', '#939FFC']} amount={200} fallDistance="900px" cone />
+	<Confetti colorArray={['#6D49FC', '#00AAF9', '#939FFC']} amount={150} fallDistance="900px" cone />
 
 	<div class="flex flex-col" transition:fade={{ delay: 2000, duration: 250 }}>
 		<Button href="/home">Back to home!</Button>

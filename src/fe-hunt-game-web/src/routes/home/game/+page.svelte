@@ -11,7 +11,6 @@
 	import { Button } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { XIcon } from 'lucide-svelte';
 
 	let currentHunt: HuntLoginResponse;
 	let currentAssignment: HuntAssignmentResponse;
@@ -57,8 +56,7 @@
 		if (response.status === 269) {
 			isFinished = true;
 		} else {
-			const responseData = (await response.json()) as HuntAssignmentResponse;
-			currentAssignment = responseData;
+			currentAssignment = (await response.json()) as HuntAssignmentResponse;
 		}
 	}
 

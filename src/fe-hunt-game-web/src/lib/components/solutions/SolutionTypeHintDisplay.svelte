@@ -23,6 +23,7 @@
 			QR-Code
 		{:else if type === 1}
 			<!-- Type 1 means Text -->
+			Text
 		{:else if type === 2}
 			<!-- Type 2 means Location -->
 			Location

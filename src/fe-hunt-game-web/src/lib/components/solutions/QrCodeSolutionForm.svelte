@@ -34,7 +34,6 @@
 	</div>
 
 	<p class="p-4">Once the QR-Code has been scanned it will be submitted.</p>
-	<!-- <p class="p-4">{data}</p> -->
 </Card>
 
 <style>

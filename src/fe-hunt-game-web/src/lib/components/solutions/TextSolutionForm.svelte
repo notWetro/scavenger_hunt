@@ -16,7 +16,7 @@
 	<div class="flex flex-row items-center text-center">
 		<TextCursorInputIcon class="w-8 h-8 mb-2 mr-2 text-primary-800" />
 		<h5
-			class="mb-2 text-xl font-semibold underline underline-offset-4 tracking-tight text-primary-800 dark:text-white"
+			class="mb-2 text-xl font-semibold underline underline-offset-4 tracking-tight text-primary-800"
 		>
 			Submit Solution
 		</h5>
