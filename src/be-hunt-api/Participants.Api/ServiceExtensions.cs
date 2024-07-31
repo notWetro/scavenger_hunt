@@ -84,6 +84,7 @@ namespace Participants.Api
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => builder
                         .WithOrigins("http://localhost:5173")
+                        .WithOrigins("http://localhost:4173")
                         .AllowAnyHeader()
                         .AllowAnyMethod());
             });

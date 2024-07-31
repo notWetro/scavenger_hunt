@@ -1,8 +1,6 @@
 ﻿using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.Design;
 
 namespace Hunts.Infrastructure.Data
 {

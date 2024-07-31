@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Hunts.Api.Services
 {
-    public class MessageBusClient : IMessageBusClient
+    public sealed class MessageBusClient : IMessageBusClient
     {
         private readonly IConnection? _connection;
         private readonly IModel? _channel;

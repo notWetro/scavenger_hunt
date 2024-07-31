@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Participants.Api.DTOs.Login;
 using Participants.Api.DTOs.Participation;
 using Participants.Api.Services;
 using Participants.Domain.Entities;
@@ -7,18 +8,6 @@ using Participants.Domain.Repositories;
 
 namespace Participants.Api.Controllers
 {
-    public sealed class UserCredentials
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
-    }
-
-    public sealed class ParticipationStatsDto
-    {
-        public required int ParticipantCount { get; set; }
-        public required int ParticipationCount { get; set; }
-    }
-
     [Route("api/[controller]")]
     [ApiController]
     public sealed class ParticipationsController(IParticipantRepository prepository, IParticipationRepository parepository, ICache cache, IMapper mapper) : ControllerBase

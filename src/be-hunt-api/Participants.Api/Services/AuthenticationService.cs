@@ -9,7 +9,7 @@ namespace Participants.Api.Services
         void Logout(string token);
     }
 
-    public class AuthenticationService(IParticipantRepository participantRepository, ITokenService tokenService) : IAuthenticationService
+    public sealed class AuthenticationService(IParticipantRepository participantRepository, ITokenService tokenService) : IAuthenticationService
     {
         private readonly IParticipantRepository _participantRepository = participantRepository;
         private readonly ITokenService _tokenService = tokenService;

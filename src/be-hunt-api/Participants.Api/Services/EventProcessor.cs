@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Participants.Api.Services
 {
-    public class EventProcessor(ICache cache, IServiceProvider serviceProvider) : IEventProcessor
+    public sealed class EventProcessor(ICache cache, IServiceProvider serviceProvider) : IEventProcessor
     {
         private readonly ICache _cache = cache;
         private readonly IServiceProvider _serviceProvider = serviceProvider;

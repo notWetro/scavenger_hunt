@@ -12,7 +12,7 @@ namespace Participants.Api.Services
         void InvalidateToken(string token);
     }
 
-    public class TokenService(IConfiguration configuration) : ITokenService
+    public sealed class TokenService(IConfiguration configuration) : ITokenService
     {
         private readonly IConfiguration _configuration = configuration;
 
@@ -45,6 +45,7 @@ namespace Participants.Api.Services
         {
             // Token invalidation logic (if using a token store)
             // For JWT, typically tokens are just not renewed or stored.
+            throw new NotImplementedException();
         }
     }
 }

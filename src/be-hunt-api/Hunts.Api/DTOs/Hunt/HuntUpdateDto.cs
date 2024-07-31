@@ -12,12 +12,12 @@ namespace Hunts.Api.DTOs.Hunt
         /// <summary>
         /// A title usually contains a topic of a hunt.
         /// </summary>
-        public string Title { get; set; } = string.Empty;
+        public required string Title { get; set; }
 
         /// <summary>
         /// A description usually contains additional information of a hunt.
         /// </summary>
-        public string Description { get; set; } = string.Empty;
+        public required string Description { get; set; }
 
         public ICollection<AssignmentInnerUpdateDto> Assignments { get; set; } = [];
     }
