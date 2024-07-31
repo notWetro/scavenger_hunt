@@ -1,3 +1,4 @@
+// images needed to display the carousel
 export const images = [
 	{
 		alt: 'Bibliothek Hs Aalen Campus Burren',
@@ -24,10 +25,4 @@ export const images = [
 		src: 'https://www.german-architects.com/images/Projects/00/99/91/78c7756fc4d14421a64192acf9c0e8c0/78c7756fc4d14421a64192acf9c0e8c0.6e7b65d0.jpg?1493329192',
 		title: 'Hs Aalen Cafeteria Innen'
 	}
-
-	// {
-	//     alt: 'Solo travel goals',
-	//     src: '/images/carousel/solotravelgoals-7kLufxYoqWk-unsplash.webp',
-	//     title: 'solotravelgoals-7kLufxYoqWk-unsplash'
-	// }
 ];

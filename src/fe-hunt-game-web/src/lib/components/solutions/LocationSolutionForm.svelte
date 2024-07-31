@@ -9,8 +9,7 @@
 
 	async function submitSolution() {
 		try {
-			const locationData = await getCurrentLocation();
-			data = locationData;
+			data = await getCurrentLocation();
 			dispatch('SubmitData');
 		} catch (error) {
 			console.error(error);

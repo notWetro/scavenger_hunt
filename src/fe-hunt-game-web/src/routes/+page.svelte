@@ -2,25 +2,23 @@
 	import { images } from '$lib/images/images';
 	import { Carousel, Timeline, TimelineItem } from 'flowbite-svelte';
 	import { Button } from 'flowbite-svelte';
-	import { ArrowRightIcon } from 'lucide-svelte';
+	import { LogIn } from 'lucide-svelte';
 </script>
 
-<div>
-	<Carousel {images} duration={3000} let:Indicators>
-		<Indicators />
-	</Carousel>
-</div>
+<Carousel {images} duration={3000} let:Indicators imgClass="object-fit lg:object-scale-down">
+	<Indicators />
+</Carousel>
 
 <div class="m-4 text-end">
 	<h1 class="text-xl font-bold mb-8">The Schnitzeljagd Game</h1>
-	<p class="font-semibold mb-2">Discover Aalen University in a fun way!</p>
+	<p class="font-semibold mb-2">Discover Aalen University in a fun way</p>
 	<p class="mb-4">
-		Log in here and experience our interactive scavenger hunt - an exciting way to explore the
-		campus and make new friends.
+		Log in here and experience our interactive scavenger hunts - an exciting way to explore the
+		campus and make new friends
 	</p>
 	<Button href="/login">
 		Log in now!
-		<ArrowRightIcon class="ml-4" />
+		<LogIn class="ml-4" />
 	</Button>
 </div>
 

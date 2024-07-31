@@ -15,6 +15,11 @@
 	let password: string = '';
 
 	let isLastFail: boolean = false;
+	/**
+	 * Reactive statement that checks if the last login attempt failed.
+	 * If it did, it waits for 2000 milliseconds (2 seconds) before resetting the `isLastFail` flag to false.
+	 * This provides a delay before the user can attempt to log in again.
+	 */
 	$: {
 		if (isLastFail) {
 			wait(2000).then(() => {

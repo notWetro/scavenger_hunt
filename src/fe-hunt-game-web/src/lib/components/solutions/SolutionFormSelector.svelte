@@ -8,6 +8,7 @@
 	import { token } from '$lib/stores/tokenStore';
 	import { createEventDispatcher } from 'svelte';
 	import SubmissionHintDisplay from './SubmissionHintDisplay.svelte';
+	import { get } from 'svelte/store';
 
 	const dispatch = createEventDispatcher();
 
@@ -25,10 +26,10 @@
 
 	async function submitSolution() {
 		if (!data) throw Error('data is not defined!');
-		const token = $token;
+		const currentToken = get(token);
 		const huntId = $playingHunt.id;
 		console.log('huntId = ', huntId);
-		console.log('token = ', token);
+		console.log('token = ', currentToken);
 		console.log('data = ', data);
 
 		const response = await fetch(
@@ -37,7 +38,7 @@
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: $token
+					Authorization: currentToken
 				},
 				body: JSON.stringify({ data })
 			}
