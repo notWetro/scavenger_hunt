@@ -29,7 +29,7 @@ namespace Hunts.Infrastructure
                 .WithOne(a => a.Hunt)
                 .HasForeignKey(a => a.HuntId)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             base.OnModelCreating(builder);
         }
     }

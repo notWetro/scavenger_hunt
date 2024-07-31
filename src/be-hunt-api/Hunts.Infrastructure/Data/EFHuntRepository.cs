@@ -69,7 +69,7 @@ namespace Hunts.Infrastructure.Data
 
                 if (existingHunt is null)
                     return false;
-                
+
                 _context.Entry(existingHunt).State = EntityState.Detached;
 
                 // Update the main entity
@@ -85,10 +85,10 @@ namespace Hunts.Infrastructure.Data
                 foreach (var assignment in hunt.Assignments)
                 {
                     var existingAssignment = existingHunt.Assignments.FirstOrDefault(a => a.Id == assignment.Id);
-                    
+
                     if (existingAssignment is null)
                         _context.Assignments.Add(assignment);
-                    
+
                     else
                         _context.Entry(existingAssignment).CurrentValues.SetValues(assignment);
                 }

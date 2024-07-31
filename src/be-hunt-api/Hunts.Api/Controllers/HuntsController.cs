@@ -70,13 +70,13 @@ namespace Hunts.Api.Controllers
 
             var updatedHunt = _mapper.Map<Hunt>(scavengerHuntDto);
 
-            if(updatedHunt is null)
+            if (updatedHunt is null)
                 return BadRequest();
-            
+
             var res = await _huntRepository.DeleteByIdAsync(id);
             var res2 = await _huntRepository.AddAsync(updatedHunt);
 
-            if(res2 == -1)
+            if (res2 == -1)
                 return BadRequest();
 
             try

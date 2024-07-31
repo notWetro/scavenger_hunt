@@ -42,7 +42,7 @@ namespace Participants.Api.Services
         {
             var hunt = await this.DeleteHuntAsync(huntId);
 
-            if(hunt is not null)
+            if (hunt is not null)
             {
                 hunt.Title = title;
                 hunt.Assignments = assignments;
