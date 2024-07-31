@@ -43,32 +43,13 @@
 
 	async function updateHunt() {
 		console.log('Hunt:', hunt);
-		// Map solutionType and hintType strings to numbers
-		const solutionTypeMapping = { QRCode: 0, Text: 1, Location: 2 };
-		const hintTypeMapping = { Text: 0, Image: 1 };
 
-		// Create a new huntData object with modified assignments
-		const huntData = {
-			...hunt,
-			assignments: hunt.assignments.map((assignment) => ({
-				...assignment,
-				solution: {
-					...assignment.solution,
-					solutionType: solutionTypeMapping[assignment.solution.solutionType]
-				},
-				hint: {
-					...assignment.hint,
-					hintType: hintTypeMapping[assignment.hint.hintType]
-				}
-			}))
-		};
-
-		const response = await fetch(`${PUBLIC_API_URL}/hunts/${huntData.id}`, {
+		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(huntData)
+			body: JSON.stringify(hunt)
 		});
 		if (!response.ok) {
 			throw new Error(`Failed to create Hunt: ${response.status}`);
