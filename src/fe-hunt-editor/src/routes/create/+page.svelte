@@ -41,7 +41,6 @@
 
 {#if $currentStep === 2}
 	<AssignmentsEditor on:assignmentsSaved={advanceToNextStep} />
-	<!-- <EditTasks on:Finished={advanceToNextStep} /> -->
 {/if}
 
 {#if $currentStep === 3}
@@ -50,7 +49,7 @@
 
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="text-3xl font-bold mb-5">Schnitzeljagd erfolgreich erstellt!</h1>
-		<Button on:click={createNewHunt}>Neue Schnitzeljagd erstellen</Button>
+		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully created!</h1>
+		<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
 	</div>
 {/if}

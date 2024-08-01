@@ -66,13 +66,11 @@
 							';'
 						)[1]}
 					{:else if assignment.solution.solutionType === SolutionType.QRCode}
-						<!--						TODO: check if this error is important-->
 						<img src={qrCodes.find((qr) => qr.id === assignment.id)?.qrUrl || ''} alt="QR Code" />
 					{/if}
 				</TableBodyCell>
 				<TableBodyCell>
 					{#if assignment.solution.solutionType === SolutionType.QRCode}
-						<!--						TODO: check if this error is important-->
 						<Button
 							on:click={() =>
 								downloadQRCode(

@@ -7,12 +7,13 @@
 	import { SolutionType } from '$lib/models/Solution';
 	import { huntStore } from '$lib/stores/huntStore';
 	import { createEventDispatcher } from 'svelte';
+	import { checkValidData } from '$lib/utils/validationUtil';
 
 	const dispatch = createEventDispatcher();
 
 	export let assignments: Assignment[] = [];
 
-	let isValidData = true;
+	$: isValidData = checkValidData(assignments);
 
 	// This has to be -1 so that the increment in createEmptyAssignment maps the id to the index of the array
 	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : -1;

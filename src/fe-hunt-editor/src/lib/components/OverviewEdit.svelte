@@ -59,13 +59,13 @@
 </script>
 
 <div class="flex flex-col">
-	<h1 class="font-semibold text-2xl">Titel: {hunt.title}</h1>
-	<p>Beschreibung: {hunt.description}</p>
+	<h1 class="font-semibold text-2xl">Title: {hunt.title}</h1>
+	<p>Description: {hunt.description}</p>
 </div>
 
 <OverviewTable {qrCodes} />
 
 <Button class="mt-5" on:click={updateHunt}>
 	<Goal class="mr-2" />
-	Schnitzeljagd aktualisieren
+	Update scavenger hunt
 </Button>

@@ -9,7 +9,7 @@
 
 	onMount(async () => {
 		await reloadHunts();
-		console.log('received hunts from backend', hunts);
+		console.log('received hunts from backend:', hunts);
 	});
 
 	async function reloadHunts() {

@@ -18,9 +18,6 @@
 				lngLat: [lng, lat]
 			};
 		}
-		console.log(textValue);
-		console.log(lat);
-		console.log(lng);
 	});
 
 	let marker: any | null;

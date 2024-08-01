@@ -51,7 +51,7 @@
 
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
-		<h1 class="text-3xl font-bold mb-5">Schnitzeljagd erfolgreich aktualisiert!</h1>
-		<Button on:click={createNewHunt}>Neue Schnitzeljagd erstellen</Button>
+		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully updated!</h1>
+		<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
 	</div>
 {/if}

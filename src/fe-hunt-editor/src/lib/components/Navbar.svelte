@@ -15,7 +15,6 @@
 		</NavBrand>
 		<NavHamburger on:click={toggle} />
 		<NavUl {hidden}>
-			<NavLi href="/about">About</NavLi>
 			<NavLi href="/create">Create</NavLi>
 		</NavUl>
 	</NavContainer>
