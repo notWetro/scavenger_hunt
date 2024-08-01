@@ -1,0 +1,22 @@
+\chapter{Anhang: Implementierung und Inbetriebnahme}
+
+\textit{Hinweis}: Der gesamte im Rahmen der Projektarbeit entstandene Source-Code steht im folgenden Github-Repository zur Verfügung: \href{https://github.com/xLolalilo/hsaa-projektarbeit}{xLolalilo/hsaa-projektarbeit}.
+
+\section{Containerisierung des Backends} \label{appendix:code:dockercompose}
+
+Im Projekt-Repository befinden sich folgende Dateien für das Realisieren der Containerisierung des Backends:
+
+\begin{itemize}
+    \item \textbf{Hunts}- und \textbf{Participants} Api Dockerfiles: Siehe \href{https://github.com/xLolalilo/hsaa-projektarbeit/blob/develop/src/be-hunt-api/Hunts.Api/Dockerfile}{hier} und \href{https://github.com/xLolalilo/hsaa-projektarbeit/blob/develop/src/be-hunt-api/Participants.Api/Dockerfile}{hier}.
+    \item \textbf{Migrations}: Siehe \href{https://github.com/xLolalilo/hsaa-projektarbeit/blob/develop/src/be-hunt-api/Hunts.Infrastructure/Dockerfile}{hier} und \href{https://github.com/xLolalilo/hsaa-projektarbeit/blob/develop/src/be-hunt-api/Participants.Infrastructure/Dockerfile}{hier}.
+    \item \textbf{Proxy} Konfiugration und Dockerfile: Siehe \href{https://github.com/xLolalilo/hsaa-projektarbeit/tree/develop/src/be-hunt-api/Proxy}{hier}.
+    \item \textbf{Docker-Compose}: Siehe \href{https://github.com/xLolalilo/hsaa-projektarbeit/blob/develop/src/be-hunt-api/docker-compose.yaml}{hier}.
+\end{itemize}
+
+\section{Dynamic Routing in Svelte} \label{appendix:code:dynamicrouting}
+
+Das dynamic Routing findet beispielsweise in der Participation Web App Verwendung. Siehe \href{https://github.com/xLolalilo/hsaa-projektarbeit/tree/develop/src/fe-hunt-participation/src/routes/participation/%5BhuntId%5D}{hier}.
+
+\section{Walkthrough der Web-Apps} \label{appendix:code:walkthrough}
+
+Walkthroughs zu den unterschiedlichen Web Anwendungen können \href{https://github.com/xLolalilo/hsaa-projektarbeit/tree/develop/vids}{hier} herruntergeladen werden.

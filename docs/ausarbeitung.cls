@@ -323,7 +323,7 @@
   \psbtrue%
 }
 \newcommand{\Projektbericht}{%
-  \doctype{\DeEn{Projektbericht}%
+  \doctype{\DeEn{Projektarbeit}%
                 {Project Report}}%
   \psbfalse%
 }
@@ -352,8 +352,17 @@
 
 \def\AbgabeDatumTok{\@empty}
 
-%\def\@matrikelnr{}
-\def\matrikelnr#1{\def\@matrikelnr{#1}}%
+%\def\@authorFirst{}
+\def\authorFirst#1{\def\@authorFirst{#1}}%
+
+%\def\@authorSecond{}
+\def\authorSecond#1{\def\@authorSecond{#1}}%
+
+%\def\@matrikelnrFirst{}
+\def\matrikelnrFirst#1{\def\@matrikelnrFirst{#1}}%
+
+%\def\@matrikelnrSecond{}
+\def\matrikelnrSecond#1{\def\@matrikelnrSecond{#1}}%
 
 %\def\@companyname{}
 \def\companyname#1{\def\@companyname{#1}}%
@@ -398,19 +407,19 @@
 		     {at} \par%
 		\Large\@companyname\bigskip%
 		\fi%	
-		\ifx\@author\undefined%
+		\ifx\@authorFirst, \@authorSecond\undefined%
 %
 		\else%
 		\par \large \color{black}%
 		\DeEn{von}%
 		     {by} \par%		
-		\Large\@author%
+		\Large\@authorFirst, \@authorSecond%
 		\fi%
-		\ifx\@matrikelnr\undefined%
+		\ifx\@matrikelnrFirst, \@matrikelnrSecond\undefined%
 %
         \else%
         \par\Large \color{gray}%
-        \@matrikelnr%
+        \@matrikelnrFirst, \@matrikelnrSecond%
         \fi%
   	\end{center}
 	\vfill
@@ -523,11 +532,13 @@
 \DeEn{\addcontentsline{toc}{chapter}{Eidesstattliche Erkl\"arung}}%
      {\addcontentsline{toc}{chapter}{Statutory Declaration}}
 
+% ---- AUTOR 1
+
 \DeEn{%
-  Hiermit erkl\"are ich, \textbf{\@author}, dass ich die vorliegenden Angaben
+  Hiermit erkl\"are ich, \textbf{\@authorFirst}, dass ich die vorliegenden Angaben
   in dieser Arbeit%
 }{%
-  I, \textbf{\@author}, hereby declare that I have wrote the information
+  I, \textbf{\@authorFirst}, hereby declare that I have wrote the information
   available in this work%
 }
 \ifx\@companyname\undefined
@@ -549,10 +560,48 @@
   other sources, and that the work in the same or similar was not yet part of a
   study or examination.%
 }
-\vspace{4em}
+\vspace{2em}
 
 \DeEn{\makebox[\textwidth/2]{Ort, Datum} Unterschrift (Student)}%
      {\makebox[\textwidth/2]{Location, Date} Signature (Student)}
+
+\vspace{4em}
+
+% ---- AUTOR 2
+
+\DeEn{%
+  Hiermit erkl\"are ich, \textbf{\@authorSecond}, dass ich die vorliegenden Angaben
+  in dieser Arbeit%
+}{%
+  I, \textbf{\@authorSecond}, hereby declare that I have wrote the information
+  available in this work%
+}
+\ifx\@companyname\undefined
+\else
+\DeEn{bei}{at} \textbf{\@companyname}%
+\fi
+\DeEn{wahrheitsgetreu und selbständig verfasst habe.}%
+     {truthfully and independently by myself.}
+
+\DeEn{%
+  Weiterhin versichere ich, keine anderen als die angegebenen Quellen und
+  Hilfsmittel benutzt zu haben, dass alle Ausführungen, die anderen 
+  Schriften w\"ortlich oder sinngem\"a\ss{} entnommen wurden, kenntlich 
+  gemacht sind und dass die Arbeit in gleicher oder \"ahnlicher Fassung 
+  noch nicht Bestandteil einer Studien- oder Prüfungsleistung war.%
+}{%
+  Furthermore, I assure that I have used no other than the specified
+  sources and aids, that I have marked all quotations that I have used from
+  other sources, and that the work in the same or similar was not yet part of a
+  study or examination.%
+}
+\vspace{2em}
+
+\DeEn{\makebox[\textwidth/2]{Ort, Datum} Unterschrift (Student)}%
+     {\makebox[\textwidth/2]{Location, Date} Signature (Student)}
+
+
+     
 \ifx\@companyname\undefined
 \else
 \ifx\@advisorname\undefined

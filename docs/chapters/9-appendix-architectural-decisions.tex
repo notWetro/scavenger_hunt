@@ -2,13 +2,49 @@
 
 \section{Architektonische Entscheidungen}
 
-\subsection{Wahl eines Message-Bus für das Hunt-Api Backend}
+\subsection{Wahl eines Message-Bus für das Hunt-Api Backend} \label{appendix:adr:messagebus}
 
-% TODO: Beschreiben was für ein grund das hat, aka nicht valide teilnahmen erkennen.
+\subsubsection{Kontext}
 
-\subsection{Wahl eines Api-Gateways für das Hunt-Api Backend}
+Im Rahmen der Konzeption der Backend Architektur ist zu berücksichtigen, dass das Erstellen von Schnitzeljagden und die Teilnahme an diesen zwei unterschiedlichen Domänen zuzuordnen sind. Allerdings spielen die Erstellung neuer Schnitzeljagden sowie das Bearbeiten und Entfernen bestehender Schnitzeljagden im Rahmen der Teilnahme eine wesentliche Rolle.
 
-% TODO: Beschreiben was das auf sich hat, aka nicht services einzelnd pingen aber einheitliche schnittstelle + eventuelle service sicherheit die später kommt durch sonder headers and stuff wenn wir das machen aber architektonisch einfach bessere wahl, ja der text macht grad wenig sinn weil ich aus irgwend nem grund irgendwas tippen will, bitte lächeln 
+\subsubsection{Entscheidung}
+
+Für die (unidirektionale) Kommunikation von dem Hunts-Service zu dem Participants-Service soll ein Message-Bus verwendet werden.
+
+\subsubsection{Begründung}
+
+\begin{itemize}
+    \item \textbf{Validierung und Entkopplung}: Einkommende Events können mühelos von einem \textit{Event-Processor} abgefangen und gekoppelt verarbeitet werden. Durch die Verwendung eines Message-Bus wird die direkte Abhängigkeit zwischen Hunts-Service und Participants-Service minimiert. Beide Services können unabhängig voneinander weiterentwickelt und gewartet werden.
+    \item \textbf{Erweiterbarkeit}: Ein Message-Bus ermöglicht es, weitere Services problemlos hinzuzufügen, die ebenfalls auf die Nachrichten des Hunts-Service reagieren können. Dies erleichtert zukünftige Erweiterungen des Systems.
+    \item \textbf{Skalierbarkeit}: Der Message-Bus kann die Last verteilen und Nachrichten in einer Weise verarbeiten, die es ermöglicht, die Anzahl der Teilnehmer oder die Komplexität der Schnitzeljagden ohne Leistungseinbußen zu erhöhen.
+\end{itemize}
+
+\subsubsection{Konsequenzen}
+
+\begin{itemize}
+    \item \textbf{Operationaler Overhead}: Die Einführung und Wartung eines Message-Bus erfordert zusätzliche Infrastruktur und Überwachung, was den operativen Aufwand erhöhen kann.
+    \item \textbf{Latenz}: Da die Kommunikation über einen Message-Bus asynchron erfolgt, kann es zu einer zusätzlichen Latenz kommen, bis Nachrichten verarbeitet werden.
+    \item \textbf{Komplexität des Debuggings}: Das Debugging von Problemen kann komplexer werden, da die Nachrichtenverarbeitung verteilt ist und möglicherweise in mehreren Services parallel abläuft.
+\end{itemize}
+
+\subsection{Wahl eines Api-Gateways für das Hunt-Api Backend} \label{appendix:adr:proxy}
+
+\subsubsection{Kontext}
+
+Im Rahmen der Konzeption der Backend Architektur ist zu berücksichtigen, dass mehrere Dienste (Microservices) vorhanden sind.
+
+\subsubsection{Entscheidung}
+
+Über ein Api-Gateway soll die Kommunikation des Backends einheitlich erfolgen.
+
+\subsubsection{Begründung}
+
+Ein API-Gateway bietet eine zentrale Anlaufstelle für Anfragen an die verschiedenen Microservices. Dies vereinfacht die Verwaltung und Überwachung der Kommunikation zwischen den Diensten und den externen Clients. Durch die einheitliche Schnittstelle des API-Gateways wird die Notwendigkeit eliminiert, dass Clients direkt mit den einzelnen Microservices interagieren müssen. Dies reduziert die Komplexität auf Client-Seite und ermöglicht eine bessere Kontrolle und Sicherheit der gesamten Systemarchitektur. Außerdem kann das API-Gateway zusätzliche Funktionen wie Authentifizierung, Autorisierung und Lastverteilung bereitstellen, was die Gesamtarchitektur robuster und skalierbarer macht.
+
+\subsubsection{Konsequenzen}
+
+Durch die Einführung eines API-Gateways wird die Interaktion mit den Microservices zentralisiert, was die Verwaltung und Wartung des Systems erleichtert. Clients müssen nicht mehr direkt mit jedem einzelnen Dienst kommunizieren, sondern nur noch mit dem API-Gateway, was die Schnittstellenlandschaft vereinheitlicht. Darüber hinaus bietet das API-Gateway die Möglichkeit, sicherheitsspezifische Maßnahmen wie Authentifizierung und Autorisierung über spezielle Header zu implementieren. Langfristig führt dies zu einer robusteren und besser skalierbaren Systemarchitektur, die flexibler auf zukünftige Anforderungen reagieren kann.
 
 \subsection{Hinweise und Lösungen ohne Abstrakte Klassen} \label{appendix:adr:er}
 

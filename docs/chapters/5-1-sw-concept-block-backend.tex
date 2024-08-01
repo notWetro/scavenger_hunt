@@ -11,13 +11,13 @@ Im folgenden ist die Struktur (\textit{High-Level-Ansicht}) des Software-Systems
     \label{fig:swentwurf:blackbox}
 \end{figure}
 
-Das in Abbildung \ref{fig:swentwurf:blackbox} dargestellte Blackbox-Diagramm beschreibt den Zusammenhang der unterschiedlichen Subsysteme zueinander. Die verschiedenen Aufgaben, die das System zu leisten hat, wurden als einzelne Anwendungen vorhergesehen. Diese sind in Abbildung \ref{fig:swentwurf:blackbox} grün markiert. Dies ermöglicht eine klare Trennung der verschiedenen Domänen (Erstellung, Anmeldung, Durchführung). Das Backend steht als zentrale Schnittstelle für die Bereitstellung Systemspezifischer Funktionalitäten zur Verfügung. Dieses sind in Abbildung \ref{fig:swentwurf:blackbox} blau markiert. Für die Datenpersistierung besitzt das Backend zwei Datenbank-Verbindungen. Dieses sind in Abbildung \ref{fig:swentwurf:blackbox} rot markiert.
+Das in Abbildung \ref{fig:swentwurf:blackbox} dargestellte Blackbox-Diagramm beschreibt den Zusammenhang der unterschiedlichen Subsysteme zueinander. Die verschiedenen Aufgaben, die das System zu leisten hat, wurden als einzelne Anwendungen vorhergesehen. Diese sind in Abbildung \ref{fig:swentwurf:blackbox} grün markiert. Dies ermöglicht eine klare Trennung der verschiedenen Domänen (Erstellung, Anmeldung, Durchführung). Das Backend steht als zentrale Schnittstelle für die Bereitstellung systemspezifischer Funktionalitäten zur Verfügung. Dieses sind in Abbildung \ref{fig:swentwurf:blackbox} blau markiert. Für die Datenpersistierung besitzt das Backend zwei Datenbank-Verbindungen. Dieses sind in Abbildung \ref{fig:swentwurf:blackbox} rot markiert.
 
 \section{Hunt-Api Backend} \label{cha:swentwurf:backend}
 
 \subsection{Übersicht}
 
-Anhand einer zentral zur Verfügung stehenden Schnittstelle \textit{Hunt-Api} können die verschiedenen Anwendungen zur Gesamt-Funktionalität des Systems beitragen. Die Schnittstelle bietet verschiedene Endpunkte für die Verwaltung von Schnitzeljagden, Teilnahmen und die bewältigten Aufgaben der Teilnehmer. Eine Darstellung der Hunt-API Architektur ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} näher beschrieben.
+Anhand einer zentral zur Verfügung stehenden Schnittstelle \textit{Hunt-Api} können die verschiedenen Anwendungen zur Gesamt-Funktionalität des Systems beitragen. Die Schnittstelle bietet verschiedene Endpunkte für die Verwaltung von Schnitzeljagden, Teilnahmen und die bewältigten Aufgaben der Teilnehmer. Eine Darstellung der Hunt-Api Architektur ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} näher beschrieben.
 
 \begin{figure}[H]
     \centering
@@ -26,11 +26,11 @@ Anhand einer zentral zur Verfügung stehenden Schnittstelle \textit{Hunt-Api} k�
     \label{fig:swentwurf:huntapi:subsystem}
 \end{figure}
 
-Als Architekturmuster wurde ein domänenorientierter Ansatz gewählt, der in Kapitel \ref{cha:grundlagen:swdesign:ddd} näher erläutert wird. Jede Domäne repräsentiert dabei einen spezifischen Teilaspekt des Gesamtsystems. Die ausgewählten Domänen, \textit{Hunts} und \textit{Participants}, sind in Abbildung \ref{fig:swentwurf:huntapi:subsystem} lila hervorgehoben unr repräsentieren den jeweiligen Dienst als Microservice (vgl. Kapitel \ref{cha:grundlagen:swdesign:microservices}).
+Als Architekturmuster wurde ein domänenorientierter Ansatz gewählt, der in Kapitel \ref{cha:grundlagen:swdesign:ddd} näher erläutert wird. Jede Domäne repräsentiert dabei einen spezifischen Teilaspekt des Gesamtsystems. Die ausgewählten Domänen, \textit{Hunts} und \textit{Participants}, sind in Abbildung \ref{fig:swentwurf:huntapi:subsystem} lila hervorgehoben und repräsentieren den jeweiligen Dienst als Microservice (vgl. Kapitel \ref{cha:grundlagen:swdesign:microservices}).
 
-Für die Kommunikation unterschiedlicher Dienste ist ein Message-Bus vorhergesehen (vgl. Kapitel\ref{cha:grundlagen:swdesign:kollab:msgbus}), worüber eventgesteuert Nachrichten ausgestauscht werden. Dieser ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} grün hervorgehoben.
+Für die Kommunikation unterschiedlicher Dienste ist ein Message-Bus vorhergesehen (vgl. Kapitel \ref{cha:grundlagen:swdesign:kollab:msgbus}), worüber eventgesteuert Nachrichten ausgestauscht werden. Dieser ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} grün hervorgehoben. Wieso ein Message-Bus nötig ist, wird im Anhang \ref{appendix:adr:messagebus} näher beschrieben.
 
-Um eine einheitliche Schnittstelle bereitzustellen, die anwendungsübergreifend genutzt werden kann, wurde ein Api-Gateway vorhergesehen. Hierrüber werden Anfragen an an den entsprechenden Dienst weitergeleitet. Das API-Gateway ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} blau gekennzeichnet.
+Um eine einheitliche Schnittstelle bereitzustellen, die anwendungsübergreifend genutzt werden kann, wurde ein Api-Gateway vorhergesehen. Hierrüber werden Anfragen an an den entsprechenden Dienst weitergeleitet. Das Api-Gateway ist in Abbildung \ref{fig:swentwurf:huntapi:subsystem} blau gekennzeichnet. Im Anhang \ref{appendix:adr:proxy} wird näher beschrieben, weshalb ein Api-Gateway gewählt wurde.
 
 \subsection{Hunts-Service} \label{cha:swentwurf:huntsservice}
 
@@ -45,7 +45,7 @@ Für die Verwaltung der erstellten Schnitzeljagden eines Organisators, ist der H
     \label{fig:swentwurf:huntapi:huntservice}
 \end{figure}
 
-Innerhalb des Hunts-Service wurde ein schichtenorientierter Ansatz gewählt, welche Ähnlichkeiten mit der in Kapitel \ref{cha:grundlagen:swdesign:onion} beschriebenen \textit{Onion-Architecture} teilt. Jede Schicht entspricht einer horizontalen Teilung der unterschiedlichen Anwendungs-Aspekte. Für die Persistierung der Schnitzeljagden (Hunts) wurde das Repository-Pattern vorhergesehen.
+Innerhalb des Hunts-Service wurde ein schichtenorientierter Ansatz gewählt, welcher Ähnlichkeiten mit der in Kapitel \ref{cha:grundlagen:swdesign:onion} beschriebenen \textit{Onion-Architecture} teilt. Jede Schicht entspricht einer horizontalen Teilung der unterschiedlichen Anwendungs-Aspekte. Für die Persistierung der Schnitzeljagden (Hunts) wurde das Repository-Pattern vorhergesehen.
 
 Die grundlegende Funktionalität der Domäne (\textit{Hunts}, \textit{Assignments}, etc.) wird in der \textit{Domain-Schicht} zur Verfügung gestellt, welche in Abbildung \ref{fig:swentwurf:huntapi:huntservice} grün gekennzeichnet wird. Hier sind Modelle und Entities, sowie Datentypen, Enumerations und Repository-Interfaces definiert, die im System durchweg Verwendung finden. Die Domain-Schicht ist abgekapselt von Anwendungs- und Infrastrukturlogik und besitzt daher keine Abhängigkeiten zu externen Modulen.
 
@@ -69,7 +69,7 @@ In Abbildung \ref{fig:swentwurf:huntapi:huntservice:endpoints} sind die untersch
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{images/PrAr-Software-Entwurf-Hunt-Api-Hunt-Service-Er.png}
-    \caption{Skizze des Hunts ER-Modells}
+    \caption{Skizze ER-Modell der Hunts}
     \label{fig:swentwurf:huntapi:huntservice:er}
 \end{figure}
 
@@ -110,15 +110,19 @@ Der Participants-Service besitzt eine ähnliche Struktur wie der Hunts-Service a
 
 Abbildung \ref{fig:swentwurf:huntapi:participantservice:endpoints} definiert die vorhergesehene Schnittstelle für den Participants-Service.
 
-Unter den Endpunkten \textit{Participants} werden dem Teilnehmer die Funktionalität zum \textit{Login} angeboten. Hierrüber erhält er zusätzlich Informationen über aktuell angemeldete Schnitzeljagden. Wenn er eine ensprechende Schnitzeljagd starten oder weitermachen will, kann er hierfür den aktuellen Hinweis anfragen mittels \textit{Current-Assignment}. Wenn der Teilnehmer den Hinweis befolgt und die Lösung gefunden hat, kann er diese mittels \textit{Submit-Solution} dem System mitteilen. Das System ermittelt hierdurch, ob die Lösung korrekt ist.
+Unter dem Endpunkt \textit{Teilnehmer} wird dem Teilnehmer die Funktionalität zum \textit{Login} angeboten. Hierüber erhält er zusätzlich Informationen über die aktuell angemeldeten Schnitzeljagden. Möchte er eine entsprechende Schnitzeljagd starten oder fortsetzen, kann er dazu über \textit{Current-Assignment} den aktuellen Hinweis anfordern. Wenn der Teilnehmer dem Hinweis gefolgt ist und die Lösung gefunden hat, kann er diese dem System mit \textit{Submit-Solution} mitteilen. Das System stellt dann fest, ob die Lösung korrekt ist.
 
 Der genaue Ablauf und das Zusammenspiel der einzelnen Endpunkte wird in Kapitel \ref{cha:swentwurf:spielablauf} erläutert.
 
-Damit sich der Teilnehmer für eine Schnitzeljagd registrieren kann, ist unter dem Endpunkt \textit{Participations} mit \textit{Hunt} und entsprechender \textit{Hunt-Id} eine Registrierungsmöglichkeit vorhergesehen. Zusätzlich können allgemeine Informationen wie beispielsweise Teilnehmeranzahl oder Anzahl aller Teilnahmen an Schnitzeljagden über den Endpunkt \textit{Stats} aufgelistet werden.
+Damit sich Teilnehmer für eine Schnitzeljagd anmelden können, ist unter dem Endpunkt \textit{Teilnahmen} mit \textit{Schnitzeljagd} und entsprechender \textit{Schnitzeljagd-ID} eine Registrierungsmöglichkeit vorgesehen. Zusätzlich können allgemeine Informationen wie z.B. die Anzahl der Teilnehmer oder die Anzahl aller Teilnahmen an Schnitzeljagden über den Endpunkt \textit{Stats} aufgelistet werden.
 
 \subsubsection{Datenbank-Modell}
 
-% TODO: BILD Participation, Participant, Hunt ER-Modell
-% TODO: BILD REDIS CACHES
-% TODO: Beschreibung
-% TODO: Erklärung, wieso überhaupt Aufteilung (Hunt wird in Hunts-Service relational gespeichert, daher nicht nötig, auch hier relational zu speichern + Geschwindigkeit über Redis Cache)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/PrAr_Software-Entwurf-Hunt-Api-Participant-Service-Er.png}
+    \caption{Skizze ER-Modell zwischen Hunts und Participants}
+    \label{fig:swentwurf:huntapi:participantservice:er}
+\end{figure}
+
+Abbildung \ref{fig:swentwurf:huntapi:participantservice:er} beschreibt das gewählte Entity-Relationship-Diagramm für das Datenbankmodell des Participants-Service. Die Teilnahmen (Participants und Participations) sollen relational gespeichert werden, während die Schnitzeljagden in einem nicht-relationalen Modell (z.B. Redis-Cache) gespeichert werden sollen, da diese bereits korrekt im Hunts-Service gespeichert werden (siehe Kapitel \ref{cha:swentwurf:huntsservice}).
