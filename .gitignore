@@ -180,3 +180,4 @@ $RECYCLE.BIN/
 _NCrunch*
 
 .env
+/vs/
