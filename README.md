@@ -15,13 +15,14 @@ Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwick
 ### Projekte
 
 - **Backend** und **API**: [Hunt-API](src/be-hunt-api/README.md)
-- **Mobile-App**: [ScavAR](src/ScavAR/README.md)
-- **Web-App**: [Hunt-Editor](src/ScavengerHuntEditor-Frontend/README.md)
-- **Web-App**: [Participation](src/fe-hunt-participation/README.md)
+- **Mobile-App**: der aktuellste Stand der AR App befindet sich im Branch `feature/ar-mobile-app`
+- **Web-Game**: [Hunt-Game](src/fe-hunt-game-web/README.md)
+- **Web-App**: [Hunt-Editor](src/fe-hunt-editor/README.md)
+- **Participation-App**: [Participation-App](src/fe-hunt-participation/README.md)
 
 ### Dokumentation
 
-Die Dokumentation der Projektarbeit sowie sonstige Literaturverweise befinden sich im Verzeichnis `.\docs\` [hier](docs/dokumentation-projektarbeit/INDEX.tex).
+Die Dokumentation der Projektarbeit befindet sich im Verzeichnis `.\docs\` [hier](docs/dokumentation-projektarbeit/INDEX.tex).
 
 # Utilities
 
