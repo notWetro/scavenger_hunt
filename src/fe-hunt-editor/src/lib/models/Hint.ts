@@ -5,5 +5,6 @@ export interface Hint {
 
 export enum HintType {
 	Text,
-	Image
+	Image,
+	Video
 }

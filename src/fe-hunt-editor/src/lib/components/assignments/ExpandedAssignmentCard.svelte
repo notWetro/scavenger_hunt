@@ -69,6 +69,11 @@
 				<span class="font-semibold">Upload Image</span>
 				<Fileupload accept="image/png, image/jpeg" on:change={(e) => onFileSelected(e)} />
 			</Label>
+		{:else if assignment.hint.hintType === HintType.Video}
+   			<Label class="space-y-2 mb-2">
+      			<span class="font-semibold">Upload Video</span>
+      			<Fileupload accept="video/mp4" on:change={(e) => onFileSelected(e)} />
+   			</Label>
 		{/if}
 	</div>
 
