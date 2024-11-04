@@ -12,7 +12,12 @@
 	<!-- Type 1 means Image -->
 	<img src={data} alt="Hm. Something ain't right and it's not your fault." />
 {:else if type === 2}
-	<!-- Type 2 means Object -->
+	<!-- Type 2 means Video -->
+	<video src={data} controls muted>
+		Your browser does not support the video tag.
+	</video>
+{:else if type === 3}
+	<!-- Type 3 means Object -->
 	<h1>There should be an object here but it's not implemented.</h1>
 {:else}
 	<!-- This Type shouldn't exist -->
