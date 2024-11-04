@@ -62,6 +62,13 @@
 							<source src={`${assignment.hint.data}`} type="video/mp4" />
 							Your browser does not support the video tag.
 						</video>
+					<!-- New: Add Audio as Hint Type -->
+					{:else if assignment.hint.hintType === HintType.Audio}
+						<!-- svelte-ignore a11y-media-has-caption -->
+						<audio controls class="object-scale-down w-28">
+							<source src={`${assignment.hint.data}`} type="audio/mp3" />
+							Your browser does not support the audio element.
+						</audio>
 					{/if}
 				</TableBodyCell>
 				<TableBodyCell>{mapSolutionTypeToText(assignment.solution.solutionType)}</TableBodyCell>

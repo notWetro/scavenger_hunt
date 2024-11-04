@@ -12,7 +12,8 @@ const reverseSolutionTypeMapping = {
 const reverseHintTypeMapping = {
 	0: 'Text',
 	1: 'Image',
-	2: 'Video'
+	2: 'Video',
+	3: 'Audio'
 };
 
 export function mapSolutionTypeToText(solutionType: SolutionType): string {

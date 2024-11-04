@@ -17,6 +17,11 @@
 		Your browser does not support the video tag.
 	</video>
 {:else if type === 3}
+	<!-- Type 3 means Audio -->
+	<audio src={data} controls muted>
+		Your browser does not support the video tag.
+	</audio>
+{:else if type === 4}
 	<!-- Type 3 means Object -->
 	<h1>There should be an object here but it's not implemented.</h1>
 {:else}
