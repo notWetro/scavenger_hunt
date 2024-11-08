@@ -15,6 +15,14 @@ export function checkValidData(items: Assignment[]): boolean {
 			} else if (item.hint.hintType === HintType.Image) {
 				isValidHint = item.hint.data.startsWith('data:image/');
 			}
+			// New Add Video Validation
+			else if(item.hint.hintType === HintType.Video){
+				isValidHint = item.hint.data.startsWith('data:video/')
+			}
+			// New Add Audio Validation
+			else if(item.hint.hintType === HintType.Audio){
+				isValidHint = item.hint.data.startsWith('data:audio/')
+			}
 
 			// Validate solution based on its type
 			if (item.solution.solutionType === SolutionType.Text) {

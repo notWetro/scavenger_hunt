@@ -11,7 +11,9 @@ const reverseSolutionTypeMapping = {
 // Mapping of the hintType strings to numbers
 const reverseHintTypeMapping = {
 	0: 'Text',
-	1: 'Image'
+	1: 'Image',
+	2: 'Video',
+	3: 'Audio'
 };
 
 export function mapSolutionTypeToText(solutionType: SolutionType): string {

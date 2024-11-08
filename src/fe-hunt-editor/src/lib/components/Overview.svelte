@@ -42,25 +42,34 @@
 	}
 
 	async function submitHunt() {
-		console.log('Hunt:', hunt);
+    try {
+        console.log('Hunt:', hunt);
+        const huntData = { ...hunt };
 
-		// Create a new huntData object with modified assignments
-		const huntData = {
-			...hunt
-		};
+        // Optional: Validate huntData here
 
-		const response = await fetch(`${PUBLIC_API_URL}/hunts`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(huntData)
-		});
-		if (!response.ok) {
-			throw new Error(`Failed to create Hunt: ${response.status}`);
-		}
-		dispatch('Finished');
-	}
+        const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
+        const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(huntData)
+        });
+        const response = await Promise.race([fetchPromise, timeout(5000)]);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Failed to create Hunt: ${response.status} - ${errorData.message || 'Unknown error'}`);
+        }
+
+        console.log("Hunt created successfully");
+        dispatch('Finished');
+    } catch (error) {
+        console.error("Error creating hunt:", error);
+        // Optional: Dispatch an error action or show a user notification
+    }
+}
+
+
 </script>
 
 <div class="flex flex-col">

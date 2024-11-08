@@ -9,8 +9,8 @@
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
 
-	let qrCodes = [];
-
+	let qrCodes: any[] = [];
+	
 	// Subscribe to huntStore to access its current state
 	$: hunt = $huntStore;
 
@@ -43,7 +43,7 @@
 
 	async function updateHunt() {
 		console.log('Hunt:', hunt);
-
+		console.log(JSON.stringify(huntData));
 		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
 			method: 'PUT',
 			headers: {
@@ -55,6 +55,7 @@
 			throw new Error(`Failed to create Hunt: ${response.status}`);
 		}
 		dispatch('Finished');
+		
 	}
 </script>
 

@@ -2,6 +2,6 @@
 {
     public enum HintType
     {
-        Text, Image, Object
+        Text, Image, Video, Audio, Object,
     }
 }
