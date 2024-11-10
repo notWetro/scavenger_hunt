@@ -8,6 +8,7 @@
 	import { huntStore } from '$lib/stores/huntStore';
 	import { createEventDispatcher } from 'svelte';
 	import { checkValidData } from '$lib/utils/validationUtil';
+	import { assignmentCount } from '$lib/stores/assignmentStore';
 
 	const dispatch = createEventDispatcher();
 

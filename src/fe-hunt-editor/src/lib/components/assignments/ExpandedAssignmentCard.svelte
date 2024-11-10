@@ -49,8 +49,8 @@
 <div class="border rounded-lg p-2 space-y-2 bg-gray-100">
 	<div class="flex items-center justify-between">
 		<Button
-			>{mapHintTypeToText(assignment.hint.hintType)}<ChevronDown class="w-6 h-6 ms-2" /></Button
-		>
+			>{mapHintTypeToText(assignment.hint.hintType)}<ChevronDown class="w-6 h-6 ms-2" />
+		</Button>
 		<Dropdown>
 			{#each hintTypes as hintType}
 				<DropdownItem on:click={() => setHintType(hintType)}>
@@ -87,8 +87,8 @@
 		<Button
 			>{mapSolutionTypeToText(assignment.solution.solutionType)}<ChevronDown
 				class="w-6 h-6 ms-2"
-			/></Button
-		>
+			/>
+		</Button>
 		<Dropdown>
 			{#each solutionTypes as solutionType}
 				<DropdownItem on:click={() => setSolutionType(solutionType)}>

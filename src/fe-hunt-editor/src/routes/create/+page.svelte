@@ -6,6 +6,7 @@
 	import { Button } from 'flowbite-svelte';
 	import { huntStore } from '$lib/stores/huntStore';
 	import AssignmentsEditor from '$lib/components/assignments/AssignmentsEditor.svelte';
+	import { goto } from '$app/navigation';
 
 	// make sure that huntStore is reset before trying to create a new hunt
 	huntStore.set({
@@ -50,6 +51,11 @@
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully created!</h1>
-		<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
+		
+		<!-- Container für die Buttons -->
+		<div class="flex space-x-4">
+			<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
+			<Button on:click={() => goto('/')}>Home 🏠</Button>
+		</div>
 	</div>
 {/if}
