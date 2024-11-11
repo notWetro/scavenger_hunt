@@ -4,7 +4,7 @@
 	import QRCode from 'qrcode';
 	import { huntStore } from '$lib/stores/huntStore';
 	import { Button } from 'flowbite-svelte';
-	import { Goal } from 'lucide-svelte';
+	import { Goal, ArrowLeft } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
@@ -43,7 +43,6 @@
 
 	async function updateHunt() {
 		console.log('Hunt:', hunt);
-		console.log(JSON.stringify(huntData));
 		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
 			method: 'PUT',
 			headers: {
@@ -57,6 +56,12 @@
 		dispatch('Finished');
 		
 	}
+
+// New: Calls the on:goBack={decreaseStep} in \src\routes\edit\[huntId]\+page.svelte
+function goBackToPreviousStep() {
+  		dispatch('goBack');
+	}
+
 </script>
 
 <div class="flex flex-col">
@@ -66,7 +71,14 @@
 
 <OverviewTable {qrCodes} />
 
-<Button class="mt-5" on:click={updateHunt}>
-	<Goal class="mr-2" />
-	Update scavenger hunt
-</Button>
+
+<div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
+	<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
+		<ArrowLeft class="ml-2" />
+		Previous
+	</Button>
+	<Button class="mt-5" on:click={updateHunt} style="flex: 1;">
+		<Goal class="mr-2" />
+		Update scavenger hunt
+	</Button>
+</div>

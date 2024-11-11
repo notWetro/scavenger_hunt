@@ -46,8 +46,6 @@
         console.log('Hunt:', hunt);
         const huntData = { ...hunt };
 
-        // Optional: Validate huntData here
-
         const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
         const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
             method: 'POST',
@@ -65,10 +63,10 @@
         dispatch('Finished');
     } catch (error) {
         console.error("Error creating hunt:", error);
-        // Optional: Dispatch an error action or show a user notification
     }
 }
 
+// New: Calls the on:goBack={decreaseStep} in \src\routes\create\+page.svelte
 function goBackToPreviousStep() {
   		dispatch('goBack');
 	}

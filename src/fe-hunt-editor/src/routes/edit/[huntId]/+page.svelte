@@ -8,6 +8,7 @@
 	import ProgressBar from '$lib/components/Progressbar.svelte';
 	import OverviewEdit from '$lib/components/OverviewEdit.svelte';
 	import AssignmentsEditor from '$lib/components/assignments/AssignmentsEditor.svelte';
+	import { goto } from '$app/navigation';
 
 	// needed for huntId from params
 	export let data: PageData;
@@ -24,8 +25,9 @@
 		currentStep.update((n) => n + 1);
 	}
 
-	function goBackToPreviousStep() {
-    currentStep.update((n) => Math.max(n - 1, 1)); // Verhindert, dass currentStep < 1 wird
+	// New: Function to decrease the Step
+	function decreaseStep() {
+  		currentStep.update((n) => Math.max(n - 1, 1)); // Stellen Sie sicher, dass der Schritt nie kleiner als 1 wird
 	}
 
 	// resets the current stored huntData and goes back to the first step (BasicData)
@@ -46,16 +48,23 @@
 {/if}
 
 {#if $currentStep === 2}
-	<AssignmentsEditor assignments={$huntStore.assignments} on:assignmentsSaved={advanceToNextStep} />
+	<AssignmentsEditor assignments={$huntStore.assignments} on:assignmentsSaved={advanceToNextStep} 
+	on:goBack={decreaseStep}
+	/>
 {/if}
 
 {#if $currentStep === 3}
-	<OverviewEdit on:Finished={advanceToNextStep} />
+	<OverviewEdit on:Finished={advanceToNextStep} 
+	on:goBack={decreaseStep}
+	/>
 {/if}
 
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully updated!</h1>
-		<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
+		<div class="flex space-x-4">
+			<Button on:click={createNewHunt}>Create a new scavenger hunt</Button>
+			<Button on:click={() => goto('/')}>Home 🏠</Button>
+		</div>
 	</div>
 {/if}

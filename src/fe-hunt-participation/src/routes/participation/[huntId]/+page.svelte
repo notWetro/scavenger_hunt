@@ -26,7 +26,7 @@
 		attemptMade = false;
 	}
 
-	// New: Function to check if Password contains 8 chars, a upper case and a special char 
+	// New: Function to check if Password contains 8 chars, a upper case
 	function isPasswordValid(password: string): boolean {
   		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
   		return passwordRegex.test(password);
@@ -39,7 +39,7 @@
 
 		if (!isPasswordValid(password)) {
     		success = false;
-    		console.error('Password must be at least 8 characters long, contain a number, and an uppercase letter.');
+    		console.error('Password must be at least 8 characters long, containing at least one number and one uppercase letter.');
     		return;
   		}
 
