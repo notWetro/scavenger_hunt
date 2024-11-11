@@ -24,6 +24,10 @@
 		currentStep.update((n) => n + 1);
 	}
 
+	function goBackToPreviousStep() {
+    currentStep.update((n) => Math.max(n - 1, 1)); // Verhindert, dass currentStep < 1 wird
+	}
+
 	// resets the current stored huntData and goes back to the first step (BasicData)
 	function createNewHunt() {
 		huntStore.set({

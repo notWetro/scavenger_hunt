@@ -23,6 +23,10 @@
 		currentStep.update((n) => n + 1);
 	}
 
+	function decreaseStep() {
+  		currentStep.update((n) => Math.max(n - 1, 1)); // Stellen Sie sicher, dass der Schritt nie kleiner als 1 wird
+	}
+
 	// resets the current stored huntData and goes back to the first step (BasicData)
 	function createNewHunt() {
 		huntStore.set({
@@ -41,11 +45,15 @@
 {/if}
 
 {#if $currentStep === 2}
-	<AssignmentsEditor on:assignmentsSaved={advanceToNextStep} />
+	<AssignmentsEditor on:assignmentsSaved={advanceToNextStep} 
+	on:goBack={decreaseStep}
+	/>
 {/if}
 
 {#if $currentStep === 3}
-	<Overview on:Finished={advanceToNextStep} />
+	<Overview on:Finished={advanceToNextStep} 
+	on:goBack={decreaseStep}
+	/>
 {/if}
 
 {#if $currentStep === 4}
