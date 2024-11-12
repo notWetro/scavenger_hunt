@@ -4,10 +4,13 @@
 	import { Button, Card, Helper, Input, Label, Modal } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	import { Goal, Check } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
 	let success: boolean | null = null;
 	let attemptMade: boolean = false;
 	let showModal: boolean = false;
+	let validPassword: boolean = false;
+	let showSuccessModal: boolean = false;
 
 	let username: string;
 	let password: string;
@@ -23,8 +26,24 @@
 		attemptMade = false;
 	}
 
+	// New: Function to check if Password contains 8 chars, a upper case
+	function isPasswordValid(password: string): boolean {
+  		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  		return passwordRegex.test(password);
+	}
+
 	async function submit(username: string, password: string, huntId: number) {
+		
 		attemptMade = true;
+		validPassword = !isPasswordValid(password);
+
+		if (!isPasswordValid(password)) {
+    		success = false;
+    		console.error('Password must be at least 8 characters long, containing at least one number and one uppercase letter.');
+    		return;
+  		}
+
+
 		try {
 			const res = await fetch(`${PUBLIC_PARTICIPANT_API_URL}/Participations/Hunt/${huntId}`, {
 				method: 'POST',
@@ -42,7 +61,9 @@
 				throw new Error(await res.text());
 			}
 
+			showSuccessModal = true;
 			success = true;
+			showModal = false; 
 			return await res.json();
 		} catch (error) {
 			console.error(error);
@@ -51,15 +72,27 @@
 	}
 </script>
 
+
+
 <main>
 	<div class="flex gap-2 flex-col mb-4 items-center">
 		<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
 		<span>{hunt.title}</span>
 	</div>
+
+	<!-- New: Home Button -->
+	<Button 
+    on:click={() => goto('/')}
+    class="absolute top-4 right-4"
+  	>
+    Home 🏠
+  	</Button>
+	
 	<div class="flex flex-col items-center">
 		<Card>
 			<h2 class="mb-2 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
 			<p class="text-gray-600 leading-tight font-normal mb-3">{hunt.description}</p>
+			
 			<Button on:click={() => (showModal = true)} disabled={success === true}>
 				{#if success}
 					<Check />
@@ -70,7 +103,7 @@
 		</Card>
 	</div>
 	
-
+	<!-- Participan Modal -->
 	<Modal
 		bind:open={showModal}
 		title="Participate in Scavenger Hunt!"
@@ -94,9 +127,16 @@
 					required
 				/>
 			</Label>
-			<Helper class={`text-red-900 text-sm ${success === false && attemptMade ? '' : 'hidden'}`}
-				>Submission failed! Please try again.</Helper
-			>
+			<!-- New: check if Password is Valid -->
+			{#if success === false && attemptMade && !validPassword}
+  				<Helper class="text-red-900 text-sm">
+    				Submission failed! Please try again.
+  				</Helper>
+			{:else if validPassword && attemptMade}
+  				<Helper class="text-red-900 text-sm">
+    				Password must be at least 8 characters long, contain at least one uppercase letter, and one number.
+  				</Helper>
+			{/if}
 			<Button
 				type="submit"
 				on:click={async () => submit(username, password, hunt.id)}
@@ -107,5 +147,19 @@
 				<Goal class="ml-2" />
 			</Button>
 		</div>
+	</Modal>
+	<!-- New: Feedback Success Modal if Participation was successful -->
+	<Modal
+		bind:open={showSuccessModal}
+		title="Registration Successful!"
+		size="xs"
+		autoclose={true}
+		class="w-full"
+	>
+		<p class="text-center text-green-600">Your registration was successful! 🎉</p>
+		<div class="flex justify-center gap-4">
+    		<Button on:click={() => goto('/')}>Home 🏠</Button>
+    		<Button on:click={() => (showSuccessModal = false)}>New Participant</Button>
+  		</div>
 	</Modal>
 </main>

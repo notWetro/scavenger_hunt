@@ -4,7 +4,7 @@
 	import QRCode from 'qrcode';
 	import { huntStore } from '$lib/stores/huntStore';
 	import { Button } from 'flowbite-svelte';
-	import { Goal } from 'lucide-svelte';
+	import { Goal, ArrowLeft } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
@@ -46,8 +46,6 @@
         console.log('Hunt:', hunt);
         const huntData = { ...hunt };
 
-        // Optional: Validate huntData here
-
         const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
         const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
             method: 'POST',
@@ -65,10 +63,13 @@
         dispatch('Finished');
     } catch (error) {
         console.error("Error creating hunt:", error);
-        // Optional: Dispatch an error action or show a user notification
     }
 }
 
+// New: Calls the on:goBack={decreaseStep} in \src\routes\create\+page.svelte
+function goBackToPreviousStep() {
+  		dispatch('goBack');
+	}
 
 </script>
 
@@ -79,7 +80,14 @@
 
 <OverviewTable {qrCodes} />
 
-<Button class="mt-5" on:click={submitHunt}>
+<!-- New: Add the Button to go back from the last hunt creation screen -->
+<div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
+<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
+	<ArrowLeft class="ml-2" />
+	Previous
+</Button>
+<Button class="mt-5" on:click={submitHunt} style="flex: 1;">
 	<Goal class="mr-2" />
 	Create scavenger hunt!
 </Button>
+</div>

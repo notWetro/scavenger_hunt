@@ -2,6 +2,8 @@
 	import { Progressbar } from 'flowbite-svelte';
 	import type { Writable } from 'svelte/store';
 
+
+	
 	const stepText: { [key: number]: string } = {
 		1: 'Enter Basic data.',
 		2: 'Add hints and solutions.',

@@ -2,7 +2,7 @@
 	import type { Assignment } from '$lib/models/Assignment';
 	import { Button } from 'flowbite-svelte';
 	import SingleAssignmentEditor from './SingleAssignmentEditor.svelte';
-	import { ArrowRight, Plus } from 'lucide-svelte';
+	import { ArrowRight, Plus , ArrowLeft } from 'lucide-svelte';
 	import { HintType } from '$lib/models/Hint';
 	import { SolutionType } from '$lib/models/Solution';
 	import { huntStore } from '$lib/stores/huntStore';
@@ -30,6 +30,11 @@
 				data: ''
 			}
 		};
+	}
+
+	// New: Function to go to the previous step on the hunt creation 
+	function goBackToPreviousStep() {
+  		dispatch('goBack');
 	}
 
 	function addAssignment() {
@@ -82,7 +87,14 @@
 	Add assignment
 </Button>
 
-<Button class="mt-5" on:click={saveAssignmentsToStore} disabled={!isValidData}>
-	Next
-	<ArrowRight class="ml-2" />
-</Button>
+<!-- New: Adds two buttons to the create Hunt editor -->
+<div style="display: flex; gap: 10px; justify-content: center; width: 100%;">
+	<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
+		Previous
+		<ArrowLeft class="ml-2" />
+	</Button>
+	<Button class="mt-5" on:click={saveAssignmentsToStore} disabled={!isValidData} style="flex: 1;">
+		Next
+		<ArrowRight class="ml-2" />
+	</Button>
+</div>
