@@ -57,6 +57,7 @@
 	/>
 {/if}
 
+<!-- New: Add a home button when the creation is done -->
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully created!</h1>

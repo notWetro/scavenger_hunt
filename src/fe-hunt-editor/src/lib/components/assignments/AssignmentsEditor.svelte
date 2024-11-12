@@ -8,7 +8,6 @@
 	import { huntStore } from '$lib/stores/huntStore';
 	import { createEventDispatcher } from 'svelte';
 	import { checkValidData } from '$lib/utils/validationUtil';
-	import { assignmentCount } from '$lib/stores/assignmentStore';
 
 	const dispatch = createEventDispatcher();
 
@@ -33,6 +32,7 @@
 		};
 	}
 
+	// New: Function to go to the previous step on the hunt creation 
 	function goBackToPreviousStep() {
   		dispatch('goBack');
 	}
@@ -87,6 +87,7 @@
 	Add assignment
 </Button>
 
+<!-- New: Adds two buttons to the create Hunt editor -->
 <div style="display: flex; gap: 10px; justify-content: center; width: 100%;">
 	<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
 		Previous

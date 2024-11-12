@@ -5,6 +5,7 @@
 	export let data: string;
 </script>
 
+<!-- New: add Video and Audio as supportet Hints and displays them -->
 {#if type === 0}
 	<!-- Type 0 means Text -->
 	<TextHintDisplay {data} />

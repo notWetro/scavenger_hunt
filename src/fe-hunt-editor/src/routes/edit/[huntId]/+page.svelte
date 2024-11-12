@@ -59,6 +59,7 @@
 	/>
 {/if}
 
+<!-- New: Add a home button when the update is done -->
 {#if $currentStep === 4}
 	<div class="flex flex-col items-center justify-center">
 		<h1 class="text-3xl font-bold mb-5">Scavenger hunt successfully updated!</h1>

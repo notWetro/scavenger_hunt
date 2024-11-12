@@ -80,6 +80,7 @@ function goBackToPreviousStep() {
 
 <OverviewTable {qrCodes} />
 
+<!-- New: Add the Button to go back from the last hunt creation screen -->
 <div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
 <Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
 	<ArrowLeft class="ml-2" />

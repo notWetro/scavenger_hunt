@@ -4,7 +4,6 @@
 	import { Button } from 'flowbite-svelte';
 	import { ArrowDownFromLine, ArrowUpFromLine, ChevronDown, ChevronUp, Trash } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { assignmentCount } from '$lib/stores/assignmentStore';
 	
 	const dispatch = createEventDispatcher();
 
@@ -19,7 +18,7 @@
 		<Button class="p-1 rounded" on:click={() => dispatch('moveUp')}><ChevronUp /></Button>
 		<Button class="p-1 rounded" on:click={() => dispatch('moveDown')}><ChevronDown /></Button>
 
-		<!-- Hint Type & Solution Type -->
+		<!-- New: Add a text box for Hint Type and solution type -->
     <div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
       <div class="box">
         <strong>Hint Type:</strong>
