@@ -21,6 +21,10 @@
 		<!-- New: Add a text box for Hint Type and solution type -->
     <div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
       <div class="box">
+        <strong>Assignment Nr: </strong>
+        <p>{assignment.id}</p>
+      </div>
+      <div class="box">
         <strong>Hint Type:</strong>
         <p>{mapHintTypeToText(assignment.hint.hintType)}</p>
       </div>
