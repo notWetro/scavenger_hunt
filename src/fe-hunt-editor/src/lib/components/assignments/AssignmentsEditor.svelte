@@ -16,7 +16,7 @@
 	$: isValidData = checkValidData(assignments);
 
 	// This has to be -1 so that the increment in createEmptyAssignment maps the id to the index of the array
-	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : -1;
+	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : 0;
 
 	function createEmptyAssignment(): Assignment {
 		return {
@@ -42,7 +42,7 @@
 	}
 
 	function saveAssignmentsToStore(): void {
-		counter = -1;
+		counter = 0;
 		huntStore.update((currentHunt) => {
 			return { ...currentHunt, assignments: assignments };
 		});

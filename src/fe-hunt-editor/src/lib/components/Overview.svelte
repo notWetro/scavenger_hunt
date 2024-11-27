@@ -68,8 +68,8 @@
 
 // New: Calls the on:goBack={decreaseStep} in \src\routes\create\+page.svelte
 function goBackToPreviousStep() {
-  		dispatch('goBack');
-	}
+  	dispatch('goBack');
+}
 
 </script>
 

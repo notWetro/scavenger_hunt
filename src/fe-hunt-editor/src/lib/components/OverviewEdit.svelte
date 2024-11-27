@@ -59,8 +59,8 @@
 
 // New: Calls the on:goBack={decreaseStep} in \src\routes\edit\[huntId]\+page.svelte
 function goBackToPreviousStep() {
-  		dispatch('goBack');
-	}
+  	dispatch('goBack');
+}
 
 </script>
 
