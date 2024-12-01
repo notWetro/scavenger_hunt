@@ -53,12 +53,11 @@
 
 <!-- New: Style for the Solution and Hint Type box -->
 <style>
-  /* Styling für das Box-Layout */
   .box {
     padding: 2px;
-    border: 1px solid #3498db; /* Blaues Border */
+    border: 1px solid #3498db;
     border-radius: 5px;
-    background-color: #f0f8ff; /* Hellblauer Hintergrund */
+    background-color: #f0f8ff;
     width: 200px;
     display: flex;
     flex-direction: column;
@@ -74,7 +73,7 @@
 
   strong {
     font-size: 1.1rem;
-    color: #3498db; /* Farbe für den Text "Hint Type" und "Solution Type" */
+    color: #3498db;
     margin-bottom: 1px;
   }
 </style>

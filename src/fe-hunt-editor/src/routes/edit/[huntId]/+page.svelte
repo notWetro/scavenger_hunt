@@ -17,8 +17,8 @@
 	console.log("edit Page huntStore: ", hunt);
 
 	// trigger update of huntStore with the current hunt data
-	$:huntStore.update(() => {
-		return { ...$huntStore, ...data.hunt };
+	$: huntStore.update(() => {
+		return { ...(data.hunt as Hunt) };
 	});
 
 	hunt = $huntStore;
@@ -28,11 +28,6 @@
 
 	// gets called when the current step is finished and advances to the next step
 	function advanceToNextStep() {
-		let hunt = $huntStore;
-		console.log("edit Page huntStore: ", hunt);
-		huntStore.set(hunt);
-		hunt = $huntStore;
-		console.log("Edit Nach Page huntStore: ", hunt);
 		currentStep.update((n) => n + 1);
 	}
 

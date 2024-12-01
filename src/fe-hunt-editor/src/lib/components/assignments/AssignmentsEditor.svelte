@@ -18,8 +18,6 @@
 	// This has to be 0 so that the increment in createEmptyAssignment maps the id to the index of the array
 	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : 0;
 
-	console.log("counter: ", counter);
-
 	function createEmptyAssignment(): Assignment {
 		return {
 			id: ++counter,
@@ -44,17 +42,12 @@
 	}
 
 	function saveAssignmentsToStore(): void {
-    counter = 0;
-    huntStore.set({
-        id: $huntStore.id,
-        title: $huntStore.title,
-        description: $huntStore.description,
-        assignments: assignments,
-    });
-
-    console.log("Nach Save:", $huntStore);
-    dispatch('assignmentsSaved');
-}
+		counter = 0;
+		huntStore.update((currentHunt) => {
+			return { ...currentHunt, assignments: assignments };
+		});
+		dispatch('assignmentsSaved');
+	}
 
 	// Function to move an item up in the list
 	function moveUp(assignment: Assignment) {
@@ -93,9 +86,6 @@
     	}
     	counter -= 1;
     	assignments = [...assignments];
-		let hunt = $huntStore;
-		console.log("huntStore nach delete: " , hunt);
-		console.log("huntStore nach delete: " , $huntStore);
 	}
 </script>
 

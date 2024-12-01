@@ -9,13 +9,11 @@
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
 	
-	// Subscribe to huntStore to access its current state
-	let hunt = $huntStore;
-
-	console.log("Hunt im Overview: ", $huntStore);
+	
 	let qrCodes: any[] = [];
 	
-	
+	// Subscribe to huntStore to access its current state
+	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
 
