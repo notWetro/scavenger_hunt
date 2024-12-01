@@ -8,11 +8,14 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
-
-	let qrCodes: any[] = [];
 	
 	// Subscribe to huntStore to access its current state
-	$: hunt = $huntStore;
+	let hunt = $huntStore;
+
+	console.log("Hunt im Overview: ", $huntStore);
+	let qrCodes: any[] = [];
+	
+	
 
 	const dispatch = createEventDispatcher();
 
