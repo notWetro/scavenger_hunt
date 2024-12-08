@@ -25,7 +25,6 @@
 			const a = document.createElement('a');
 			a.style.display = 'none';
 			a.href = downloadUrl;
-			// The filename you want to save the file as
 			a.download = `qr-code-${id}.png`;
 			document.body.appendChild(a);
 			a.click();

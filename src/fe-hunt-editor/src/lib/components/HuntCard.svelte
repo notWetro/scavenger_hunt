@@ -1,37 +1,86 @@
 <script lang="ts">
 	import type { Hunt } from '$lib/models/Hunt';
-
-	export let hunt: Hunt;
-	import { Edit, Trash } from 'lucide-svelte';
-	import { Button, Card } from 'flowbite-svelte';
+	import { Edit, Trash, Share, Copy, Download } from 'lucide-svelte';
+	import { Button, Card, Modal } from 'flowbite-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { createEventDispatcher } from 'svelte';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import QRCode from 'qrcode';
 
+	export let hunt: Hunt;
 	const dispatch = createEventDispatcher();
 
+	let showShareModal: boolean = false;
+	let link: string = `https://localhost:5174/participation/${hunt.id}`;
+
+	// Function to delete a hunt
 	async function deleteHunt() {
-		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
-			method: 'DELETE'
-		});
-		if (response.ok) {
-			console.log('Hunt deleted successfully');
-			dispatch('HuntDeleted');
-		} else {
-			console.error('Error deleting hunt:', response.statusText);
+		try {
+			const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
+				method: 'DELETE',
+			});
+			if (!response.ok) throw new Error('Error deleting the hunt');
+				console.log('Hunt deleted successfully');
+				dispatch('HuntDeleted');
+		} catch (error) {
+			console.error('Error deleting hunt:', error);
+		}
+	}
+
+	async function downloadQRCode(id: number, qrUrl: string) {
+			try {
+				const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
+            		width: 600
+        		});
+				const response = await fetch(qrCodeDataUrl);
+				const blob = await response.blob();
+				const downloadUrl = window.URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.style.display = 'none';
+				a.href = downloadUrl;
+				a.download = `hunt-${hunt.title}-qr-code.png`;
+				document.body.appendChild(a);
+				a.click();
+				window.URL.revokeObjectURL(downloadUrl);
+			} catch (error) {
+				console.error('Error downloading QR code:', error);
+			}
+	}
+
+	async function copyURLToClipboard(url: string) {
+		try {
+			await navigator.clipboard.writeText(url);
+			alert('URL wurde in die Zwischenablage kopiert!');
+		} catch (error) {
+			console.error('Error Copying the URL', error);
 		}
 	}
 </script>
 
-<Card class="flex flex-col justify-between w-[22.5rem] bg-base-100 shadow-lg rounded-xl md:w-96">
+
+
+<Card
+	class="flex flex-col justify-between w-[22.5rem] bg-base-100 shadow-lg rounded-xl md:w-96"
+	aria-label="Hunt Card"
+>
 	<div>
-		<img src="/src/lib/images/scav-hunt-icon.jpg" alt="scav-hunt-logo" class="object-fill" />
+		<img
+			src="/src/lib/images/scav-hunt-icon.jpg"
+			alt="Scavenger Hunt Logo"
+			class="object-fill"
+		/>
 		<div class="p-4">
 			<h2 class="text-xl font-bold text-black">{hunt.title}</h2>
 			<p>{hunt.description}</p>
 		</div>
 	</div>
 	<div class="flex justify-end gap-2">
-		<Button href="/edit/{hunt.id}">
+		<Button on:click={() => (showShareModal = true)}>
+			<Share class="mr-1" />
+			Share
+		</Button>
+		<Button on:click={() => goto(`/edit/${hunt.id}`)}>
 			<Edit class="mr-1" />
 			Edit
 		</Button>
@@ -41,3 +90,11 @@
 		</Button>
 	</div>
 </Card>
+
+<Modal title="Share the Hunt {hunt.title}" bind:open={showShareModal} size="xs" autoclose outsideclose>
+  <div class="flex flex-col gap-2">
+    	<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">How do you want to share the hunt?</h3>
+		<Button on:click= {() => downloadQRCode(hunt.id, link)} color="blue" class="me-2"> <Download class="mr-1" /> Download the QR Code </Button>
+    	<Button on:click={() => copyURLToClipboard(link)} color="blue" class="me-2"> <Copy class="mr-1" /> Copy the link to play</Button>
+	</div>
+</Modal>
