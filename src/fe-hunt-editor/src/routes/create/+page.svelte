@@ -25,7 +25,7 @@
 
 	// New: Function to decrease the Step
 	function decreaseStep() {
-  		currentStep.update((n) => Math.max(n - 1, 1)); // Stellen Sie sicher, dass der Schritt nie kleiner als 1 wird
+  		currentStep.update((n) => Math.max(n - 1, 1));
 	}
 
 	// resets the current stored huntData and goes back to the first step (BasicData)

@@ -15,8 +15,8 @@
 
 	$: isValidData = checkValidData(assignments);
 
-	// This has to be -1 so that the increment in createEmptyAssignment maps the id to the index of the array
-	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : -1;
+	// This has to be 0 so that the increment in createEmptyAssignment maps the id to the index of the array
+	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : 0;
 
 	function createEmptyAssignment(): Assignment {
 		return {
@@ -42,6 +42,7 @@
 	}
 
 	function saveAssignmentsToStore(): void {
+		counter = 0;
 		huntStore.update((currentHunt) => {
 			return { ...currentHunt, assignments: assignments };
 		});
@@ -51,25 +52,40 @@
 	// Function to move an item up in the list
 	function moveUp(assignment: Assignment) {
 		let index = assignments.findIndex((x) => x.id === assignment.id);
-
+		let dummy = 0;
 		if (index > 0) {
+
 			[assignments[index - 1], assignments[index]] = [assignments[index], assignments[index - 1]];
+			dummy = assignments[index - 1].id;	
+			assignments[index - 1].id = assignments[index].id;
+			assignments[index].id = dummy;
 		}
 	}
 
 	// Function to move an item down in the list
 	function moveDown(assignment: Assignment) {
 		let index = assignments.findIndex((x) => x.id === assignment.id);
+		let dummy = 0;
 
 		if (index < assignments.length - 1) {
 			[assignments[index + 1], assignments[index]] = [assignments[index], assignments[index + 1]];
+			dummy = assignments[index + 1].id;	
+			assignments[index + 1].id = assignments[index].id;
+			assignments[index].id = dummy;
 		}
 	}
 
-	// Function to delete an item from the list
+	// Function to delete an item from the list 
+	// New: Reduces the assignment count and updates the ID of the following assignments
 	function deleteAssignment(assignment: Assignment) {
+		let index = assignments.findIndex((x) => x.id === assignment.id);
 		assignments = assignments.filter((a) => a.id !== assignment.id);
-		assignments = [...assignments];
+
+    	for (let i = index; i < assignments.length; i++) {
+        	assignments[i].id -= 1;
+    	}
+    	counter -= 1;
+    	assignments = [...assignments];
 	}
 </script>
 

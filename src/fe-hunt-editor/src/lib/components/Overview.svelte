@@ -61,15 +61,15 @@
 
         console.log("Hunt created successfully");
         dispatch('Finished');
-    } catch (error) {
-        console.error("Error creating hunt:", error);
-    }
-}
+		} catch (error) {
+			console.error("Error creating hunt:", error);
+		}
+	}
 
 // New: Calls the on:goBack={decreaseStep} in \src\routes\create\+page.svelte
 function goBackToPreviousStep() {
-  		dispatch('goBack');
-	}
+  	dispatch('goBack');
+}
 
 </script>
 

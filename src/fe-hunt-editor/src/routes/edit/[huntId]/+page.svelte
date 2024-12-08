@@ -12,11 +12,17 @@
 
 	// needed for huntId from params
 	export let data: PageData;
+	
+	let hunt = $huntStore;
+	console.log("edit Page huntStore: ", hunt);
 
 	// trigger update of huntStore with the current hunt data
 	$: huntStore.update(() => {
 		return { ...(data.hunt as Hunt) };
 	});
+
+	hunt = $huntStore;
+	console.log("edit Page huntStore: ", hunt);
 
 	let currentStep = writable(1);
 
@@ -27,7 +33,7 @@
 
 	// New: Function to decrease the Step
 	function decreaseStep() {
-  		currentStep.update((n) => Math.max(n - 1, 1)); // Stellen Sie sicher, dass der Schritt nie kleiner als 1 wird
+  		currentStep.update((n) => Math.max(n - 1, 1));
 	}
 
 	// resets the current stored huntData and goes back to the first step (BasicData)
