@@ -44,6 +44,13 @@
 	async function submitHunt() {
     try {
         console.log('Hunt:', hunt);
+
+		hunt.assignments.forEach((assignment) => {
+            if (!assignment.hint.additionalData) {
+                assignment.hint.additionalData = null;
+            }
+        });
+
         const huntData = { ...hunt };
 
         const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
@@ -56,6 +63,7 @@
 
         if (!response.ok) {
             const errorData = await response.json();
+			console.error("Backend error:", errorData);
             throw new Error(`Failed to create Hunt: ${response.status} - ${errorData.message || 'Unknown error'}`);
         }
 
