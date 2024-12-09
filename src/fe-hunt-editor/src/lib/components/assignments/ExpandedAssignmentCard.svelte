@@ -65,11 +65,13 @@
 		{#if assignment.hint.hintType === HintType.Text}
 			<Input bind:value={assignment.hint.data} placeholder="Enter hint data" class="mt-2" />
 		{:else if assignment.hint.hintType === HintType.Image}
+			<Input bind:value={assignment.hint.additionalData} placeholder="Enter additional hint Text" class="mt-2" />
 			<Label class="space-y-2 mb-2">
 				<span class="font-semibold">Upload Image</span>
 				<Fileupload accept="image/png, image/jpeg" on:change={(e) => onFileSelected(e)} />
 			</Label>
 		{:else if assignment.hint.hintType === HintType.Video}
+			<Input bind:value={assignment.hint.additionalData} placeholder="Enter additional hint Text" class="mt-2" />
    			<Label class="space-y-2 mb-2">
       			<span class="font-semibold">Upload Video</span>
       			<Fileupload accept="video/mp4" on:change={(e) => onFileSelected(e)} />

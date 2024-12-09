@@ -13,8 +13,7 @@
 	// needed for huntId from params
 	export let data: PageData;
 	
-	let hunt = $huntStore;
-	console.log("edit Page huntStore: ", hunt);
+	$: hunt = $huntStore;
 
 	// trigger update of huntStore with the current hunt data
 	$: huntStore.update(() => {
