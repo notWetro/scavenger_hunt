@@ -91,11 +91,15 @@ namespace Participants.Api.Controllers
                 return NotFound("Couldn't find an assignment");
             }
 
+            Console.Write("hunt: ", hunt);
+            Console.Write("additionalData: ", assignment.Hint.additionalData);
+
             var response = new CurrentAssignmentResponseDto()
             {
                 HintType = assignment.Hint.HintType,
                 HintData = assignment.Hint.Data,
                 SolutionType = assignment.Solution.SolutionType,
+                additionalData = assignment.Hint.additionalData
             };
 
             return Ok(response);

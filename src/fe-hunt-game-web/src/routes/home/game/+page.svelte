@@ -2,6 +2,7 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import CheerDisplay from '$lib/components/CheerDisplay.svelte';
 	import HintDisplay from '$lib/components/hints/HintDisplay.svelte';
+	 import AdditionalData from '$lib/components/hints/AdditionalData.svelte';
 	import SolutionFormSelector from '$lib/components/solutions/SolutionFormSelector.svelte';
 	import SolutionTypeHintDisplay from '$lib/components/solutions/SolutionTypeHintDisplay.svelte';
 	import type { HuntAssignmentResponse } from '$lib/dtos/assignment/HuntAssignmentResponse';
@@ -13,10 +14,12 @@
 	import { fade } from 'svelte/transition';
 
 	let currentHunt: HuntLoginResponse;
-	let currentAssignment: HuntAssignmentResponse;
+	let currentAssignment: HuntAssignmentResponse;	
 	let solutionData: string = '';
+
 	$: {
 		console.log(solutionData);
+		console.log(currentAssignment);
 	}
 	let isSolutionShown: boolean = false;
 	let isNextButtonShown: boolean = false;
@@ -57,6 +60,7 @@
 			isFinished = true;
 		} else {
 			currentAssignment = (await response.json()) as HuntAssignmentResponse;
+			console.log('currentAssignment', currentAssignment);
 		}
 	}
 
@@ -86,6 +90,14 @@
 		<CheerDisplay />
 	{:else if currentAssignment}
 		<div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
+			{#if currentAssignment.hintType === 'Image' || currentAssignment.hintType === 'Video'}
+  			<div>
+          		<AdditionalData 
+            		bind:type={currentAssignment.hintType} 
+            		bind:data={currentAssignment.additionalData} />
+        		</div>
+			{/if}
+
 			<HintDisplay bind:type={currentAssignment.hintType} bind:data={currentAssignment.hintData} />
 
 			<SolutionTypeHintDisplay bind:type={currentAssignment.solutionType} />
