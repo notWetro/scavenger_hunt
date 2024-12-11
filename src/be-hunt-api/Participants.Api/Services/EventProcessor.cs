@@ -60,6 +60,8 @@ namespace Participants.Api.Services
 
         private static Hunt? DetermineHunt(string message)
         {
+            Console.WriteLine($"DetermineHunt with message: {message}");
+
             var huntPublishDto = JsonSerializer.Deserialize<HuntPublishDto>(message);
 
             if (huntPublishDto is null)
@@ -75,7 +77,8 @@ namespace Participants.Api.Services
                     Hint = new Hint
                     {
                         HintType = x.Hint.HintType,
-                        Data = x.Hint.Data
+                        Data = x.Hint.Data,
+                        additionalData = x.Hint.additionalData
                     },
                     Solution = new Solution
                     {

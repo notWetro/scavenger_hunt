@@ -91,8 +91,6 @@ namespace Participants.Api.Controllers
                 return NotFound("Couldn't find an assignment");
             }
 
-            Console.Write("hunt: ", hunt);
-            Console.Write("additionalData: ", assignment.Hint.additionalData);
 
             var response = new CurrentAssignmentResponseDto()
             {
@@ -101,6 +99,8 @@ namespace Participants.Api.Controllers
                 SolutionType = assignment.Solution.SolutionType,
                 additionalData = assignment.Hint.additionalData
             };
+            
+             Console.Write("response: ", response);
 
             return Ok(response);
         }
