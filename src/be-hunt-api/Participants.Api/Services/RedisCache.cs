@@ -20,6 +20,7 @@ namespace Participants.Api.Services
 
         public async Task SaveHuntAsync(Hunt hunt)
         {
+            Console.WriteLine($"SaveHuntAsync");
             var huntsCache = _muxer.GetDatabase(HUNT_CACHE_INDEX);
             var huntKey = $"{hunt.Id}";
             var huntData = JsonSerializer.Serialize(hunt);

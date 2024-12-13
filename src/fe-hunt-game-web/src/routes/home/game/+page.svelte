@@ -2,7 +2,6 @@
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import CheerDisplay from '$lib/components/CheerDisplay.svelte';
 	import HintDisplay from '$lib/components/hints/HintDisplay.svelte';
-	 import AdditionalData from '$lib/components/hints/AdditionalData.svelte';
 	import SolutionFormSelector from '$lib/components/solutions/SolutionFormSelector.svelte';
 	import SolutionTypeHintDisplay from '$lib/components/solutions/SolutionTypeHintDisplay.svelte';
 	import type { HuntAssignmentResponse } from '$lib/dtos/assignment/HuntAssignmentResponse';
@@ -81,21 +80,20 @@
 		<!-- <Button class="absolute top-4 right-4 bg-none" href="/home">
 			<XIcon class="w-6 h-6" />
 		</Button> -->
-		<h1 class="text-xl font-semibold mb-4 text-center">
+		<h1 class="text-3xl font-bold mb-4 text-center">
 			<a href="/home">{currentHunt.title}</a>
 		</h1>
+		<hr class="border-t-2 border-gray-300 my-4" />
 	{/if}
 
 	{#if isFinished}
 		<CheerDisplay />
 	{:else if currentAssignment}
 		<div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
-			{#if currentAssignment.hintType === 'Image' || currentAssignment.hintType === 'Video'}
-  			<div>
-          		<AdditionalData 
-            		bind:type={currentAssignment.hintType} 
-            		bind:data={currentAssignment.additionalData} />
-        		</div>
+			{#if currentAssignment.hintType === 1 || currentAssignment.hintType === 2}
+				
+				<h1 class="text-center text-lg font-semibold">{currentAssignment.additionalData}</h1>
+				
 			{/if}
 
 			<HintDisplay bind:type={currentAssignment.hintType} bind:data={currentAssignment.hintData} />

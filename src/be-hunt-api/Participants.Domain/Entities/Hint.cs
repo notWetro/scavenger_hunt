@@ -5,6 +5,6 @@
         public int HintType { get; set; }
         public required string Data { get; set; }
 
-        public string? additionalData {get; set;}
+        public string? AdditionalData {get; set;}
     }
 }
