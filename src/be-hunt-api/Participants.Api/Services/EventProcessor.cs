@@ -14,7 +14,6 @@ namespace Participants.Api.Services
 
         public void ProcessEvent(string message)
         {
-            Console.WriteLine($"ProcessEvent");
             // Decode message that contains ä, ö, ü, etc.
             string decodedString = Regex.Unescape(message);
             Console.WriteLine(decodedString);
@@ -61,9 +60,6 @@ namespace Participants.Api.Services
 
         private static Hunt? DetermineHunt(string message)
         {
-            Console.WriteLine($"DetermineHunt with message: {message}");
-            Console.WriteLine($"DetermineHunt");
-
             var huntPublishDto = JsonSerializer.Deserialize<HuntPublishDto>(message);
 
             if (huntPublishDto is null)
@@ -93,8 +89,6 @@ namespace Participants.Api.Services
 
         private static EventType DetermineEvent(string message)
         {
-
-            Console.WriteLine($"DetermineEvent");
             var evenType = JsonSerializer.Deserialize<GenericEventDto>(message);
 
             return evenType?.Event switch

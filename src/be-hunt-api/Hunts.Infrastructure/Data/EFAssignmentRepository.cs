@@ -46,7 +46,6 @@ namespace Hunts.Infrastructure.Data
 
         public async Task<IEnumerable<Assignment>> GetAll()
         {
-            Console.WriteLine($"GetAllAssignment");
             try
             {
                 return await _context.Assignments
@@ -64,7 +63,6 @@ namespace Hunts.Infrastructure.Data
 
         public async Task<Assignment?> GetByIdAsync(int id)
         {
-            Console.WriteLine($"GetOneIDAssignment");
             try
             {
                 return await _context.Assignments.FirstOrDefaultAsync(ass => ass.Id == id);

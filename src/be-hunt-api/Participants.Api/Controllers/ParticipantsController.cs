@@ -51,7 +51,6 @@ namespace Participants.Api.Controllers
         [HttpGet("CurrentAssignment/{huntId}")]
         public async Task<ActionResult<CurrentAssignmentResponseDto>> GetCurrentAssignment([FromHeader(Name = "Authorization")] string token, int huntId)
         {
-            Console.WriteLine($"CurrentAssignment/huntid");
             if (string.IsNullOrEmpty(token))
                 return Unauthorized("Authorization-Token is missing!");
 
@@ -102,8 +101,6 @@ namespace Participants.Api.Controllers
                 
             };
             
-             Console.Write("response: ", response);
-
             return Ok(response);
         }
 

@@ -18,7 +18,6 @@
 
 	$: {
 		console.log(solutionData);
-		console.log(currentAssignment);
 	}
 	let isSolutionShown: boolean = false;
 	let isNextButtonShown: boolean = false;
@@ -59,7 +58,6 @@
 			isFinished = true;
 		} else {
 			currentAssignment = (await response.json()) as HuntAssignmentResponse;
-			console.log('currentAssignment', currentAssignment);
 		}
 	}
 

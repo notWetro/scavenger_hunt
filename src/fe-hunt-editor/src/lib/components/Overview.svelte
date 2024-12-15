@@ -45,6 +45,7 @@
     try {
         console.log('Hunt:', hunt);
 
+		//Sets the additionalData to null if the field is empty
 		hunt.assignments.forEach((assignment) => {
             if (!assignment.hint.additionalData) {
                 assignment.hint.additionalData = null;

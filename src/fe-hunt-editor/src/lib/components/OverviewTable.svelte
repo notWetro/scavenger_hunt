@@ -53,21 +53,27 @@
 					{#if assignment.hint.hintType === HintType.Text}
 						{assignment.hint.data}
 					{:else if assignment.hint.hintType === HintType.Image}
-						<img src={`${assignment.hint.data}`} alt="Hint as Img" class="object-scale-down w-28" />
+						<div class="flex flex-col items-center"> 
+							<img src={`${assignment.hint.data}`} alt="Hint as Img" class="object-scale-down w-28" />
+						</div>
 					<!-- New: Add correctly scaled Video as Hint Type -->
 					{:else if assignment.hint.hintType === HintType.Video}
-						<!-- svelte-ignore a11y-media-has-caption -->
-						<video controls class="object-scale-down w-28">
-							<source src={`${assignment.hint.data}`} type="video/mp4" />
-							Your browser does not support the video tag.
-						</video>
+						<div class="flex flex-col items-center"> 
+							<!-- svelte-ignore a11y-media-has-caption -->
+							<video controls class="object-scale-down w-28">
+								<source src={`${assignment.hint.data}`} type="video/mp4" />
+								Your browser does not support the video tag.
+							</video>
+						</div>
 					<!-- New: Add Audio as Hint Type -->
 					{:else if assignment.hint.hintType === HintType.Audio}
-						<!-- svelte-ignore a11y-media-has-caption -->
-						<audio controls class="object-scale-down w-28">
-							<source src={`${assignment.hint.data}`} type="audio/mp3" />
-							Your browser does not support the audio element.
-						</audio>
+						<div class="flex flex-col items-center"> 
+							<!-- svelte-ignore a11y-media-has-caption -->
+							<audio controls class="object-scale-down w-28">
+								<source src={`${assignment.hint.data}`} type="audio/mp3" />
+								Your browser does not support the audio element.
+							</audio>
+						</div>
 					{/if}
 				</TableBodyCell>
 				<TableBodyCell class="text-center align-middle"> 

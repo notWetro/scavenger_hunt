@@ -106,18 +106,12 @@ namespace Hunts.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<HuntGetDto>> PostScavengerHunt(HuntCreateDto scavengerHuntDto)
         {
-
-            Console.WriteLine($"Received scavengerHuntDto: {scavengerHuntDto}");
-
             var scavengerHunt = _mapper.Map<Hunt>(scavengerHuntDto);
 
             var id = await _huntRepository.AddAsync(scavengerHunt);
-            Console.WriteLine($"id = {id}");
+
             if (id <= 0)
-
                 return BadRequest();
-                
-
             try
             {
                 var huntPublish = _mapper.Map<HuntPublishDto>(scavengerHunt);
