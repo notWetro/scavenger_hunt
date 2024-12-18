@@ -14,12 +14,12 @@ Ensure the following configuration files are in place:
 
 1. **.env File**: This file should be in the root directory of the `hunt-api` and contain:
 
-    ```shell
-    HUNTS_DB_NAME=desired_database_name_here
-    HUNTS_DB_ROOT_PWD=desired_password_here
-    PARTICIPANTS_DB_NAME=desired_database_name_here
-    PARTICIPANTS_DB_ROOT_PWD=desired_password_here
-    ```
+```shell
+HUNTS_DB_NAME=desired_database_name_here
+HUNTS_DB_ROOT_PWD=desired_password_here
+PARTICIPANTS_DB_NAME=desired_database_name_here
+PARTICIPANTS_DB_ROOT_PWD=desired_password_here
+```
 
 2. **appsettings.json Files**: These files should be located in the corresponding Api directory (`Hunts.Api` or `Participants.Api`) and contain the appropriate connection strings. Each complete file is defined below:
 

@@ -112,7 +112,6 @@ namespace Hunts.Api.Controllers
 
             if (id <= 0)
                 return BadRequest();
-
             try
             {
                 var huntPublish = _mapper.Map<HuntPublishDto>(scavengerHunt);

@@ -75,7 +75,8 @@ namespace Participants.Api.Services
                     Hint = new Hint
                     {
                         HintType = x.Hint.HintType,
-                        Data = x.Hint.Data
+                        Data = x.Hint.Data,
+                        AdditionalData = x.Hint.additionalData
                     },
                     Solution = new Solution
                     {

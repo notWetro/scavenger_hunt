@@ -1,12 +1,14 @@
 ﻿using Hunts.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Hunts.Infrastructure
 {
+    
     public sealed class HuntsDbContext(DbContextOptions<HuntsDbContext> options) : DbContext(options)
     {
-        public DbSet<Hunt> ScavengerHunts { get; set; }
-        public DbSet<Assignment> Assignments { get; set; }
+        public required DbSet<Hunt> ScavengerHunts { get; set; }
+        public required DbSet<Assignment> Assignments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -30,6 +32,11 @@ namespace Hunts.Infrastructure
                 .HasForeignKey(a => a.HuntId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Hint>()
+            .Property(h => h.additionalData)
+            .HasColumnType("text")
+            .IsRequired(false);
+           
             base.OnModelCreating(builder);
         }
     }
