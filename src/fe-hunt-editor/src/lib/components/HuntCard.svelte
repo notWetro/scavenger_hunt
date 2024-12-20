@@ -12,7 +12,10 @@
 	const dispatch = createEventDispatcher();
 
 	let showShareModal: boolean = false;
-	let link: string = `https://localhost:5174/participation/${hunt.id}`;
+	
+	const baseUrl = window.location.origin;
+	let link: string = `${baseUrl}/participation/${hunt.id}`;
+	console.log(link);
 
 	// Function to delete a hunt
 	async function deleteHunt() {
