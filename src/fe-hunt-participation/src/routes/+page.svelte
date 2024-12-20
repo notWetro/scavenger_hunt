@@ -1,50 +1,45 @@
 <script lang="ts">
-	import type { Stats } from '$lib/models/stats';
-	import type { PageData } from './$types';
-	import StatsDisplay from '$lib/components/StatsDisplay.svelte';
-	import type { Organisator } from '$lib/models/organisator';
-	import OrganisatorCard from '$lib/components/OrganisatorCard.svelte';
-
-	export let data: PageData;
-	$: stats = data.stats as Stats;
-
-	const organisators: Organisator[] = [
-		{
-			name: 'Marc H.',
-			email: 'marc.hermann@hs-aalen.de'
-		},
-		{
-			name: 'Lukas S.',
-			email: 'lukas.steckbauer@studmail.htw-aalen.de'
-		},
-		{
-			name: 'Rosario A.',
-			email: 'rosario.aranzulla@studmail.htw-aalen.de'
-		}
-	];
+	import { images } from '$lib/images/images';
+	import { Carousel, Timeline, TimelineItem } from 'flowbite-svelte';
+	import { Button } from 'flowbite-svelte';
+	import { LogIn } from 'lucide-svelte';
 </script>
 
-<main class="p-4 h-screen">
-	<div class="flex flex-col justify-center p-2 items-center">
-		<h1 class="text-xl font-bold tracking-tight mb-2">Welcome!</h1>
+<Carousel {images} duration={3000} let:Indicators imgClass="object-fit lg:object-scale-down">
+	<Indicators />
+</Carousel>
 
-		<p class="mb-4">Join fun and exciting scavenger hunts around your city!</p>
+<div class="m-4 text-end">
+	<h1 class="text-xl font-bold mb-8">The Schnitzeljagd Game</h1>
+	<p class="font-semibold mb-2">Discover Aalen University in a fun way</p>
+	<p class="mb-4">
+		Log in here and experience our interactive scavenger hunts - an exciting way to explore the
+		campus and make new friends
+	</p>
+	<Button href="/login">
+		Log in now!
+		<LogIn class="ml-4" />
+	</Button>
+</div>
 
-		<StatsDisplay {stats} />
-
-		<h1 class="text-xl font-bold text-center tracking-tight mb-2">How to enter?</h1>
-
-		<p class="mb-2">
-			In order to join a Scavenger Hunt you'll need to ask for a participation invite link or
-			QR-Code.
-		</p>
-		<p class="mb-2">Ask an organisator below:</p>
-	</div>
-	<div class="snap-x overflow-x-auto flex flex-row gap-2 xl:justify-center">
-		{#each organisators as organisator}
-			<div class="snap-start">
-				<OrganisatorCard {organisator} />
-			</div>
-		{/each}
-	</div>
-</main>
+<div class="w-11/12 m-4">
+	<h1 class="text-xl font-bold">Project Roadmap</h1>
+	<Timeline>
+		<TimelineItem title="Project Start" date="February 2024">
+			<p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
+				First ideas, wireframing and workflows.
+			</p>
+		</TimelineItem>
+		<TimelineItem title="Architecting" date="March 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">
+				Architectural design, technological exploration and first insight.
+			</p>
+		</TimelineItem>
+		<TimelineItem title="Implementation" date="June 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">First implementation.</p>
+		</TimelineItem>
+		<TimelineItem title="Submission" date="August 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Project submission.</p>
+		</TimelineItem>
+	</Timeline>
+</div>

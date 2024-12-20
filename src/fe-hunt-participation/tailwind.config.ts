@@ -1,12 +1,21 @@
 import flowbitePlugin from 'flowbite/plugin';
-
 import type { Config } from 'tailwindcss';
+
+const customUtilities = function ({ addUtilities }) {
+	addUtilities({
+		'.grid-area-custom': {
+			'grid-area': '1 / 1'
+		}
+	});
+};
 
 export default {
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
 		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
 	],
+
+	darkMode: 'class', 
 
 	theme: {
 		extend: {
@@ -28,5 +37,8 @@ export default {
 		}
 	},
 
-	plugins: [flowbitePlugin]
+	plugins: [
+		flowbitePlugin, 
+		customUtilities
+	]
 } as Config;
