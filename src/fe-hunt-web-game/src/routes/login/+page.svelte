@@ -12,7 +12,7 @@
 <main>
 
 	<!-- New: Home Button -->
-		<Button 
+	<Button 
 		on:click={() => goto('/')}
 		class="absolute top-8 right-8"
 		>

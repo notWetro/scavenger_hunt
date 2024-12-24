@@ -10,13 +10,10 @@
 	export let isExpanded: boolean;
 	isExpanded = true;
   export let assignmentsLength: number;
-
-  console.log('len', assignmentsLength);
 </script>
 
 <div class="flex items-center justify-between">
 	<div class="flex items-center space-x-2">
-		<!-- TODO: For both Buttons: Add a disabled check if it's the first or last assignment -->
 		<Button 
       class="p-1 rounded" 
       on:click={() => dispatch('moveUp')} 
@@ -61,7 +58,6 @@
     </Button>
   </div>
 </div>
-
 
 <!-- New: Style for the Solution and Hint Type box -->
 <style>
