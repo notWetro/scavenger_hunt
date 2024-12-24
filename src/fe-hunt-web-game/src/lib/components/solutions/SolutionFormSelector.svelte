@@ -9,6 +9,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import SubmissionHintDisplay from './SubmissionHintDisplay.svelte';
 	import { get } from 'svelte/store';
+	import { tick } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -21,16 +22,20 @@
 	export let type: number;
 	export let data: string;
 	let hintData: string = '';
-
 	let submissionStatus: SubmissionStatus = SubmissionStatus.NotSubmitted;
+	let resultRef: HTMLDivElement;
+
+	async function scrollToBottom() {
+		await tick();
+		if (resultRef) {
+			resultRef.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	}
 
 	async function submitSolution() {
 		if (!data) throw Error('data is not defined!');
 		const currentToken = get(token);
 		const huntId = $playingHunt.id;
-		console.log('huntId = ', huntId);
-		console.log('token = ', currentToken);
-		console.log('data = ', data);
 
 		const response = await fetch(
 			`${PUBLIC_API_URL}/Participants/SubmitSolution/${$playingHunt.id}`,
@@ -50,12 +55,11 @@
 			if (responseStatus.success === true) {
 				submissionStatus = SubmissionStatus.ValidSubmission;
 				dispatch('OnNext');
-				return;
 			} else {
 				submissionStatus = SubmissionStatus.InvalidSubmission;
 				hintData = responseStatus.hintData;
-				console.log(hintData);
 			}
+			await scrollToBottom();
 		}
 	}
 </script>
@@ -76,8 +80,10 @@
 	<span>Hm. Something ain't right and it's not your fault.</span>
 {/if}
 
-{#if submissionStatus === SubmissionStatus.InvalidSubmission}
-	<SubmissionHintDisplay {hintData} {type} />
-{:else if submissionStatus === SubmissionStatus.ValidSubmission}
-	<Alert color="green">You are correct!</Alert>
-{/if}
+<div bind:this={resultRef}>
+	{#if submissionStatus === SubmissionStatus.InvalidSubmission}
+		<SubmissionHintDisplay {hintData} {type} />
+	{:else if submissionStatus === SubmissionStatus.ValidSubmission}
+		<Alert color="green">You are correct!</Alert>
+	{/if}
+</div>
