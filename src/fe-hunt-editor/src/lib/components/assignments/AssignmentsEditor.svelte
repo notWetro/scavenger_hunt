@@ -92,11 +92,13 @@
 {#each assignments as assignment}
 	<SingleAssignmentEditor
 		bind:assignment
+		assignmentsLength={assignments.length}
 		on:moveDown={() => moveDown(assignment)}
 		on:moveUp={() => moveUp(assignment)}
 		on:deleteAssignment={() => deleteAssignment(assignment)}
 	/>
 {/each}
+
 
 <Button class="mt-5" on:click={addAssignment}>
 	<Plus class="mr-2" />

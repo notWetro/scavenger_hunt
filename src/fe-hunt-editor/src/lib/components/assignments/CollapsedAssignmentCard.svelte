@@ -6,17 +6,26 @@
 	import { createEventDispatcher } from 'svelte';
 	
 	const dispatch = createEventDispatcher();
-
 	export let assignment: Assignment;
 	export let isExpanded: boolean;
 	isExpanded = true;
+  export let assignmentsLength: number;
 </script>
 
 <div class="flex items-center justify-between">
 	<div class="flex items-center space-x-2">
-		<!-- TODO: For both Buttons: Add a disabled check if it's the first or last assignment -->
-		<Button class="p-1 rounded" on:click={() => dispatch('moveUp')}><ChevronUp /></Button>
-		<Button class="p-1 rounded" on:click={() => dispatch('moveDown')}><ChevronDown /></Button>
+		<Button 
+      class="p-1 rounded" 
+      on:click={() => dispatch('moveUp')} 
+      disabled={assignment.id === 1}>
+      <ChevronUp />
+    </Button>
+		<Button 
+      class="p-1 rounded" 
+      on:click={() => dispatch('moveDown')} 
+      disabled={assignment.id === assignmentsLength}>
+      <ChevronDown />
+    </Button>
 
 		<!-- New: Add a text box for Hint Type and solution type -->
     <div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
@@ -50,7 +59,6 @@
   </div>
 </div>
 
-
 <!-- New: Style for the Solution and Hint Type box -->
 <style>
   .box {
@@ -76,4 +84,5 @@
     color: #3498db;
     margin-bottom: 1px;
   }
+
 </style>

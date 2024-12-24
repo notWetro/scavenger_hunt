@@ -8,6 +8,7 @@
 
 	export let assignment: Assignment;
 	let isExpanded = false;
+	export let assignmentsLength: number;
 
 	function toggleExpanded() {
 		isExpanded = !isExpanded;
@@ -18,6 +19,7 @@
 	<CollapsedAssignmentCard
 		bind:assignment
 		bind:isExpanded
+		assignmentsLength={assignmentsLength}
 		on:toggleExpanded={toggleExpanded}
 		on:moveDown={() => dispatch('moveDown')}
 		on:moveUp={() => dispatch('moveUp')}
