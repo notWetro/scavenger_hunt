@@ -2,11 +2,12 @@
 	import type { Assignment } from '$lib/models/Assignment';
 	import { HintType } from '$lib/models/Hint';
 	import { SolutionType } from '$lib/models/Solution';
-	import { Button, Dropdown, DropdownItem, Fileupload, Input, Label } from 'flowbite-svelte';
+	import { Button, Dropdown, DropdownItem, Fileupload, Input, Label, Helper } from 'flowbite-svelte';
 	import { ChevronDown } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import MapSelector from '../MapSelector.svelte';
 	import { mapHintTypeToText, mapSolutionTypeToText } from '$lib/utils/typeMappingUtil';
+	import { huntStore } from '$lib/stores/huntStore';
 
 	export let assignment: Assignment;
 	let hintTypes: string[] = [];
@@ -38,12 +39,23 @@
 
 			reader.onload = (e: ProgressEvent<FileReader>) => {
 				const base64String = e.target?.result as string;
-				assignment.hint.data = base64String;
+				if (assignment.hint.hintType === HintType.Image) {
+					assignment.hint.data = base64String; // Speichere die Datei als Base64
+				} else if (assignment.hint.hintType === HintType.Video) {
+					assignment.hint.data = base64String;
+				} else if (assignment.hint.hintType === HintType.Audio) {
+					assignment.hint.data = base64String;
+				}
 			};
 
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(file); // Konvertiere Datei zu Base64
 		}
 	};
+
+	function isBase64(data: string): boolean {
+		return data.startsWith('data:image') || data.startsWith('data:video') || data.startsWith('data:audio');
+	}
+
 </script>
 
 <div class="border rounded-lg p-2 space-y-2 bg-gray-100">
@@ -69,6 +81,7 @@
 			<Label class="space-y-2 mb-2">
 				<span class="font-semibold">Upload Image</span>
 				<Fileupload accept="image/png, image/jpeg" on:change={(e) => onFileSelected(e)} />
+				<Helper>PNG or JPG</Helper>
 			</Label>
 		{:else if assignment.hint.hintType === HintType.Video}
 			<Input bind:value={assignment.hint.additionalData} placeholder="Enter additional hint Text" class="mt-2" />
