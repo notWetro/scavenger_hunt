@@ -86,7 +86,7 @@
 	<!-- New: Home Button -->
 	<Button 
     on:click={() => goto('/')}
-    class="absolute top-8 right-8"
+    class="absolute top-8 right-12"
   	>
     Home 🏠
   	</Button>
