@@ -12,6 +12,7 @@
 	export let assignment: Assignment;
 	let hintTypes: string[] = [];
 	let solutionTypes: string[] = [];
+	let uploadedFileName: string | null = null;
 
 	onMount(() => {
 		// Get the string keys of the enums
@@ -23,6 +24,7 @@
 		const selectedHintType = HintType[hintType as keyof typeof HintType];
 		assignment.hint.hintType = selectedHintType;
 		assignment.hint.data = '';
+		uploadedFileName = null;
 	}
 
 	function setSolutionType(solutionType: string) {
@@ -35,20 +37,16 @@
 		const input = e.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
 			const file = input.files[0];
+			uploadedFileName = file.name;
+
 			const reader = new FileReader();
 
 			reader.onload = (e: ProgressEvent<FileReader>) => {
 				const base64String = e.target?.result as string;
-				if (assignment.hint.hintType === HintType.Image) {
-					assignment.hint.data = base64String; // Speichere die Datei als Base64
-				} else if (assignment.hint.hintType === HintType.Video) {
-					assignment.hint.data = base64String;
-				} else if (assignment.hint.hintType === HintType.Audio) {
-					assignment.hint.data = base64String;
-				}
+				assignment.hint.data = base64String;
 			};
 
-			reader.readAsDataURL(file); // Konvertiere Datei zu Base64
+			reader.readAsDataURL(file);
 		}
 	};
 
@@ -80,19 +78,57 @@
 			<Input bind:value={assignment.hint.additionalData} placeholder="Enter additional hint Text" class="mt-2" />
 			<Label class="space-y-2 mb-2">
 				<span class="font-semibold">Upload Image</span>
-				<Fileupload accept="image/png, image/jpeg" on:change={(e) => onFileSelected(e)} />
+				{#if assignment.hint.data}
+					<input id="image" type="file" accept="image/png, image/jpeg" 
+					class="hidden" on:change={(e) => onFileSelected(e)} />
+					<label
+						for="image"
+						class="block w-full text-sm text-gray-900 text-left border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
+						focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 px-4 py-2"
+						>
+						{'Choose a different Image ?'}
+					</label>
+				{:else}	
+					<Fileupload accept="image/png, image/jpeg" on:change={(e) => onFileSelected(e)} />
+				{/if}
 				<Helper>PNG or JPG</Helper>
 			</Label>
 		{:else if assignment.hint.hintType === HintType.Video}
 			<Input bind:value={assignment.hint.additionalData} placeholder="Enter additional hint Text" class="mt-2" />
    			<Label class="space-y-2 mb-2">
       			<span class="font-semibold">Upload Video</span>
-      			<Fileupload accept="video/mp4" on:change={(e) => onFileSelected(e)} />
+				{#if assignment.hint.data}
+						<input id="video" type="file" accept="video/mp4"
+						class="hidden" on:change={(e) => onFileSelected(e)} />
+						<label
+							for="video"
+							class="block w-full text-sm text-gray-900 text-left border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
+							focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 px-4 py-2"
+							>
+							{'Choose a different Video ?'}
+						</label>
+				{:else}	
+      				<Fileupload accept="video/mp4" on:change={(e) => onFileSelected(e)} />
+				{/if}
+				<Helper>MP4</Helper>
    			</Label>
 		{:else if assignment.hint.hintType === HintType.Audio}
     		<Label class="space-y-2 mb-2">
         	<span class="font-semibold">Upload Audio</span>
-        	<Fileupload accept="audio/mp3" on:change={(e) => onFileSelected(e)} />
+			{#if assignment.hint.data}
+				<input id="audio" type="file" accept="audio/mp3"
+				class="hidden" on:change={(e) => onFileSelected(e)} />
+				<label
+					for="audio"
+					class="block w-full text-sm text-gray-900 text-left border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
+					focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 px-4 py-2"
+					>
+					{'Choose a different Audio ?'}
+				</label>
+			{:else}
+        		<Fileupload accept="audio/mp3" on:change={(e) => onFileSelected(e)} />
+			{/if}
+			<Helper>MP3</Helper>
     		</Label>
 		{/if}
 	</div>

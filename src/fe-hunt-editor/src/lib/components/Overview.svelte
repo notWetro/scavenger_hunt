@@ -13,7 +13,6 @@
 
 	// Subscribe to huntStore to access its current state
 	let hunt = $huntStore;
-	console.log($huntStore);
 
 	const dispatch = createEventDispatcher();
 
