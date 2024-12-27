@@ -9,6 +9,7 @@
 	import { Button, Input } from 'flowbite-svelte';
 	import { UserPenIcon, KeySquareIcon } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	let dispatch = createEventDispatcher();
 	let username: string = '';
@@ -68,6 +69,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
+
 	<Input placeholder="username" bind:value={username}>
 		<UserPenIcon slot="left" />
 	</Input>

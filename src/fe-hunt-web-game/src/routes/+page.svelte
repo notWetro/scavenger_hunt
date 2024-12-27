@@ -5,6 +5,7 @@
 	import { LogIn } from 'lucide-svelte';
 </script>
 
+
 <Carousel {images} duration={3000} let:Indicators imgClass="object-fit lg:object-scale-down">
 	<Indicators />
 </Carousel>

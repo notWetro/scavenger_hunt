@@ -77,108 +77,109 @@
 </script>
 
 
+<div class="relative w-full bg-gray-100">
+	<main>
+		<div class="flex gap-2 flex-col mb-4 items-center">
+			<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
+		</div>
 
-<main>
-	<div class="flex gap-2 flex-col mb-4 items-center">
-		<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
-	</div>
-
-	<!-- New: Home Button -->
-	<Button 
-    on:click={() => goto('/')}
-    class="absolute top-8 right-12"
-  	>
-    Home 🏠
-  	</Button>
-	
-	<div class="flex flex-col items-center">
-		<Card>
-		<h2 class="mb-4 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
-		<p class="text-gray-600 leading-tight font-normal mb-6">{hunt.description}</p>
-
-		<Button
-			class="mb-6"
-			on:click={() => (showModal = true)}
-			disabled={success === true}
+		<!-- New: Home Button -->
+		<Button 
+		on:click={() => goto('/')}
+		class="absolute top-0 right-0"
 		>
-			{#if success}
-			<Check />
-			{:else}
-			Participate!
-			{/if}
+		Home 🏠
 		</Button>
+		
+		<div class="flex flex-col items-center">
+			<Card>
+			<h2 class="mb-4 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>
+			<p class="text-gray-600 leading-tight font-normal mb-6">{hunt.description}</p>
 
-		<div class="flex gap-4 flex-col mb-2 items-center">
-		<button
-			class="text font-bold underline text-blue-600 hover:text-blue-800 focus:outline-none"
-			on:click={navigateToLogin}
-		>
-			Or you are already registered for this Hunt?
-		</button>
-		</div>
-
-		</Card>
-	</div>
-
-	
-	
-	<!-- Participan Modal -->
-	<Modal
-		bind:open={showModal}
-		title="Participate in Scavenger Hunt!"
-		size="xs"
-		autoclose={false}
-		class="w-full"
-	>
-		<div class="flex flex-col space-y-6">
-			<Label class="space-y-2">
-				<span>Username</span>
-				<Input required type="text" name="username" bind:value={username} placeholder="Username" />
-			</Label>
-			<Label class="space-y-2">
-				<span>Your password</span>
-				<Input
-					type="password"
-					name="password"
-					color={success === false ? 'red' : 'base'}
-					bind:value={password}
-					placeholder="•••••"
-					required
-				/>
-			</Label>
-			<!-- New: check if Password is Valid -->
-			{#if success === false && attemptMade && !validPassword}
-  				<Helper class="text-red-900 text-sm">
-    				Submission failed! Please try again.
-  				</Helper>
-			{:else if validPassword && attemptMade}
-  				<Helper class="text-red-900 text-sm">
-    				Password must be at least 8 characters long, contain at least one uppercase letter, and one number.
-  				</Helper>
-			{/if}
 			<Button
-				type="submit"
-				on:click={async () => submit(username, password, hunt.id)}
-				class="w-full1"
-				disabled={!username || !password}
+				class="mb-6"
+				on:click={() => (showModal = true)}
+				disabled={success === true}
 			>
-				Submit participation credentials
-				<Goal class="ml-2" />
+				{#if success}
+				<Check />
+				{:else}
+				Participate!
+				{/if}
 			</Button>
+
+			<div class="flex gap-4 flex-col mb-2 items-center">
+			<button
+				class="text font-bold underline text-blue-600 hover:text-blue-800 focus:outline-none"
+				on:click={navigateToLogin}
+			>
+				Or you are already registered for this Hunt?
+			</button>
+			</div>
+
+			</Card>
 		</div>
-	</Modal>
-	<!-- New: Feedback Success Modal if Participation was successful -->
-	<Modal
-		bind:open={showSuccessModal}
-		title="Registration Successful!"
-		size="xs"
-		autoclose={true}
-		class="w-full"
-	>
-		<p class="text-center text-green-600">Your registration was successful! 🎉</p>
-		<div class="flex justify-center gap-4">
-    		<Button on:click={() => goto('/')}>Home 🏠</Button>
-    		<Button on:click={navigateToLogin}>Play</Button>
-  		</div>
-	</Modal>
-</main>
+
+		
+		
+		<!-- Participan Modal -->
+		<Modal
+			bind:open={showModal}
+			title="Participate in Scavenger Hunt!"
+			size="xs"
+			autoclose={false}
+			class="w-full"
+		>
+			<div class="flex flex-col space-y-6">
+				<Label class="space-y-2">
+					<span>Username</span>
+					<Input required type="text" name="username" bind:value={username} placeholder="Username" />
+				</Label>
+				<Label class="space-y-2">
+					<span>Your password</span>
+					<Input
+						type="password"
+						name="password"
+						color={success === false ? 'red' : 'base'}
+						bind:value={password}
+						placeholder="•••••"
+						required
+					/>
+				</Label>
+				<!-- New: check if Password is Valid -->
+				{#if success === false && attemptMade && !validPassword}
+					<Helper class="text-red-900 text-sm">
+						Submission failed! Please try again.
+					</Helper>
+				{:else if validPassword && attemptMade}
+					<Helper class="text-red-900 text-sm">
+						Password must be at least 8 characters long, contain at least one uppercase letter, and one number.
+					</Helper>
+				{/if}
+				<Button
+					type="submit"
+					on:click={async () => submit(username, password, hunt.id)}
+					class="w-full1"
+					disabled={!username || !password}
+				>
+					Submit participation credentials
+					<Goal class="ml-2" />
+				</Button>
+			</div>
+		</Modal>
+		<!-- New: Feedback Success Modal if Participation was successful -->
+		<Modal
+			bind:open={showSuccessModal}
+			title="Registration Successful!"
+			size="xs"
+			autoclose={true}
+			class="w-full"
+		>
+			<p class="text-center text-green-600">Your registration was successful! 🎉</p>
+			<div class="flex justify-center gap-4">
+				<Button on:click={() => goto('/')}>Home 🏠</Button>
+				<Button on:click={navigateToLogin}>Play</Button>
+			</div>
+		</Modal>
+	</main>
+</div>
