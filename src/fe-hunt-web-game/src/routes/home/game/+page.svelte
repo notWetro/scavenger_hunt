@@ -6,7 +6,9 @@
   import SolutionTypeHintDisplay from '$lib/components/solutions/SolutionTypeHintDisplay.svelte';
   import type { HuntAssignmentResponse } from '$lib/dtos/assignment/HuntAssignmentResponse';
   import type { HuntLoginResponse } from '$lib/dtos/login/huntLoginResponse';
+  import { completeHunts } from '$lib/stores/completeHunts';
   import { playingHunt } from '$lib/stores/playingHunt';
+  import { ongoingHunts } from '$lib/stores/ongoingHunts';
   import { token } from '$lib/stores/tokenStore';
   import { Button } from 'flowbite-svelte';
   import { onMount } from 'svelte';
@@ -21,6 +23,7 @@
   let isNextButtonShown: boolean = false;
   let isFinished: boolean = false;
   let solutionCardRef: HTMLDivElement;
+
   onMount(() => {
     currentHunt = $playingHunt;
     fetchCurrentAssignment();
@@ -61,6 +64,16 @@
 
     if (response.status === 269) {
       isFinished = true;
+      completeHunts.update((hunts) => {
+            if (!hunts.some(hunt => hunt.id === currentHunt.id)) {
+                hunts.push(currentHunt);
+            }
+            return hunts;
+            playingHunt.set(null);
+        });
+        ongoingHunts.update((hunts) => {
+          return hunts.filter(hunt => hunt.id !== currentHunt.id);
+        });
     } else {
       currentAssignment = (await response.json()) as HuntAssignmentResponse;
     }
