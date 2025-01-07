@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- White background -->
+    <Color x:Key="PrimaryBackgroundColor">#FFFFFFFF</Color>
+    <!-- Black text -->
+    <Color x:Key="PrimaryTextColor">#FF000000</Color>
+    <!-- Light White backround -->
+    <Color x:Key="SecondaryBackgroundColor">#e8e6e6</Color>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}" />
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource PrimaryTextColor}" />
+    <SolidColorBrush x:Key="ButtonBackroundBrush" Color="{StaticResource SecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="{StaticResource SecondaryBackgroundColor}" />
+
+</ResourceDictionary>
