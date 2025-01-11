@@ -79,18 +79,10 @@
 
 <div class="relative w-full bg-gray-100">
 	<main>
-		<div class="flex gap-2 flex-col mb-4 items-center">
+		<div class="flex gap-2 flex-row mb-4 items-center justify-between w-full">
 			<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
 		</div>
-
-		<!-- New: Home Button -->
-		<Button 
-		on:click={() => goto('/')}
-		class="absolute top-0 right-0"
-		>
-		Home 🏠
-		</Button>
-		
+	
 		<div class="flex flex-col items-center">
 			<Card>
 			<h2 class="mb-4 text-xl font-bold tracking-tight text-gray-800">{hunt.title}</h2>

@@ -7,8 +7,6 @@ export const load: PageServerLoad = async ({ fetch }) => {
 	const res = await fetch(`${PUBLIC_PARTICIPANT_API_URL}/Participations/Stats`);
 
 	if (!res.ok) {
-		// Instead of throwing a generic error, throw a custom error message
-		// when the hunt is not found.
 		const errMsg = res.status === 404 ? 'No stats could be read!' : await res.text();
 		throw error(res.status, errMsg);
 	}

@@ -43,6 +43,8 @@ namespace Hunts.Api
                         .WithOrigins(
                         "http://localhost:5173",
                         "http://localhost:4173",
+                        "http://scavhunt.local:4173",
+                        "http://scavhunt.local:5173",
                         "http://192.168.178.29:4173",
                         "http://192.168.178.29:5173"
                         )

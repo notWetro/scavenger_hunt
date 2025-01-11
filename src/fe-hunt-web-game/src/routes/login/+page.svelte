@@ -10,19 +10,7 @@
 </script>
 
 <div class="relative w-full bg-gray-100">
-	<!-- New: Home Button -->
-	<Button 
-		on:click={() => goto('/')}
-		class="absolute top-0 right-0"
-	>
-  		Home 🏠
-	</Button>
-
-
 	<main>
-
-		
-
 		<div class="flex flex-col gap-4 items-center justify-center">
 			<h1 class="text-xl font-bold">Log in</h1>
 			<p class="text-center m-4">
