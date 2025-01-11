@@ -7,7 +7,7 @@ upstream participants-api {
 }
 
 server {
-    listen 5500;
+    listen 0.0.0.0:5500;
 
     # New: Adds so that bigger Files can be sent on the Message Bus
     client_max_body_size 100M;

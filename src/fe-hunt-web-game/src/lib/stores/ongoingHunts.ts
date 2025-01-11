@@ -4,5 +4,5 @@ import { writable } from 'svelte/store';
 export const ongoingHunts = writable<HuntLoginResponse[]>([]);
 
 ongoingHunts.subscribe((value) => {
-	console.log(value);
+	console.log("123", value);
 });

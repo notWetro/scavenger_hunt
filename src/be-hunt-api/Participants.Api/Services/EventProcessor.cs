@@ -16,7 +16,7 @@ namespace Participants.Api.Services
         {
             // Decode message that contains ä, ö, ü, etc.
             string decodedString = Regex.Unescape(message);
-            Console.WriteLine(decodedString);
+            //Console.WriteLine(decodedString);
 
             var evenType = DetermineEvent(message);
             var hunt = DetermineHunt(message);

@@ -30,10 +30,11 @@
 
 		<div class="flex flex-col gap-4">
 			{#each $ongoingHunts as hunt}
-				<HuntSelectorCard {hunt} on:huntPressed={() => startGame(hunt)} />
+				<HuntSelectorCard {hunt} type="ongoing" on:huntPressed={() => startGame(hunt)} />
 			{/each}
 		</div>
 	</TabItem>
+
 	<TabItem>
 		<div slot="title" class="flex items-center gap-2">
 			<PackageCheckIcon />
@@ -48,10 +49,11 @@
 
 		<div class="flex flex-col gap-4 pointer-events-none">
 			{#each $completeHunts as hunt}
-				<HuntSelectorCard {hunt} on:huntPressed={() => startGame(hunt)} />
+				<HuntSelectorCard {hunt} type="completed" />
 			{/each}
 		</div>
 	</TabItem>
+
 	<TabItem>
 		<div slot="title" class="flex items-center gap-2">
 			<PackageMinusIcon />
@@ -62,9 +64,10 @@
 		{#if $expiredHunts.length <= 0}
 			<div>No expired Scavenger-Hunts were found.</div>
 		{/if}
+		
 		<div class="flex flex-col gap-4 pointer-events-none">
 			{#each $expiredHunts as hunt}
-				<HuntSelectorCard {hunt} on:huntPressed={() => startGame(hunt)} />
+				<HuntSelectorCard {hunt} type="expired" />
 			{/each}
 		</div>
 	</TabItem>

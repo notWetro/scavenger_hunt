@@ -8,15 +8,20 @@
 	import { huntStore } from '$lib/stores/huntStore';
 	import { createEventDispatcher } from 'svelte';
 	import { checkValidData } from '$lib/utils/validationUtil';
+	import { onMount } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-
+	let counter: number;
 	export let assignments: Assignment[] = [];
 
 	$: isValidData = checkValidData(assignments);
 
-	// This has to be 0 so that the increment in createEmptyAssignment maps the id to the index of the array
-	let counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : 0;
+	onMount(() => {
+		huntStore.subscribe((hunt) => {
+			assignments = [...hunt.assignments];
+			counter = assignments.length > 0 ? Math.max(...assignments.map((a) => a.id)) : 0;
+		})();
+	})
 
 	function createEmptyAssignment(): Assignment {
 		return {
@@ -32,8 +37,16 @@
 		};
 	}
 
+	function updateStore() {
+		counter = 0;
+		huntStore.update((currentHunt) => {
+			return { ...currentHunt, assignments: assignments };
+		});
+	}
+
 	// New: Function to go to the previous step on the hunt creation 
 	function goBackToPreviousStep() {
+		updateStore();
   		dispatch('goBack');
 	}
 
@@ -42,10 +55,7 @@
 	}
 
 	function saveAssignmentsToStore(): void {
-		counter = 0;
-		huntStore.update((currentHunt) => {
-			return { ...currentHunt, assignments: assignments };
-		});
+		updateStore();
 		dispatch('assignmentsSaved');
 	}
 

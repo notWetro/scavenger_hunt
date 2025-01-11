@@ -12,7 +12,7 @@
 	let qrCodes: any[] = [];
 
 	// Subscribe to huntStore to access its current state
-	$: hunt = $huntStore;
+	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
 

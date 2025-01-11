@@ -4,7 +4,7 @@
 	export let data: string = '';
 </script>
 
-<Card class="p-4">
+<Card class="p-4 mb-4 w-full max-w-none mx-auto">
 	<div class="flex flex-row items-center text-center">
 		<FileType2Icon class="w-8 h-8 mb-2 mr-2 text-primary-800" />
 		<h5
