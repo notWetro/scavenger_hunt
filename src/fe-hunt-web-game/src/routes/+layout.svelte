@@ -4,6 +4,6 @@
 
 <div class="min-h-screen bg-white">
     <div class="w-full h-full p-5">
-        <slot />
+        <slot/>
     </div>
 </div>
