@@ -24,7 +24,7 @@
 </div>
 
 <div class="w-11/12 m-4">
-	<h1 class="text-xl font-bold">Project Roadmap</h1>
+	<h1 class="text-xl font-bold">Project Timeline</h1>
 	<Timeline>
 		<TimelineItem title="Project Start" date="February 2024">
 			<p class="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
@@ -37,10 +37,22 @@
 			</p>
 		</TimelineItem>
 		<TimelineItem title="Implementation" date="June 2024">
-			<p class="text-base font-normal text-gray-500 dark:text-gray-400">First implementation.</p>
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Start of the implementation.</p>
 		</TimelineItem>
 		<TimelineItem title="Submission" date="August 2024">
 			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Project submission.</p>
+		</TimelineItem>
+		<TimelineItem title="Project Induction" date="October 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Induction of codebase, architectural design and used frameworks.</p>
+		</TimelineItem>
+		<TimelineItem title="Feature Discovery" date="November 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Wireframing and concept development of new features.</p>
+		</TimelineItem>
+		<TimelineItem title="Feature Development" date="December 2024">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Start of the implementation of new features.</p>
+		</TimelineItem>
+		<TimelineItem title="Project Acceptance and Submission." date="February 2025">
+			<p class="text-base font-normal text-gray-500 dark:text-gray-400">Project completion and handover to the client.</p>
 		</TimelineItem>
 	</Timeline>
 </div>
