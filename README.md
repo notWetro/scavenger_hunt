@@ -2,9 +2,9 @@
 
 ## Einführung
 
-Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwickelte System einer AR-Schnitzeljagd.
+Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwickelte System einer AR-Schnitzeljagd und der Erweiterung dieser.
 
-**Autoren**: Lukas Steckbauer und Rosario Aranzulla
+**Autoren**: Lukas Steckbauer, Rosario Aranzulla, Felix Kurz und Felix Biedenbacher
 
 **Betreuer**: Dr. Marc Hermann
 
@@ -15,14 +15,17 @@ Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwick
 ### Projekte
 
 - **Backend** und **API**: [Hunt-API](src/be-hunt-api/README.md)
-- **Mobile-App**: der aktuellste Stand der AR App befindet sich im Branch `feature/ar-mobile-app`
-- **Web-Game**: [Hunt-Game](src/fe-hunt-game-web/README.md)
+- **Web-Game**: [Hunt-Game](src/fe-hunt-web-game/README.md)
 - **Web-App**: [Hunt-Editor](src/fe-hunt-editor/README.md)
-- **Participation-App**: [Participation-App](src/fe-hunt-participation/README.md)
+- **Hunt-Gui**: [Hunt-Gui](src/fe-hunt-gui/README.md)
 
 ### Dokumentation
 
-Die Dokumentation der Projektarbeit befindet sich im Verzeichnis `.\docs\` [hier](docs/dokumentation-projektarbeit/INDEX.tex).
+Die Dokumentation der Projektarbeiten befindet sich im Verzeichnis `.\docs\` [hier](docs/).
+
+### Funktion und Benutzung des Spiels
+
+Um eine Schnitzeljagt zu erstellen empfehlen wir ihnen die vorhandene [Hunt-Gui](src/fe-hunt-gui/README.md) zu verwenden. Falls sie dennoch ohne Gui eine Hunt erstellen wollen finden sie die anleitung dazu im Ordner [Hunt-Editor](src/fe-hunt-editor/README.md). Um ein spiel zu starten muss das [Hunt-API](src/be-hunt-api/README.md) zum verwalten der Daten laufen dies wird beim verwenden der Gui automatisch gemacht. Zum Spielen einer Hunt kann der im Editor erstellte QR-Code oder Link verwendet werden. Eine erstellte Hunt kann aber auch wieder über die Gui oder über die [Hunt-Game](src/fe-hunt-web-game/README.md) getestet werden.
 
 # Utilities
 
