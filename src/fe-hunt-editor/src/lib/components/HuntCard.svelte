@@ -14,10 +14,15 @@
 	let showShareModal: boolean = false;
 
 	const baseUrl = window.location.origin;
-	let link: string = `${baseUrl}/participation/${hunt.id}`;
-	const parts = baseUrl.split(":");
-	const port = parts[2];
 	
+	const parts = baseUrl.split(":");
+	let port = parts[2];
+
+	if (port && port.startsWith("5")) {
+		port = "4" + port.slice(1);
+	}
+
+	let link: string = `http://${parts[1]}:${port}:/participation/${hunt.id}`;
 
 	async function getPublicIP() {
 		try {
