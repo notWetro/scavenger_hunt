@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using System.Text.Json;
+using System;
+using System.IO;
 using Hunts.Api.DTOs.Hunt;
 using Hunts.Api.Services;
 using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Hunts.Api.Controllers
 {
@@ -45,6 +49,28 @@ namespace Hunts.Api.Controllers
 
             return Ok(_mapper.Map<HuntGetDto>(scavengerHunt));
         }
+
+        [HttpGet("server-ip")]
+        public async Task<IActionResult> GetServerIPAddress()
+        {
+            try
+            {   
+                string filePath = Path.Combine(AppContext.BaseDirectory, "ipconfig.json");
+                using StreamReader r = new StreamReader(filePath);
+                string json = await r.ReadToEndAsync();
+                var config = JsonSerializer.Deserialize<Config>(json);
+                Console.WriteLine(config?.Ip);
+                if (config?.Ip == null)
+                    return BadRequest(new { error = "Couldn not finde a IP Adress" });
+
+                return Ok(new { ip = config?.Ip });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
 
         #endregion
 
@@ -163,6 +189,11 @@ namespace Hunts.Api.Controllers
         {
             var hunt = _huntRepository.GetByIdAsync(id);
             return hunt is not null;
+        }
+
+        public class Config
+        {
+            public string Ip { get; set; }
         }
     }
 }

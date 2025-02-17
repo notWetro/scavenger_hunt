@@ -46,7 +46,9 @@ namespace Hunts.Api
                         "http://scavhunt.local:4173",
                         "http://scavhunt.local:5173",
                         "http://192.168.178.29:4173",
-                        "http://192.168.178.29:5173"
+                        "http://192.168.178.29:5173",
+                        "http://45.150.175.88:4173",
+                        "http://45.150.175.88:5173"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod());

@@ -12,10 +12,25 @@
 	const dispatch = createEventDispatcher();
 
 	let showShareModal: boolean = false;
-	
+
 	const baseUrl = window.location.origin;
 	let link: string = `${baseUrl}/participation/${hunt.id}`;
-	console.log(link);
+	const parts = baseUrl.split(":");
+	const port = parts[2];
+	
+
+	async function getPublicIP() {
+		try {
+			const response = await fetch(`${PUBLIC_API_URL}/hunts/server-ip`);
+			const data = await response.json();
+			console.log('Ip Adresse:', data.ip);
+			link = `http://${data.ip}:${port}/participation/${hunt.id}`;
+		} catch (error) {
+			console.log('Error fetching the IP Adresse:', error);
+		}
+	}
+
+	getPublicIP();
 
 	// Function to delete a hunt
 	async function deleteHunt() {
