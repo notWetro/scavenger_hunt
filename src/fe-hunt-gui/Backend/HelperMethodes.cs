@@ -24,6 +24,12 @@ namespace fe_hunt_gui
                 ElementsManager.LoadingCircle.Visibility = Visibility.Visible;
                 Grid.SetColumn(ElementsManager.LoadingCircle, 1);
 
+                ElementsManager.LoadingCircle.Height = 160;
+                ElementsManager.LoadingCircle.Width = 160;
+
+
+                //ElementsManager.Editor_Button.Visibility = Visibility.Hidden;
+                //ElementsManager.Play_Button.Visibility = Visibility.Hidden;
 
                 if (IsProcessRunning("Docker Desktop", null))
                 {
@@ -59,6 +65,10 @@ namespace fe_hunt_gui
                 {
                     ElementsManager.StartDocker.Visibility = Visibility.Hidden; // Hide the element
                     ElementsManager.LoadingCircle.Visibility = Visibility.Hidden; // Hide the element
+                    //ElementsManager.Editor_Button.Visibility = Visibility.Visible;
+                    //ElementsManager.Play_Button.Visibility = Visibility.Visible;
+                    ElementsManager.LoadingCircle.Height = 120;
+                    ElementsManager.LoadingCircle.Width = 120;
                     _timer.Stop(); // Stop the timer
                 };
 

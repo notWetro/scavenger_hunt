@@ -23,7 +23,7 @@
         <Grid.ColumnDefinitions >
             <!--ColumnDefinition Width="15*" Name="TitleGrid"/-->
             <ColumnDefinition Width="*" Name="EditorColumn"/>
-            <ColumnDefinition Width="120" Name="BufferColumn"/>
+            <ColumnDefinition Width="200" Name="BufferColumn"/>
             <ColumnDefinition Width="*" Name="PlayColumn"/>
         </Grid.ColumnDefinitions>
 

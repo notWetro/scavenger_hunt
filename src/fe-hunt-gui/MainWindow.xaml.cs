@@ -76,7 +76,9 @@ namespace fe_hunt_gui
                 ElementsManager.Exit_Button.Visibility = Visibility.Visible;
                 Grid.SetColumn(LoadingCircle, 0);
                 Grid.SetColumn(Exit_Button, 0);
-                
+                ElementsManager.LoadingCircle.Height = 120;
+                ElementsManager.LoadingCircle.Width = 120;
+
 
                 ProcessManager.CurrentCmdProcess = new Process();
                 ProcessManager.CurrentCmdProcess.StartInfo.FileName = "cmd.exe";
@@ -112,6 +114,9 @@ namespace fe_hunt_gui
                 //ElementsManager.LoadingCircle.Width = 140;
                 Grid.SetColumn(LoadingCircle, 2);
                 Grid.SetColumn(Exit_Button, 2);
+                ElementsManager.LoadingCircle.Height = 120;
+                ElementsManager.LoadingCircle.Width = 120;
+
 
                 ProcessManager.CurrentCmdProcess = new Process();
                 ProcessManager.CurrentCmdProcess.StartInfo.FileName = "cmd.exe";
