@@ -163,6 +163,14 @@ namespace fe_hunt_gui
 
         }
 
+        public static void CreateIpConfig()
+        {
+            string folderPath = "C:\\ProgramData\\Hunt\\HSAA_Projektarbeit\\src\\be-hunt-api";
+            string ip = GetLocalIPAdress();
+            string ipConfigContent = $@"{{""Ip"": ""{ip}""}}";
+            CreateFile(folderPath + "\\Hunts.Api", "\\ipconfig.json", ipConfigContent);
+        }
+
         public static void CreateEnvFiles()
         {
             string hostIP = GetLocalIPAdress();
@@ -287,7 +295,7 @@ namespace fe_hunt_gui
                 }
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Logfile.WriteLog("No network adapters with an IPv4 address in the system!");
                 return null;

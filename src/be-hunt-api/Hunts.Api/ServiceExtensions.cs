@@ -1,4 +1,6 @@
 ﻿using Hunts.Api.Services;
+using System.Text.Json;
+using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Hunts.Infrastructure;
 using Hunts.Infrastructure.Data;
@@ -36,25 +38,34 @@ namespace Hunts.Api
 
         public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
         {
+            string ipAddress = GetIpAddressFromConfig();
+
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder
-                        .WithOrigins(
+                options.AddPolicy("AllowSpecificOrigin", builder => builder
+                    .WithOrigins(
                         "http://localhost:5173",
                         "http://localhost:4173",
-                        "http://scavhunt.local:4173",
                         "http://scavhunt.local:5173",
-                        "http://192.168.178.29:4173",
-                        "http://192.168.178.29:5173",
-                        "http://45.150.175.88:4173",
-                        "http://45.150.175.88:5173"
-                        )
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+                        "http://scavhunt.local:4173",
+                        $"http://{ipAddress}:5173",
+                        $"http://{ipAddress}:4173"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
             });
 
             return services;
         }
+
+        private static string GetIpAddressFromConfig()
+        {
+            string filePath = Path.Combine(AppContext.BaseDirectory, "ipconfig.json");
+            string json = File.ReadAllText(filePath);
+            var config = JsonSerializer.Deserialize<IpAdress>(json);
+
+            return config?.Ip ?? "127.0.0.1";
+        }
+
     }
 }

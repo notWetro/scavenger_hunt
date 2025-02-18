@@ -35,12 +35,13 @@ namespace fe_hunt_gui
             InitializeComponent();
             //hunt.local in pi hole or frizbox hinzufügen... etc
             ElementsManager.StartDocker = StartDocker;
+
             ElementsManager.EditorColumn = EditorColumn;
             ElementsManager.Editor_Button = Editor_Button;
-            ElementsManager.ParticipationColumn = ParticipationColumn;
-            ElementsManager.Participation_Button = Participation_Button;
+
+            ElementsManager.Play_Button = Play_Button;
             ElementsManager.PlayColumn = PlayColumn;
-            ElementsManager.Play_Hunt_Button = Play_Hunt_Button;
+
             ElementsManager.Titlebar = TitleBar;
             ElementsManager.LoadingCircle = LoadingCircle;
             ElementsManager.Exit_Button = Exit_Button;
@@ -51,6 +52,7 @@ namespace fe_hunt_gui
             HelperMethodes.CreateFile("C:\\ProgramData\\Hunt\\Logfile", "\\logfile.txt", "");
             HelperMethodes.CreateEnvFiles();
             HelperMethodes.CreateAppsettings();
+            HelperMethodes.CreateIpConfig();
 
             //Standart DarkMode
             ((App)Application.Current).ApplyTheme("DarkMode");
@@ -106,10 +108,10 @@ namespace fe_hunt_gui
                 ElementsManager.DisableAllButtons();
                 ElementsManager.LoadingCircle.Visibility = Visibility.Visible;
                 ElementsManager.Exit_Button.Visibility = Visibility.Visible;
-                ElementsManager.LoadingCircle.Height = 140;
-                ElementsManager.LoadingCircle.Width = 140;
-                Grid.SetColumn(LoadingCircle, 1);
-                Grid.SetColumn(Exit_Button, 1);
+                //ElementsManager.LoadingCircle.Height = 140;
+                //ElementsManager.LoadingCircle.Width = 140;
+                Grid.SetColumn(LoadingCircle, 2);
+                Grid.SetColumn(Exit_Button, 2);
 
                 ProcessManager.CurrentCmdProcess = new Process();
                 ProcessManager.CurrentCmdProcess.StartInfo.FileName = "cmd.exe";
@@ -131,15 +133,7 @@ namespace fe_hunt_gui
 
         private void Options_Button_Clicked(object sender, RoutedEventArgs e)
         {
-            try 
-            {
-               //TODO ?
-
-            }
-            catch (Exception ex)
-            {
-                Logfile.WriteLog($"Play: Error: {ex.Message}");
-            }
+            //Options If needed, currently not used
         }
 
         private void Exit_Button_Clicked(object sender, RoutedEventArgs e)
