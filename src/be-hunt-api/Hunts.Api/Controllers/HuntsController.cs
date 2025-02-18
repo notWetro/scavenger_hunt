@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using System.Text.Json;
-using System;
-using System.IO;
 using Hunts.Api.DTOs.Hunt;
 using Hunts.Api.Services;
 using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.ObjectPool;
+
 
 namespace Hunts.Api.Controllers
 {
@@ -58,7 +56,7 @@ namespace Hunts.Api.Controllers
                 string filePath = Path.Combine(AppContext.BaseDirectory, "ipconfig.json");
                 using StreamReader r = new StreamReader(filePath);
                 string json = await r.ReadToEndAsync();
-                var config = JsonSerializer.Deserialize<Config>(json);
+                var config = JsonSerializer.Deserialize<IpAdress>(json);
                 Console.WriteLine(config?.Ip);
                 if (config?.Ip == null)
                     return BadRequest(new { error = "Couldn not finde a IP Adress" });
@@ -189,11 +187,6 @@ namespace Hunts.Api.Controllers
         {
             var hunt = _huntRepository.GetByIdAsync(id);
             return hunt is not null;
-        }
-
-        public class Config
-        {
-            public string Ip { get; set; }
         }
     }
 }
