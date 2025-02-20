@@ -60,7 +60,6 @@ namespace Hunts.Api.Controllers
                 Console.WriteLine(config?.Ip);
                 if (config?.Ip == null)
                     return BadRequest(new { error = "Couldn not finde a IP Adress" });
-
                 return Ok(new { ip = config?.Ip });
             }
             catch (Exception ex)

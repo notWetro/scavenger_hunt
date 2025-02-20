@@ -79,7 +79,7 @@
 
 <div class="relative w-full bg-gray-100">
 	<main>
-		<div class="flex gap-2 flex-row mb-4 items-center justify-between w-full">
+		<div class="flex gap-2 flex-row mb-4 items-center justify-center w-full">
 			<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
 		</div>
 	
