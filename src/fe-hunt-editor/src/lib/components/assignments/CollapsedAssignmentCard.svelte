@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * This component represents an assignment item with controls to move it up or down,
+	 * expand/collapse its details, and delete it. It also displays the assignment's hint type
+	 * and solution type.
+	 */
 	import type { Assignment } from '$lib/models/Assignment';
 	import { mapHintTypeToText, mapSolutionTypeToText } from '$lib/utils/typeMappingUtil';
 	import { Button } from 'flowbite-svelte';

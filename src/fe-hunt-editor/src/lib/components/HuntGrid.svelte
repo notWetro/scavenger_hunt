@@ -12,6 +12,9 @@
 		console.log('received hunts from backend:', hunts);
 	});
 
+	/**
+	 * Fetches the list of hunts from the backend and updates the hunts array.
+	 */
 	async function reloadHunts() {
 		const response = await fetch(`${PUBLIC_API_URL}/hunts`);
 		hunts = await response.json();

@@ -36,11 +36,18 @@
 		}
 	}
 
+	/**
+	 * Adds a marker to the map at the location of the event.
+	 * @param e - The event containing the location details.
+	 */
 	export function addMarker(e: CustomEvent) {
 		marker = { lngLat: e.detail.lngLat };
 		dispatch('markerAdded');
 	}
 
+	/**
+	 * Removes the marker from the map and resets the latitude and longitude.
+	 */
 	function removeMarker() {
 		marker = null;
 		lat = null;

@@ -23,6 +23,10 @@
 		})();
 	})
 
+	/**
+	 * Creates an empty assignment with default hint and solution types.
+	 * @returns A new empty assignment.
+	 */
 	function createEmptyAssignment(): Assignment {
 		return {
 			id: ++counter,
@@ -37,6 +41,9 @@
 		};
 	}
 
+	/**
+	 * Updates the hunt store with the current assignments.
+	 */
 	function updateStore() {
 		counter = 0;
 		huntStore.update((currentHunt) => {
@@ -44,22 +51,33 @@
 		});
 	}
 
-	// New: Function to go to the previous step on the hunt creation 
+	/**
+	 * Navigates to the previous step in the hunt creation process.
+	 */
 	function goBackToPreviousStep() {
 		updateStore();
   		dispatch('goBack');
 	}
 
+	/**
+	 * Adds a new assignment to the list.
+	 */
 	function addAssignment() {
 		assignments = [...assignments, createEmptyAssignment()];
 	}
 
+	/**
+	 * Saves the current assignments to the store and dispatches an event.
+	 */
 	function saveAssignmentsToStore(): void {
 		updateStore();
 		dispatch('assignmentsSaved');
 	}
 
-	// Function to move an item up in the list
+	/**
+	 * Moves an assignment up in the list.
+	 * @param assignment - The assignment to move up.
+	 */
 	function moveUp(assignment: Assignment) {
 		let index = assignments.findIndex((x) => x.id === assignment.id);
 		let dummy = 0;
@@ -72,7 +90,10 @@
 		}
 	}
 
-	// Function to move an item down in the list
+	/**
+	 * Moves an assignment down in the list.
+	 * @param assignment - The assignment to move down.
+	 */
 	function moveDown(assignment: Assignment) {
 		let index = assignments.findIndex((x) => x.id === assignment.id);
 		let dummy = 0;
@@ -85,8 +106,10 @@
 		}
 	}
 
-	// Function to delete an item from the list 
-	// New: Reduces the assignment count and updates the ID of the following assignments
+	/**
+	 * Deletes an assignment from the list and updates the IDs of the remaining assignments.
+	 * @param assignment - The assignment to delete.
+	 */
 	function deleteAssignment(assignment: Assignment) {
 		let index = assignments.findIndex((x) => x.id === assignment.id);
 		assignments = assignments.filter((a) => a.id !== assignment.id);

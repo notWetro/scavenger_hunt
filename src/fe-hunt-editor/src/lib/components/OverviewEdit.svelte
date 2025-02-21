@@ -9,10 +9,10 @@
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
 	
-	
+	/** List of QR codes associated with the assignments. */
 	let qrCodes: any[] = [];
 	
-	// Subscribe to huntStore to access its current state
+	/** The current hunt data from the store. */
 	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
@@ -21,6 +21,9 @@
 		await generateQRCodes();
 	});
 
+	/**
+	 * Generates QR codes for assignments with QR code solutions.
+	 */
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
@@ -42,6 +45,9 @@
 		);
 	}
 
+	/**
+	 * Updates the hunt data on the server.
+	 */
 	async function updateHunt() {
 		console.log('Hunt:', hunt);
 		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
@@ -58,10 +64,12 @@
 		
 	}
 
-// New: Calls the on:goBack={decreaseStep} in \src\routes\edit\[huntId]\+page.svelte
-function goBackToPreviousStep() {
-  	dispatch('goBack');
-}
+	/**
+	 * Navigates back to the previous step.
+	 */
+	function goBackToPreviousStep() {
+		dispatch('goBack');
+	}
 
 </script>
 

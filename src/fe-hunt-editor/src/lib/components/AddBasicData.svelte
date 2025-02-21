@@ -11,7 +11,9 @@
 	let title = $huntStore.title || '';
 	let description = $huntStore.description || '';
 
-	// update the huntStore with the new title and description
+	/**
+	 * Updates the huntStore with the new title and description, then dispatches the Finished event.
+	 */
 	function updateWithBasicData() {
 		huntStore.update((currentHunt) => {
 			return { ...currentHunt, title, description };

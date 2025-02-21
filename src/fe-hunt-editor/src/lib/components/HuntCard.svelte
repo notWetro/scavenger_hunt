@@ -24,6 +24,9 @@
 
 	let link: string = `http://${parts[1]}:${port}:/participation/${hunt.id}`;
 
+	/**
+	 * Fetches the public IP address from the backend and updates the link.
+	 */
 	async function getPublicIP() {
 		try {
 			const response = await fetch(`${PUBLIC_API_URL}/hunts/server-ip`);
@@ -37,7 +40,9 @@
 
 	getPublicIP();
 
-	// Function to delete a hunt
+	/**
+	 * Deletes the hunt from the backend and dispatches the HuntDeleted event.
+	 */
 	async function deleteHunt() {
 		try {
 			const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
@@ -51,26 +56,35 @@
 		}
 	}
 
+	/**
+	 * Downloads the QR code for the hunt as an image file.
+	 * @param id - The ID of the hunt.
+	 * @param qrUrl - The URL to be encoded in the QR code.
+	 */
 	async function downloadQRCode(id: number, qrUrl: string) {
-			try {
-				const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
-            		width: 600
-        		});
-				const response = await fetch(qrCodeDataUrl);
-				const blob = await response.blob();
-				const downloadUrl = window.URL.createObjectURL(blob);
-				const a = document.createElement('a');
-				a.style.display = 'none';
-				a.href = downloadUrl;
-				a.download = `hunt-${hunt.title}-qr-code.png`;
-				document.body.appendChild(a);
-				a.click();
-				window.URL.revokeObjectURL(downloadUrl);
-			} catch (error) {
-				console.error('Error downloading QR code:', error);
-			}
+		try {
+			const qrCodeDataUrl = await QRCode.toDataURL(qrUrl, {
+				width: 600
+			});
+			const response = await fetch(qrCodeDataUrl);
+			const blob = await response.blob();
+			const downloadUrl = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.style.display = 'none';
+			a.href = downloadUrl;
+			a.download = `hunt-${hunt.title}-qr-code.png`;
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(downloadUrl);
+		} catch (error) {
+			console.error('Error downloading QR code:', error);
+		}
 	}
 
+	/**
+	 * Copies the provided URL to the clipboard.
+	 * @param url - The URL to be copied.
+	 */
 	async function copyURLToClipboard(url: string) {
 		try {
 			await navigator.clipboard.writeText(url);

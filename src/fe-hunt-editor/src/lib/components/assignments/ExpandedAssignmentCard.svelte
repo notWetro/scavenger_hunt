@@ -20,6 +20,10 @@
 		solutionTypes = Object.keys(SolutionType).filter((key) => isNaN(Number(key)));
 	});
 
+	/**
+	 * Sets the hint type for the assignment.
+	 * @param hintType - The selected hint type.
+	 */
 	function setHintType(hintType: string) {
 		const selectedHintType = HintType[hintType as keyof typeof HintType];
 		assignment.hint.hintType = selectedHintType;
@@ -27,12 +31,20 @@
 		uploadedFileName = null;
 	}
 
+	/**
+	 * Sets the solution type for the assignment.
+	 * @param solutionType - The selected solution type.
+	 */
 	function setSolutionType(solutionType: string) {
 		const selectedSolutionType = SolutionType[solutionType as keyof typeof SolutionType];
 		assignment.solution.solutionType = selectedSolutionType;
 		assignment.solution.data = '';
 	}
 
+	/**
+	 * Handles the file selection event and reads the file as a base64 string.
+	 * @param e - The file selection event.
+	 */
 	const onFileSelected = (e: Event) => {
 		const input = e.target as HTMLInputElement;
 		if (input.files && input.files.length > 0) {
@@ -50,6 +62,11 @@
 		}
 	};
 
+	/**
+	 * Checks if the provided data is in base64 format.
+	 * @param data - The data to check.
+	 * @returns True if the data is in base64 format, otherwise false.
+	 */
 	function isBase64(data: string): boolean {
 		return data.startsWith('data:image') || data.startsWith('data:video') || data.startsWith('data:audio');
 	}
