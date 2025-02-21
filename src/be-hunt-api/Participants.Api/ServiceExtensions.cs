@@ -12,6 +12,12 @@ namespace Participants.Api
 {
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds application services to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">The configuration settings.</param>
+        /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -37,6 +43,12 @@ namespace Participants.Api
             return services;
         }
 
+        /// <summary>
+        /// Adds JWT configuration to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">The configuration settings.</param>
+        /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
@@ -64,6 +76,12 @@ namespace Participants.Api
             return services;
         }
 
+        /// <summary>
+        /// Adds database configuration to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="configuration">The configuration settings.</param>
+        /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseConnectionString =
@@ -77,6 +95,11 @@ namespace Participants.Api
             return services;
         }
 
+        /// <summary>
+        /// Adds CORS configuration to the service collection.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <returns>The updated service collection.</returns>
         public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
         {
             services.AddCors(options =>

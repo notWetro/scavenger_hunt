@@ -2,6 +2,10 @@
 {
     public interface IEventProcessor
     {
-        public void ProcessEvent(string message);
+        /// <summary>
+        /// Processes the specified event message.
+        /// </summary>
+        /// <param name="message">The event message to process.</param>
+        void ProcessEvent(string message);
     }
 }
