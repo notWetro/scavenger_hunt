@@ -19,6 +19,9 @@ namespace Hunts.Api.DTOs.Hunt
         /// </summary>
         public required string Description { get; set; }
 
+        /// <summary>
+        /// A collection of assignments related to the hunt.
+        /// </summary>
         public ICollection<AssignmentInnerUpdateDto> Assignments { get; set; } = [];
     }
 }

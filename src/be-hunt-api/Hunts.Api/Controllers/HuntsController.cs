@@ -48,6 +48,11 @@ namespace Hunts.Api.Controllers
             return Ok(_mapper.Map<HuntGetDto>(scavengerHunt));
         }
 
+        /// <summary>
+        /// Format: GET: api/Hunts/server-ip
+        /// Get the server IP address from the configuration file.
+        /// </summary>
+        /// <returns>Server IP address.</returns>
         [HttpGet("server-ip")]
         public async Task<IActionResult> GetServerIPAddress()
         {
@@ -182,6 +187,11 @@ namespace Hunts.Api.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Check if a scavenger hunt exists by id.
+        /// </summary>
+        /// <param name="id">Id of the scavenger hunt.</param>
+        /// <returns>True if the scavenger hunt exists, otherwise false.</returns>
         private bool ScavengerHuntExists(int id)
         {
             var hunt = _huntRepository.GetByIdAsync(id);

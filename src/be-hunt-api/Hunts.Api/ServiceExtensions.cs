@@ -10,6 +10,11 @@ namespace Hunts.Api
 {
     public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds application-specific services to the IServiceCollection.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add services to.</param>
+        /// <returns>The updated IServiceCollection.</returns>
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -24,6 +29,12 @@ namespace Hunts.Api
             return services;
         }
 
+        /// <summary>
+        /// Configures the database context with the specified settings.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add services to.</param>
+        /// <param name="configuration">The configuration to use for database settings.</param>
+        /// <returns>The updated IServiceCollection.</returns>
         public static IServiceCollection AddDatabaseConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<HuntsDbContext>(options => options
@@ -36,6 +47,11 @@ namespace Hunts.Api
             return services;
         }
 
+        /// <summary>
+        /// Configures CORS settings for the application.
+        /// </summary>
+        /// <param name="services">The IServiceCollection to add services to.</param>
+        /// <returns>The updated IServiceCollection.</returns>
         public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
         {
             string ipAddress = GetIpAddressFromConfig();
@@ -58,6 +74,10 @@ namespace Hunts.Api
             return services;
         }
 
+        /// <summary>
+        /// Retrieves the IP address from the configuration file.
+        /// </summary>
+        /// <returns>The IP address as a string.</returns>
         private static string GetIpAddressFromConfig()
         {
             string filePath = Path.Combine(AppContext.BaseDirectory, "ipconfig.json");
