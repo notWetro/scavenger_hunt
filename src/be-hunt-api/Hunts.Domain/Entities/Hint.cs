@@ -1,5 +1,8 @@
 ﻿namespace Hunts.Domain.Entities
 {
+    /// <summary>
+    /// Represents a hint for an assignment.
+    /// </summary>
     public sealed class Hint
     {
         public int Id { get; set; }

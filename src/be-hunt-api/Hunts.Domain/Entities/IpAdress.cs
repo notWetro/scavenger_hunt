@@ -1,7 +1,10 @@
 namespace Hunts.Domain.Entities
 {
-public class IpAdress
-        {
-            public string? Ip { get; set; }
-        }
+    /// <summary>
+    /// Represents an IP address.
+    /// </summary>
+    public class IpAdress
+    {
+        public string? Ip { get; set; }
+    }
 }
