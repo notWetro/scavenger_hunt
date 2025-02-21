@@ -1,10 +1,13 @@
 <script lang="ts">
-	import jsQR from 'jsqr';
+		import jsQR from 'jsqr';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { QRCodePosition } from './QRCodePosition';
 
 	let dispatch = createEventDispatcher();
 
+	/**
+	 * Export props 'data' and 'displayText' to hold the scanned QR code data and display text.
+	 */
 	export let data: string = '';
 	export let displayText: string = 'Success!';
 
@@ -24,11 +27,17 @@
 	let clientWidth: number;
 	let clientHeight: number;
 
+	/**
+	 * Log the client width and height whenever they change.
+	 */
 	$: {
 		console.log(clientHeight);
 		console.log(clientWidth);
 	}
 
+	/**
+	 * Initialize the video element and start the QR code scanner on component mount.
+	 */
 	onMount(() => {
 		video = document.createElement('video');
 
@@ -40,6 +49,9 @@
 		});
 	});
 
+	/**
+	 * Continuously scan for QR codes and update the data and overlay style.
+	 */
 	function tick() {
 		if (video.readyState === video.HAVE_ENOUGH_DATA) {
 			const context = canvas.getContext('2d');
@@ -72,6 +84,9 @@
 		requestAnimationFrame(tick);
 	}
 
+	/**
+	 * Update the overlay style based on the QR code position.
+	 */
 	function updateOverlayStyle() {
 		const { topLeft, topRight, bottomRight, bottomLeft } = qrCodePosition;
 		const width = Math.sqrt((topRight.x - topLeft.x) ** 2 + (topRight.y - topLeft.y) ** 2);
@@ -85,6 +100,7 @@
 	}
 </script>
 
+<!-- Display a container with a canvas and a div that shows the display text when data is visible. -->
 <div class="container grid">
 	<canvas class="grid-area-custom" bind:this={canvas} />
 	{#if isDataVisible}

@@ -24,12 +24,18 @@
   let isFinished: boolean = false;
   let solutionCardRef: HTMLDivElement;
 
+  /**
+   * Called when the component is mounted.
+   * Sets the current hunt and fetches the current assignment.
+   */
   onMount(() => {
     currentHunt = $playingHunt;
     fetchCurrentAssignment();
   });
 
-  // Toggles the solution card and autoscrolles to the card.
+  /**
+   * Toggles the display of the solution card and auto-scrolls to the card.
+   */
   async function toggleSolutionInput() {
   	isSolutionShown = !isSolutionShown;
 	if (isSolutionShown) {
@@ -40,10 +46,17 @@
 	}
   }
 
+  /**
+   * Displays the "Next" button.
+   */
   function showNextButton() {
     isNextButtonShown = true;
   }
 
+  /**
+   * Fetches the current assignment for the current hunt.
+   * If the hunt is finished, updates the status.
+   */
   async function fetchCurrentAssignment() {
     if (!currentHunt) throw Error('currentHunt is not defined!');
 
@@ -79,12 +92,18 @@
     }
   }
 
+  /**
+   * Resets the state of the solution input.
+   */
   function resetState() {
     isSolutionShown = false;
     isNextButtonShown = false;
     solutionData = '';
   }
 
+  /**
+   * Fetches the next assignment and resets the state.
+   */
   async function fetchNextAssignment() {
     resetState();
     await fetchCurrentAssignment();

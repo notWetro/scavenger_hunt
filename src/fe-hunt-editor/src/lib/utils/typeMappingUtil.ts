@@ -16,10 +16,22 @@ const reverseHintTypeMapping = {
 	3: 'Audio'
 };
 
+/**
+ * Converts a SolutionType to its corresponding text.
+ * 
+ * @param solutionType - The SolutionType to be converted.
+ * @returns The corresponding text for the SolutionType.
+ */
 export function mapSolutionTypeToText(solutionType: SolutionType): string {
 	return reverseSolutionTypeMapping[solutionType];
 }
 
+/**
+ * Converts a HintType to its corresponding text.
+ * 
+ * @param hintType - The HintType to be converted.
+ * @returns The corresponding text for the HintType.
+ */
 export function mapHintTypeToText(hintType: HintType): string {
 	return reverseHintTypeMapping[hintType];
 }

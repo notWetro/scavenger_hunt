@@ -1,4 +1,5 @@
 <script lang="ts">
+	// Import necessary modules and components
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import type { LoginResponse } from '$lib/dtos/login/loginResponse';
 	import { completeHunts } from '$lib/stores/completeHunts';
@@ -16,6 +17,7 @@
 	let password: string = '';
 
 	let isLastFail: boolean = false;
+
 	/**
 	 * Reactive statement that checks if the last login attempt failed.
 	 * If it did, it waits for 2000 milliseconds (2 seconds) before resetting the `isLastFail` flag to false.
@@ -29,6 +31,10 @@
 		}
 	}
 
+	/**
+	 * Handles the login button press event.
+	 * Sends a login request to the server and processes the response.
+	 */
 	async function loginPressed() {
 		const response = await fetch(`${PUBLIC_API_URL}/Participants/Login`, {
 			method: 'POST',

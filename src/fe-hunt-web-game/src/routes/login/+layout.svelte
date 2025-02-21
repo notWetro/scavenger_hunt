@@ -2,6 +2,10 @@
   	import '../../app.css';
 	import { Button } from 'flowbite-svelte'; 
     import { goto } from '$app/navigation'; 
+
+	/**
+	 * Navigates the user to the home page.
+	 */
 </script>
 
 <div

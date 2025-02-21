@@ -5,7 +5,7 @@
 	export let data: string;
 </script>
 
-<!-- New: add Video and Audio as supportet Hints and displays them -->
+<!-- New: add Video and Audio as supported Hints and display them -->
 {#if type === 0}
 	<!-- Type 0 means Text -->
 	<TextHintDisplay {data} />
@@ -20,10 +20,10 @@
 {:else if type === 3}
 	<!-- Type 3 means Audio -->
 	<audio src={data} controls muted>
-		Your browser does not support the video tag.
+		Your browser does not support the audio tag.
 	</audio>
 {:else if type === 4}
-	<!-- Type 3 means Object -->
+	<!-- Type 4 means Object -->
 	<h1>There should be an object here but it's not implemented.</h1>
 {:else}
 	<!-- This Type shouldn't exist -->

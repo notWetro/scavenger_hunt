@@ -6,6 +6,10 @@
 
 	let isLoggedIn: boolean = false;
 
+	/**
+	 * Called when the component is mounted.
+	 * Checks if the user is logged in.
+	 */
 	onMount(() => {
 		if ($token !== '') {
 			isLoggedIn = true;

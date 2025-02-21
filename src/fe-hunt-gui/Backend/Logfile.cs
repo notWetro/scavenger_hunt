@@ -5,7 +5,11 @@ class Logfile
 {
     private static readonly string logFilePath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\Hunt\\Logfile\\logfile.txt";
 
-    // Method to write a log entry
+    /// <summary>
+    /// Writes a log entry to the log file with a timestamp.
+    /// Ensures the directory exists before writing.
+    /// </summary>
+    /// <param name="message">The log message to write.</param>
     public static void WriteLog(string message)
     {
         try

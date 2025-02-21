@@ -29,7 +29,9 @@ namespace fe_hunt_gui
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        /// <summary>
+        /// Initializes a new instance of the MainWindow class.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -58,11 +60,17 @@ namespace fe_hunt_gui
             ((App)Application.Current).ApplyTheme("DarkMode");
         }
 
+        /// <summary>
+        /// Handles the MouseLeftButtonDown event to allow window dragging.
+        /// </summary>
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
         }
 
+        /// <summary>
+        /// Handles the click event for the Editor button.
+        /// </summary>
         private void Editor_Button_Clicked(object sender, RoutedEventArgs e)
         {
             try
@@ -78,7 +86,6 @@ namespace fe_hunt_gui
                 Grid.SetColumn(Exit_Button, 0);
                 ElementsManager.LoadingCircle.Height = 120;
                 ElementsManager.LoadingCircle.Width = 120;
-
 
                 ProcessManager.CurrentCmdProcess = new Process();
                 ProcessManager.CurrentCmdProcess.StartInfo.FileName = "cmd.exe";
@@ -99,6 +106,9 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Handles the click event for the Web Game button.
+        /// </summary>
         private void Web_Game_Button_Clicked(object sender, RoutedEventArgs e)
         {
             try
@@ -116,7 +126,6 @@ namespace fe_hunt_gui
                 Grid.SetColumn(Exit_Button, 2);
                 ElementsManager.LoadingCircle.Height = 120;
                 ElementsManager.LoadingCircle.Width = 120;
-
 
                 ProcessManager.CurrentCmdProcess = new Process();
                 ProcessManager.CurrentCmdProcess.StartInfo.FileName = "cmd.exe";
@@ -136,11 +145,17 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Handles the click event for the Options button.
+        /// </summary>
         private void Options_Button_Clicked(object sender, RoutedEventArgs e)
         {
             //Options If needed, currently not used
         }
 
+        /// <summary>
+        /// Handles the click event for the Exit button.
+        /// </summary>
         private void Exit_Button_Clicked(object sender, RoutedEventArgs e)
         {
             HelperMethodes.KillProcessById(ProcessManager.CurrentCmdID);

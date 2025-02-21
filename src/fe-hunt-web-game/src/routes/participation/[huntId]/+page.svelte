@@ -26,12 +26,22 @@
 		attemptMade = false;
 	}
 
-	// New: Function to check if Password contains 8 chars, a upper case
+	/**
+	 * Checks if the password contains at least 8 characters, one uppercase letter, and one number.
+	 * @param password - The password to be checked.
+	 * @returns true if the password is valid, otherwise false.
+	 */
 	function isPasswordValid(password: string): boolean {
   		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
   		return passwordRegex.test(password);
 	}
 
+	/**
+	 * Submits the participation information to the server.
+	 * @param username - The participant's username.
+	 * @param password - The participant's password.
+	 * @param huntId - The ID of the scavenger hunt.
+	 */
 	async function submit(username: string, password: string, huntId: number) {
 		
 		attemptMade = true;
@@ -71,6 +81,9 @@
 		}
 	}
 
+	/**
+	 * Navigates to the login page.
+	 */
 	function navigateToLogin() {
     	goto('/login');
   	}

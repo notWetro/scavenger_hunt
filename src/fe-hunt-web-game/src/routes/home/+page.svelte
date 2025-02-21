@@ -9,6 +9,10 @@
 	import { completeHunts } from '$lib/stores/completeHunts';
 	import { expiredHunts } from '$lib/stores/expiredHunts';
 
+	/**
+	 * Starts the game for the selected hunt.
+	 * @param hunt - The selected hunt.
+	 */
 	function startGame(hunt: HuntLoginResponse) {
 		playingHunt.set(hunt);
 		goto('/home/game');

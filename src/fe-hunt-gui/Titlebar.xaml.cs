@@ -29,6 +29,9 @@ namespace fe_hunt_gui
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Toggles the application theme between dark mode and light mode.
+        /// </summary>
         private void ToggleThemeButton_Click(object sender, RoutedEventArgs e)
         {
             _isDarkMode = !_isDarkMode;
@@ -36,6 +39,9 @@ namespace fe_hunt_gui
             ((App)Application.Current).ApplyTheme(theme);
         }
 
+        /// <summary>
+        /// Minimizes the parent window.
+        /// </summary>
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             // Get the parent window and Minimize it
@@ -46,12 +52,14 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Closes the parent window and stops Docker Compose processes.
+        /// </summary>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             HelperMethodes.StopDockerCompose();
             HelperMethodes.KillProcessById(ProcessManager.BEdockerComposeID);
             HelperMethodes.KillProcessById(ProcessManager.CurrentCmdID);
-
 
             // Get the parent window and close it
             Window parentWindow = Window.GetWindow(this);

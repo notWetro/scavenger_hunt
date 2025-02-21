@@ -8,6 +8,9 @@
 	let dispatch = createEventDispatcher();
 	export let type: 'expired' | 'completed' | 'ongoing';
 
+	/**
+	 * Dispatches a custom event when the hunt card is pressed.
+	 */
 	function dispatchHunt() {
 		dispatch('huntPressed', hunt);
 	}

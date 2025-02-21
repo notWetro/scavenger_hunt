@@ -18,17 +18,23 @@
 
 	let currentStep = writable(1);
 
-	// gets called when the current step is finished and advances to the next step
+	/**
+	 * Gets called when the current step is finished and advances to the next step.
+	 */
 	function advanceToNextStep() {
 		currentStep.update((n) => n + 1);
 	}
 
-	// New: Function to decrease the Step
+	/**
+	 * Decreases the current step, ensuring it does not go below 1.
+	 */
 	function decreaseStep() {
   		currentStep.update((n) => Math.max(n - 1, 1));
 	}
 
-	// resets the current stored huntData and goes back to the first step (BasicData)
+	/**
+	 * Resets the current stored hunt data and goes back to the first step (BasicData).
+	 */
 	function createNewHunt() {
 		huntStore.set({
 			id: 0,

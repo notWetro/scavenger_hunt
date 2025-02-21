@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import LoginForm from '$lib/components/LoginForm.svelte';
-	import { Button} from 'flowbite-svelte';
+	import { Button } from 'flowbite-svelte';
 
-
+	/**
+	 * Navigates the user to the home page.
+	 */
 	function navigateToHome() {
 		goto('/home');
 	}
