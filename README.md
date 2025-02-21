@@ -1,53 +1,45 @@
-# Projekt AR-Schnitzeljagd
+# Project AR Scavenger Hunt
 
-## Einführung
+## Introduction
 
-Hier befindet sich das Repository für das im Rahmen einer Projektarbeit entwickelte System einer Web-Schnitzeljagd und der Erweiterung dieser.
+This repository contains the system for a web-based scavenger hunt developed as part of a project and its extensions.
 
-**Autoren**: Lukas Steckbauer, Rosario Aranzulla, Felix Kurz und Felix Biedenbacher
+**Authors**: Lukas Steckbauer, Rosario Aranzulla, Felix Kurz, and Felix Biedenbacher
 
-**Betreuer**: Dr. Marc Hermann
+**Supervisor**: Dr. Marc Hermann
 
-**Einrichtung**: _Hochschule-Aalen Fakultät Informatik und Elektrotechnik_
-
-## Quicklinks
-
-### Projekte
-
-In den einzelnen Unterverzeichnissen befinden sich Readme-Dateien, die die Aufgaben der Ordner sowie deren Benutzung erklären.  
-
-Zum groben Überblick hier die Aufgaben der einzelnen verlinkten Ordner:
-
-- **Backend** und **API** [Hunt-API](src/be-hunt-api/README.md): Wie der Name schon suggeriert, beinhaltet dieser Ordner das Backend. Hier befindet sich die Logik zur Verwaltung von Spielen und Spielern sowie die REST-APIs. Außerdem wird der Node-Server hier verwaltet. 
-- **Web-Game** [Hunt-Game](src/fe-hunt-web-game/README.md): In diesem Ordner befindet sich das Frontend des Spiels. Hier können Schnitzeljagden gespielt und ihnen beigetreten werden.
-- **Web-App** [Hunt-Editor](src/fe-hunt-editor/README.md): Diese Webanwendung dient zum Erstellen und Verwalten von Schnitzeljagden.
-- **Hunt-Gui** [Hunt-Gui](src/fe-hunt-gui/README.md):Dieses Tool bietet eine einfache Möglichkeit, das Backend und die beiden Frontend-Anwendungen zu verwalten. Mithilfe der GUI kann zentral auf die Webanwendungen zugegriffen werden, ohne manuell z. B. Docker-Container starten zu müssen.
+**Institution**: _Aalen University, Faculty of Computer Science and Electrical Engineering_
 
 
-### Dokumentation
+### Project Quick Links
 
-Die Dokumentation der Projektarbeiten befindet sich im Verzeichnis `.\docs\` [hier](docs/).
+Each subdirectory contains a README file explaining the purpose and usage of the respective folder.
+
+For an overview, here are the tasks of the linked folders:
+
+- **Backend** and **API** [Hunt-API](src/be-hunt-api/README.md): As the name suggests, this folder contains the backend. It includes the logic for managing games and players as well as the REST APIs. Additionally, the Node server is managed here.
+- **Web-Game** [Hunt-Game](src/fe-hunt-web-game/README.md): This folder contains the game's frontend, where scavenger hunts can be played and joined.
+- **Web-App** [Hunt-Editor](src/fe-hunt-editor/README.md): This web application is used to create and manage scavenger hunts.
+- **Hunt-GUI** [Hunt-GUI](src/fe-hunt-gui/README.md): This tool provides an easy way to manage the backend and both frontend applications. With the GUI, all web applications can be accessed centrally without having to manually start, for example, Docker containers.
+
+### Documentation
+
+The documentation of the project work can be found in the `./docs/` directory [here](docs/).
 
 ### Demos
 
-Im Verzeichnis [demos](demos/) befinden sich:  
-- Im Unterordner [videos](demos/videos) **Demovideos** zur Verwendung der Anwendung.  
-- Im Unterordner [demo](demos/demo) **Videos, Bilder, Audios, Texte, QR-Codes und Standorte** mit einer Anleitung zum Erstellen einer Schnitzeljagd für Erstsemester-Studierende.  
-
+The [demos](demos/) directory contains:
+- The [videos](demos/videos) subfolder with **demo videos** showing how to use the application.
+- The [demo](demos/demo) subfolder with **videos, images, audio files, texts, QR codes, and locations**, including instructions for creating a scavenger hunt for first-year students.
 
 ### Utilities
 
-Für das Testen (und für die Erstellung des QR-Code-Generators innerhalb des Projekts) wurde eine Utility erstellt, die mittels Kommandozeilen-Aufruf einen QR-Code basierend auf einen Input-String erstellt. Der resultierende QR-Code wird im `Downloads` Verzeichnis des Benutzers angelegt und ist über einen Timestamp identifizierbar (bspw. `QRCode_20240323113550.png`). Die utility ist [hier](utils/qrcode-generator/) einsehbar.
+For testing purposes (and for generating QR codes within the project), a utility was created that generates a QR code based on an input string via a command-line call. The resulting QR code is saved in the user's `Downloads` folder and is identifiable by a timestamp (e.g., `QRCode_20240323113550.png`). The utility can be found [here](utils/qrcode-generator/).
 
-## Funktion und Benutzung des Spiels
+## Function and Usage of the Game
 
-Um eine Schnitzeljagd zu erstellen, empfehlen wir Ihnen, die vorhandene [Hunt-GUI](src/fe-hunt-gui/README.md) zu verwenden. Falls Sie dennoch ohne GUI eine Hunt erstellen möchten, finden Sie die Anleitung dazu im Ordner [Hunt-Editor](src/fe-hunt-editor/README.md).  
+To create a scavenger hunt, we recommend using the available [Hunt-GUI](src/fe-hunt-gui/README.md). However, if you prefer to create a hunt without a GUI, you can find instructions in the [Hunt-Editor](src/fe-hunt-editor/README.md) folder.
 
-Um ein Spiel zu starten, muss das [Hunt-API](src/be-hunt-api/README.md) zur Verwaltung der Daten laufen – dies wird bei der Verwendung der GUI automatisch erledigt.  
+To start a game, the [Hunt-API](src/be-hunt-api/README.md) must be running to manage the data – this is automatically handled when using the GUI.
 
-Zum Spielen einer Hunt kann der im Editor erstellte QR-Code oder Link verwendet werden. Eine erstellte Hunt kann jedoch auch über die GUI oder über das [Hunt-Game](src/fe-hunt-web-game/README.md) getestet werden.
-
-
-
-
-Test Commit
+To play a hunt, the QR code or link generated in the editor can be used. A created hunt can also be tested via the GUI or the [Hunt-Game](src/fe-hunt-web-game/README.md).
