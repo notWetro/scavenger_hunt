@@ -54,7 +54,7 @@ namespace fe_hunt_gui
             HelperMethodes.CreateFile("C:\\ProgramData\\Hunt\\Logfile", "\\logfile.txt", "");
             HelperMethodes.CreateEnvFiles();
             HelperMethodes.CreateAppsettings();
-            HelperMethodes.CreateIpConfig();
+            HelperMethodes.CreateIpConfigs();
 
             //Standart DarkMode
             ((App)Application.Current).ApplyTheme("DarkMode");

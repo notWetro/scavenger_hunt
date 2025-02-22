@@ -185,12 +185,13 @@ namespace fe_hunt_gui
         /// <summary>
         /// Creates the ipconfig.json file with the local IP address.
         /// </summary>
-        public static void CreateIpConfig()
+        public static void CreateIpConfigs()
         {
             string folderPath = "C:\\ProgramData\\Hunt\\HSAA_Projektarbeit\\src\\be-hunt-api";
             string ip = GetLocalIPAdress();
             string ipConfigContent = $@"{{""Ip"": ""{ip}""}}";
             CreateFile(folderPath + "\\Hunts.Api", "\\ipconfig.json", ipConfigContent);
+            CreateFile(folderPath + "\\Participants.Api", "\\ipconfig.json", ipConfigContent);
         }
 
         /// <summary>
