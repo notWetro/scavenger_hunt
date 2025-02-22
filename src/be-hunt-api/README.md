@@ -2,7 +2,8 @@
 
 ## Introduction
 
-This project serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+This folder serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+When you use the Hunt-Gui all the following steps become obsolet.
 
 ## Getting Started with Docker-Compose
 

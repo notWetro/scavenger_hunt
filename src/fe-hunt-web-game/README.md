@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This smaller web app is required for participating in scavenger-hunts. Participants can sign up with their username and password to a desired scavenger-hunt that was provided by the organizer via a link or QR-Code.
+This folder contains the Web-Game. With the files in this folder you can register, login and most importantly play scavanger hunts. When you use the Hunt-Gui the following steps become obsolet.
 
 ## Svelte
 
@@ -25,6 +25,7 @@ In order to successfully run the application, a set of environment-variables nee
 ```env
 PUBLIC_HUNT_API_URL=http://localhost:5500/hunts/api
 PUBLIC_PARTICIPANT_API_URL=http://localhost:5500/participants/api
+PUBLIC_API_URL=http://localhost:5500/participants/api
 ```
 
 ### Running or building web app
@@ -44,4 +45,8 @@ To create a production version of your app:
 npm run build
 ```
 
-You can preview the production build with `npm run preview`.
+With the command:
+```bash
+`npm run preview -- --open --host`
+```
+You can start the Preview as a host and open it. The --host tag is important if you want other people to be able to play aswell.
