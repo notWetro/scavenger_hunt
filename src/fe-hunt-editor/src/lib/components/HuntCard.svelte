@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import QRCode from 'qrcode';
+	import scavHuntIcon from '$lib/images/scavHuntIcon.jpg';
 
 	export let hunt: Hunt;
 	const dispatch = createEventDispatcher();
@@ -103,7 +104,7 @@
 >
 	<div>
 		<img
-			src="/src/lib/images/scav-hunt-icon.jpg"
+			src={scavHuntIcon}
 			alt="Scavenger Hunt Logo"
 			class="object-fill"
 		/>
