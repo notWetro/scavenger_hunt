@@ -122,7 +122,7 @@
     <CheerDisplay />
   {:else if currentAssignment}
     <div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
-      {#if currentAssignment.hintType === 1 || currentAssignment.hintType === 2 && currentAssignment.additionalData !== null}
+      {#if (currentAssignment.hintType === 1 || currentAssignment.hintType === 2) && currentAssignment.additionalData !== null}
         <h1 class="text-center text-lg font-semibold">{currentAssignment.additionalData}</h1>
       {/if}
 

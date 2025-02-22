@@ -83,7 +83,7 @@
 
 <div bind:this={resultRef}>
 	{#if submissionStatus === SubmissionStatus.InvalidSubmission}
-		 <HintDisplay {hintData} {type} />
+		 <SubmissionHintDisplay {hintData} {type} />
 	{:else if submissionStatus === SubmissionStatus.ValidSubmission}
 		<Alert color="green">You are correct!</Alert>
 	{/if}

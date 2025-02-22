@@ -154,7 +154,7 @@
 				<!-- New: check if Password is Valid -->
 				{#if success === false && attemptMade && !validPassword}
 					<Helper class="text-red-900 text-sm">
-						Submission failed! Please try again.
+						Username already taken. Please try another one.
 					</Helper>
 				{:else if validPassword && attemptMade}
 					<Helper class="text-red-900 text-sm">
