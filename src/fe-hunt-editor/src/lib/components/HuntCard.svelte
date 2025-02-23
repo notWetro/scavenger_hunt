@@ -109,8 +109,8 @@
 			class="object-fill"
 		/>
 		<div class="p-4">
-			<h2 class="text-xl font-bold text-black">{hunt.title}</h2>
-			<p>{hunt.description}</p>
+			<h2 class="text-xl font-bold text-black truncate overflow-hidden text-ellipsis whitespace-nowrap">{hunt.title}</h2>
+			<p class="truncate overflow-hidden text-ellipsis whitespace-nowrap">{hunt.description}</p>
 		</div>
 	</div>
 	<div class="flex justify-end gap-2">

@@ -112,9 +112,11 @@
 
 <div class="h-screen p-4">
   {#if currentHunt}
-    <h1 class="text-3xl font-bold mb-4 text-center">
-      <a href="/home">{currentHunt.title}</a>
-    </h1>
+    <h1 class="text-3xl font-bold mb-4 text-center truncate">
+      <a href="/home" class="inline-block max-w-[50%] overflow-hidden text-ellipsis whitespace-nowrap">
+    {currentHunt.title}
+  </a>
+  </h1>
     <hr class="border-t-2 border-gray-300 my-4" />
   {/if}
 

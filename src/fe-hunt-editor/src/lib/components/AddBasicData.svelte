@@ -11,6 +11,9 @@
 	let title = $huntStore.title || '';
 	let description = $huntStore.description || '';
 
+	const titleMaxLength = 40;
+	const descriptionMaxLength = 100;
+
 	/**
 	 * Updates the huntStore with the new title and description, then dispatches the Finished event.
 	 */
@@ -25,12 +28,26 @@
 <div class="flex flex-col">
 	<div class="mb-3">
 		<Label for="title">Title of the scavenger hunt</Label>
-		<Input bind:value={title} id="title" type="text" placeholder="Enter title" />
+		<Input 
+			bind:value={title} 
+			id="title" 
+			type="text" 
+			placeholder="Enter title" 
+			maxlength={titleMaxLength}
+		/>
+		<p class="text-sm text-gray-500">{title.length} / {titleMaxLength}</p>
 	</div>
 
 	<div class="mb-5">
 		<Label for="description">Description of the scavenger hunt</Label>
-		<Input bind:value={description} id="description" type="text" placeholder="Enter description" />
+		<Input 
+			bind:value={description} 
+			id="description" 
+			type="text" 
+			placeholder="Enter description" 
+			maxlength={descriptionMaxLength}
+		/>
+		<p class="text-sm text-gray-500">{description.length} / {descriptionMaxLength}</p>
 	</div>
 
 	<Button on:click={updateWithBasicData} disabled={!title || !description}>

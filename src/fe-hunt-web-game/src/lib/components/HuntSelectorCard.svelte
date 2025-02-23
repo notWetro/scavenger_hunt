@@ -27,7 +27,7 @@
 			{type === 'expired' ? 'bg-gradient-to-r from-blue-500 to-orange-400' : ''}"
 	>
 		<div class="flex flex-col items-center gap-4">
-			<h3 class="text-2xl font-bold text-center break-words">
+			<h3 class="text-2xl font-bold text-center truncate max-w-[50%] overflow-hidden text-ellipsis whitespace-nowrap">
 				{hunt.title}
 			</h3>
 
