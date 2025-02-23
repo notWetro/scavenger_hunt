@@ -44,7 +44,12 @@ PARTICIPANTS_DB_ROOT_PWD=desired_password_here
     }
     ```
 
-    2. **appsettings.json** for `Participations.Api`:
+    2. **ipconfig.json** for `Hunt.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
+    ```
+
+    3. **appsettings.json** for `Participations.Api`:
 
     ```json
     {
@@ -68,6 +73,10 @@ PARTICIPANTS_DB_ROOT_PWD=desired_password_here
         },
         "AllowedHosts": "*"
     }
+    ```
+    4. **ipconfig.json** for `Participations.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
     ```
 
 ### Running the Application
