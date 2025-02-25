@@ -305,14 +305,8 @@ namespace fe_hunt_gui
                 {
                     Directory.CreateDirectory(folderPath);
                 }
-                // Check if the file already exists
-                if (!System.IO.File.Exists(folderPath + file))
-                {
-                    // Create the file and write content to it
-                    System.IO.File.WriteAllText(folderPath + file, content);
-                    Console.WriteLine($"File successfully created at {folderPath + file}");
-                }
-                Console.WriteLine($"File successfully created at {folderPath + file}");
+                // Create the file and write content to it
+                System.IO.File.WriteAllText(folderPath + file, content);
             }
             catch (Exception ex)
             {
