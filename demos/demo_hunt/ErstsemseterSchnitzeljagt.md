@@ -15,7 +15,7 @@ Die Scavenger-Hunt-Anwendung wurde erfolgreich aufgesetzt und der Editor lässt 
 
 ## Eingaben
 
-**Titel:** Elektrotechnik und Informatik Erstsemester Schnitzeljagd  
+**Titel:** ET und IN Erstsemester Schnitzeljagd  
 **Description:** Lerne spielend die Hochschule kennen.  
 
 ### Assignments

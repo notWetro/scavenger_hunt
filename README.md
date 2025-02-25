@@ -30,8 +30,10 @@ The documentation of the project work can be found in the `./docs/` directory [h
 
 The [demos](demos/) directory contains:
 - The [videos](demos/videos) subfolder with **demo videos** showing how to use the application.
-- The [demo](demos/demo) subfolder with **videos, images, audio files, texts, QR codes, and locations**, including instructions for creating a scavenger hunt for first-year students.
+- The [demo](demos/demo_hunt) subfolder with **videos, images, audio files, texts, QR codes, and locations**, including instructions for creating a scavenger hunt for first-year students.
 - The [images](demos/images) subfolder containes images and screenshots of the application.
+- Pdf with manual and game instructions.
+- Pdf with installation instructions.
 
 ### Utilities
 
