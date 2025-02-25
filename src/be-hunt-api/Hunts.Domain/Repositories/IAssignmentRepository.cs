@@ -2,6 +2,9 @@
 
 namespace Hunts.Domain.Repositories
 {
+    /// <summary>
+    /// Interface for accessing assignment data.
+    /// </summary>
     public interface IAssignmentRepository
     {
         /// <summary>

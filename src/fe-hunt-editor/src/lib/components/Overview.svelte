@@ -4,15 +4,16 @@
 	import QRCode from 'qrcode';
 	import { huntStore } from '$lib/stores/huntStore';
 	import { Button } from 'flowbite-svelte';
-	import { Goal } from 'lucide-svelte';
+	import { Goal, ArrowLeft } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
 
+	/** List of QR codes associated with the assignments. */
 	let qrCodes: any[] = [];
 
-	// Subscribe to huntStore to access its current state
-	$: hunt = $huntStore;
+	/** The current hunt data from the store. */
+	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
 
@@ -20,6 +21,9 @@
 		await generateQRCodes();
 	});
 
+	/**
+	 * Generates QR codes for assignments with QR code solutions.
+	 */
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
@@ -41,25 +45,48 @@
 		);
 	}
 
+	/**
+	 * Submits the hunt data to the server.
+	 */
 	async function submitHunt() {
-		console.log('Hunt:', hunt);
+		try {
+			console.log('Hunt:', hunt);
 
-		// Create a new huntData object with modified assignments
-		const huntData = {
-			...hunt
-		};
+			// Sets the additionalData to null if the field is empty
+			hunt.assignments.forEach((assignment) => {
+				if (!assignment.hint.additionalData) {
+					assignment.hint.additionalData = null;
+				}
+			});
 
-		const response = await fetch(`${PUBLIC_API_URL}/hunts`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(huntData)
-		});
-		if (!response.ok) {
-			throw new Error(`Failed to create Hunt: ${response.status}`);
+			const huntData = { ...hunt };
+
+			const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
+			const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(huntData)
+			});
+			const response = await Promise.race([fetchPromise, timeout(5000)]);
+
+			if (!response.ok) {
+				const errorData = await response.json();
+				console.error("Backend error:", errorData);
+				throw new Error(`Failed to create Hunt: ${response.status} - ${errorData.message || 'Unknown error'}`);
+			}
+
+			console.log("Hunt created successfully");
+			dispatch('Finished');
+		} catch (error) {
+			console.error("Error creating hunt:", error);
 		}
-		dispatch('Finished');
+	}
+
+	/**
+	 * Navigates back to the previous step.
+	 */
+	function goBackToPreviousStep() {
+		dispatch('goBack');
 	}
 </script>
 
@@ -70,7 +97,14 @@
 
 <OverviewTable {qrCodes} />
 
-<Button class="mt-5" on:click={submitHunt}>
+<!-- New: Add the Button to go back from the last hunt creation screen -->
+<div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
+<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
+	<ArrowLeft class="ml-2" />
+	Previous
+</Button>
+<Button class="mt-5" on:click={submitHunt} style="flex: 1;">
 	<Goal class="mr-2" />
 	Create scavenger hunt!
 </Button>
+</div>

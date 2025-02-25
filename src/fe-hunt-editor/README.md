@@ -1,4 +1,9 @@
-# Configuration
+## Introduction
+
+This Folder contains the Web-App to create, edit, delete and share hunts.
+When you use the Hunt-Gui all the following steps become obsolet.
+
+## Configuration
 
 In order to run the web app, you'll need to create an `.env` file inside the root directory containing the following:
 

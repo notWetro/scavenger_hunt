@@ -5,6 +5,12 @@ namespace Participants.Domain
 {
     public static class AssignmentHelper
     {
+        /// <summary>
+        /// Checks if the given solution data is valid for the assignment.
+        /// </summary>
+        /// <param name="assignment">The assignment to check against.</param>
+        /// <param name="givenData">The solution data provided by the user.</param>
+        /// <returns>True if the solution is valid, otherwise false.</returns>
         public static bool CheckIfValidSolution(Assignment assignment, string givenData)
         {
             var actualData = assignment.Solution.Data;
@@ -28,6 +34,13 @@ namespace Participants.Domain
             }
         }
 
+        /// <summary>
+        /// Advances the participation to the next assignment in the hunt.
+        /// </summary>
+        /// <param name="participationRepository">The participation repository.</param>
+        /// <param name="hunt">The hunt containing the assignments.</param>
+        /// <param name="participation">The participation to advance.</param>
+        /// <param name="currentAssignment">The current assignment.</param>
         public static async Task AdvanceToNextAssignmentAsync(IParticipationRepository participationRepository, Hunt hunt, Participation participation, Assignment currentAssignment)
         {
             var currentAssignmentIndex = hunt.Assignments.ToList().FindIndex(assignment => assignment.Id == currentAssignment.Id);
@@ -46,6 +59,13 @@ namespace Participants.Domain
             await participationRepository.UpdateAsync(participation);
         }
 
+        /// <summary>
+        /// Gets a hint for the current assignment based on the user's solution data.
+        /// </summary>
+        /// <param name="userSolutionData">The solution data provided by the user.</param>
+        /// <param name="actualSolutionData">The actual solution data.</param>
+        /// <param name="actualSolutionType">The type of the actual solution.</param>
+        /// <returns>A hint for the current assignment.</returns>
         public static string GetHintForCurrentAssignment(string userSolutionData, string actualSolutionData, int actualSolutionType) => actualSolutionType switch
         {
             1 => $"{DetermineCharacterDifference(userSolutionData, actualSolutionData)}",
@@ -53,8 +73,20 @@ namespace Participants.Domain
             _ => string.Empty,
         };
 
+        /// <summary>
+        /// Determines the character difference between the user's solution data and the actual solution data.
+        /// </summary>
+        /// <param name="userSolutionData">The solution data provided by the user.</param>
+        /// <param name="actualSolutionData">The actual solution data.</param>
+        /// <returns>The character difference.</returns>
         public static int DetermineCharacterDifference(string userSolutionData, string actualSolutionData) => LevenshteinUtils.LevenshteinDistance(userSolutionData, actualSolutionData);
 
+        /// <summary>
+        /// Determines the location distance between the user's solution data and the actual solution data.
+        /// </summary>
+        /// <param name="userSolutionData">The solution data provided by the user.</param>
+        /// <param name="actualSolutionData">The actual solution data.</param>
+        /// <returns>The location distance in meters.</returns>
         public static double DetermineLocationDistance(string userSolutionData, string actualSolutionData)
         {
             // Split the input strings to extract latitude and longitude
@@ -79,6 +111,13 @@ namespace Participants.Domain
             return distance;
         }
 
+        /// <summary>
+        /// Checks if the given location data is inside the specified area.
+        /// </summary>
+        /// <param name="givenData">The location data provided by the user.</param>
+        /// <param name="actualData">The actual location data.</param>
+        /// <param name="areaInMeters">The area in meters.</param>
+        /// <returns>True if the location is inside the area, otherwise false.</returns>
         private static bool IsInsideArea(string givenData, string actualData, uint areaInMeters)
         {
             // Split the input strings to extract latitude and longitude

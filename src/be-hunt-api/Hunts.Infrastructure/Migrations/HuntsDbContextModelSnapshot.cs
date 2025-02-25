@@ -63,6 +63,9 @@ namespace Hunts.Infrastructure.Migrations
                     b.Property<int>("HintType")
                         .HasColumnType("int");
 
+                    b.Property<string>("additionalData")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId")

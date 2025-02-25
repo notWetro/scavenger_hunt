@@ -2,6 +2,7 @@
 	import { Progressbar } from 'flowbite-svelte';
 	import type { Writable } from 'svelte/store';
 
+	/** Text descriptions for each step in the progress bar. */
 	const stepText: { [key: number]: string } = {
 		1: 'Enter Basic data.',
 		2: 'Add hints and solutions.',
@@ -9,7 +10,9 @@
 		4: 'Done!'
 	};
 
+	/** The current step in the progress bar. */
 	export let currentStep: Writable<number>;
+	/** The maximum number of steps in the progress bar. */
 	export let maximumSteps: number;
 </script>
 

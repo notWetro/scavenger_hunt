@@ -2,7 +2,8 @@
 
 ## Introduction
 
-This project serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+This folder serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+When you use the Hunt-Gui all the following steps become obsolet.
 
 ## Getting Started with Docker-Compose
 
@@ -14,12 +15,12 @@ Ensure the following configuration files are in place:
 
 1. **.env File**: This file should be in the root directory of the `hunt-api` and contain:
 
-    ```shell
-    HUNTS_DB_NAME=desired_database_name_here
-    HUNTS_DB_ROOT_PWD=desired_password_here
-    PARTICIPANTS_DB_NAME=desired_database_name_here
-    PARTICIPANTS_DB_ROOT_PWD=desired_password_here
-    ```
+```shell
+HUNTS_DB_NAME=desired_database_name_here
+HUNTS_DB_ROOT_PWD=desired_password_here
+PARTICIPANTS_DB_NAME=desired_database_name_here
+PARTICIPANTS_DB_ROOT_PWD=desired_password_here
+```
 
 2. **appsettings.json Files**: These files should be located in the corresponding Api directory (`Hunts.Api` or `Participants.Api`) and contain the appropriate connection strings. Each complete file is defined below:
 
@@ -43,7 +44,12 @@ Ensure the following configuration files are in place:
     }
     ```
 
-    2. **appsettings.json** for `Participations.Api`:
+    2. **ipconfig.json** for `Hunt.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
+    ```
+
+    3. **appsettings.json** for `Participations.Api`:
 
     ```json
     {
@@ -67,6 +73,10 @@ Ensure the following configuration files are in place:
         },
         "AllowedHosts": "*"
     }
+    ```
+    4. **ipconfig.json** for `Participations.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
     ```
 
 ### Running the Application

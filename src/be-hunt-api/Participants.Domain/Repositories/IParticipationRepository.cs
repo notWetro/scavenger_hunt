@@ -59,6 +59,11 @@ namespace Participants.Domain.Repositories
         /// <returns>Participation-object that was deleted.</returns>
         public Task<Participation?> DeleteByIdAsync(int id);
 
+        /// <summary>
+        /// Deletes multiple participations by hunt id.
+        /// </summary>
+        /// <param name="huntId">Identifier of hunt.</param>
+        /// <returns>A list of deleted participations.</returns>
         public Task<IEnumerable<Participation>?> DeleteMultipleByHuntIdAsync(int huntId);
     }
 }

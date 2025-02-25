@@ -12,11 +12,15 @@ namespace Participants.Api.Services
         private readonly ICache _cache = cache;
         private readonly IServiceProvider _serviceProvider = serviceProvider;
 
+        /// <summary>
+        /// Processes the specified event message.
+        /// </summary>
+        /// <param name="message">The event message to process.</param>
         public void ProcessEvent(string message)
         {
             // Decode message that contains ä, ö, ü, etc.
             string decodedString = Regex.Unescape(message);
-            Console.WriteLine(decodedString);
+            //Console.WriteLine(decodedString);
 
             var evenType = DetermineEvent(message);
             var hunt = DetermineHunt(message);
@@ -58,6 +62,11 @@ namespace Participants.Api.Services
             }
         }
 
+        /// <summary>
+        /// Determines the hunt from the event message.
+        /// </summary>
+        /// <param name="message">The event message.</param>
+        /// <returns>The hunt, or null if not found.</returns>
         private static Hunt? DetermineHunt(string message)
         {
             var huntPublishDto = JsonSerializer.Deserialize<HuntPublishDto>(message);
@@ -75,7 +84,8 @@ namespace Participants.Api.Services
                     Hint = new Hint
                     {
                         HintType = x.Hint.HintType,
-                        Data = x.Hint.Data
+                        Data = x.Hint.Data,
+                        AdditionalData = x.Hint.additionalData
                     },
                     Solution = new Solution
                     {
@@ -86,6 +96,11 @@ namespace Participants.Api.Services
             };
         }
 
+        /// <summary>
+        /// Determines the event type from the event message.
+        /// </summary>
+        /// <param name="message">The event message.</param>
+        /// <returns>The event type.</returns>
         private static EventType DetermineEvent(string message)
         {
             var evenType = JsonSerializer.Deserialize<GenericEventDto>(message);

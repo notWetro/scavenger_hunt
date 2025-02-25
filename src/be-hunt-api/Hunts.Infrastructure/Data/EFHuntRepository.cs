@@ -4,10 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hunts.Infrastructure.Data
 {
+    /// <summary>
+    /// Repository für die Verwaltung von Hunt-Entitäten.
+    /// </summary>
     public sealed class EFHuntRepository(HuntsDbContext dbContext) : IHuntRepository
     {
         private readonly HuntsDbContext _context = dbContext;
 
+        /// <summary>
+        /// Holt einen Hunt anhand seiner ID.
+        /// </summary>
+        /// <param name="id">Die ID des Hunts.</param>
+        /// <returns>Der Hunt oder null, wenn nicht gefunden.</returns>
         public async Task<Hunt?> GetByIdAsync(int id)
         {
             try
@@ -26,6 +34,10 @@ namespace Hunts.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Holt alle Hunts.
+        /// </summary>
+        /// <returns>Eine Liste aller Hunts.</returns>
         public async Task<IEnumerable<Hunt>> GetAll()
         {
             try
@@ -44,6 +56,11 @@ namespace Hunts.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Fügt einen neuen Hunt hinzu.
+        /// </summary>
+        /// <param name="hunt">Der hinzuzufügende Hunt.</param>
+        /// <returns>Die ID des hinzugefügten Hunts oder -1 bei Fehler.</returns>
         public async Task<int> AddAsync(Hunt hunt)
         {
             try
@@ -59,6 +76,11 @@ namespace Hunts.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Aktualisiert einen bestehenden Hunt.
+        /// </summary>
+        /// <param name="hunt">Der zu aktualisierende Hunt.</param>
+        /// <returns>True, wenn erfolgreich, sonst false.</returns>
         public async Task<bool> UpdateAsync(Hunt hunt)
         {
             try
@@ -102,6 +124,12 @@ namespace Hunts.Infrastructure.Data
                 return false;
             }
         }
+
+        /// <summary>
+        /// Löscht einen Hunt anhand seiner ID.
+        /// </summary>
+        /// <param name="id">Die ID des zu löschenden Hunts.</param>
+        /// <returns>Der gelöschte Hunt oder null, wenn nicht gefunden.</returns>
         public async Task<Hunt?> DeleteByIdAsync(int id)
         {
             try

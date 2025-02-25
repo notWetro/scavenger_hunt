@@ -1,7 +1,16 @@
 ﻿namespace Participants.Domain
 {
+    /// <summary>
+    /// Utility class for calculating Levenshtein distance.
+    /// </summary>
     public static class LevenshteinUtils
     {
+        /// <summary>
+        /// Calculates the Levenshtein distance between two strings.
+        /// </summary>
+        /// <param name="givenText">The given text.</param>
+        /// <param name="expectedText">The expected text.</param>
+        /// <returns>The Levenshtein distance.</returns>
         public static int LevenshteinDistance(string givenText, string expectedText)
         {
             int n = givenText.Length;

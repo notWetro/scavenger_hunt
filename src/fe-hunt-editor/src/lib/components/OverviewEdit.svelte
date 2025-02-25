@@ -4,15 +4,16 @@
 	import QRCode from 'qrcode';
 	import { huntStore } from '$lib/stores/huntStore';
 	import { Button } from 'flowbite-svelte';
-	import { Goal } from 'lucide-svelte';
+	import { Goal, ArrowLeft } from 'lucide-svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
-
-	let qrCodes = [];
-
-	// Subscribe to huntStore to access its current state
-	$: hunt = $huntStore;
+	
+	/** List of QR codes associated with the assignments. */
+	let qrCodes: any[] = [];
+	
+	/** The current hunt data from the store. */
+	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
 
@@ -20,6 +21,9 @@
 		await generateQRCodes();
 	});
 
+	/**
+	 * Generates QR codes for assignments with QR code solutions.
+	 */
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
@@ -41,9 +45,11 @@
 		);
 	}
 
+	/**
+	 * Updates the hunt data on the server.
+	 */
 	async function updateHunt() {
 		console.log('Hunt:', hunt);
-
 		const response = await fetch(`${PUBLIC_API_URL}/hunts/${hunt.id}`, {
 			method: 'PUT',
 			headers: {
@@ -55,7 +61,16 @@
 			throw new Error(`Failed to create Hunt: ${response.status}`);
 		}
 		dispatch('Finished');
+		
 	}
+
+	/**
+	 * Navigates back to the previous step.
+	 */
+	function goBackToPreviousStep() {
+		dispatch('goBack');
+	}
+
 </script>
 
 <div class="flex flex-col">
@@ -65,7 +80,14 @@
 
 <OverviewTable {qrCodes} />
 
-<Button class="mt-5" on:click={updateHunt}>
-	<Goal class="mr-2" />
-	Update scavenger hunt
-</Button>
+<!-- New: Add the Button to go back from the last hunt update screen -->
+<div style="display: flex; gap: 20px; justify-content: flex-end; align-items: right; width: 100%;">
+	<Button class="mt-5" on:click={goBackToPreviousStep} style="flex: 1;">
+		<ArrowLeft class="ml-2" />
+		Previous
+	</Button>
+	<Button class="mt-5" on:click={updateHunt} style="flex: 1;">
+		<Goal class="mr-2" />
+		Update scavenger hunt
+	</Button>
+</div>

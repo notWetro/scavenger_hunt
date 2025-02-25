@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="fe_hunt_gui.Manager.ElementsManager">
+    <Position X="8.5" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAgAUIAABAAADAAAAAAAAAQACAAAAAAAAAA=</HashCode>
+      <FileName>Manager\ElementsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.HelperMethodes">
+    <Position X="5.5" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAeAQAAAQAAAAAQgKAAQAAAAAAgAAAAAAABAAAA=</HashCode>
+      <FileName>Backend\HelperMethodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Logfile">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Backend\Logfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.Manager.ProcessManager">
+    <Position X="11" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAABAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIA=</HashCode>
+      <FileName>Manager\ProcessManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.App">
+    <Position X="11.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.LoadingCircle">
+    <Position X="0.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACgAAAABAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>LoadingCircle.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.MainWindow">
+    <Position X="6.75" Y="7.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAIAAAIAAAAAEAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.StartingDocker">
+    <Position X="5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StartingDocker.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.Titlebar">
+    <Position X="2.5" Y="7.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEACA=</HashCode>
+      <FileName>Titlebar.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.Properties.Resources">
+    <Position X="3" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="fe_hunt_gui.Properties.Settings">
+    <Position X="9.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Windows.Window" Collapsed="true">
+    <Position X="7.25" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Windows.Controls.UserControl" Collapsed="true">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Windows.Application" Collapsed="true">
+    <Position X="11.5" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Object" Collapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Configuration.ApplicationSettingsBase" Collapsed="true">
+    <Position X="9.5" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
