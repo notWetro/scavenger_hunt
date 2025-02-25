@@ -1,10 +1,11 @@
 # GUI Scavenger Hunt
 
 Welcome to the **GUI Scavenger Hunt**! This README will guide you through the setup process and help you get started.
-
 ---
 
 ## Setup Instructions
+
+If you want to Automaticly install the Game Hunt please visit: [Installationsanleitung.pdf](demos/Installationsanleitung.pdf) !
 
 Follow these steps to prepare your environment:
 
