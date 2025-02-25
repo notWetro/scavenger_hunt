@@ -17,7 +17,7 @@ Each subdirectory contains a README file explaining the purpose and usage of the
 
 For an overview, here are the tasks of the linked folders:
 
-- **Backend** and **API** [Hunt-API](src/be-hunt-api/README.md): As the name suggests, this folder contains the backend. It includes the logic for managing games and players as well as the REST APIs. Additionally, the Node server is managed here.
+- **Backend** and **API** [Hunt-API](src/be-hunt-api/Readme.md): As the name suggests, this folder contains the backend. It includes the logic for managing games and players as well as the REST APIs. Additionally, the Node server is managed here.
 - **Web-Game** [Hunt-Game](src/fe-hunt-web-game/README.md): This folder contains the game's frontend, where scavenger hunts can be played and joined.
 - **Web-App** [Hunt-Editor](src/fe-hunt-editor/README.md): This web application is used to create and manage scavenger hunts.
 - **Hunt-GUI** [Hunt-GUI](src/fe-hunt-gui/README.md): This tool provides an easy way to manage the backend and both frontend applications. With the GUI, all web applications can be accessed centrally without having to manually start, for example, Docker containers.
