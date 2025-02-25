@@ -4,10 +4,18 @@ using Participants.Domain.Repositories;
 
 namespace Participants.Infrastructure.Data
 {
+    /// <summary>
+    /// Repository for managing participants using Entity Framework.
+    /// </summary>
     public sealed class EFParticipantRepository(ParticipantsDbContext dbContext) : IParticipantRepository
     {
         private readonly ParticipantsDbContext _context = dbContext;
 
+        /// <summary>
+        /// Adds a new participant asynchronously.
+        /// </summary>
+        /// <param name="participant">The participant to add.</param>
+        /// <returns>The ID of the added participant.</returns>
         public async Task<int> AddAsync(Participant participant)
         {
             try
@@ -23,11 +31,20 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Deletes a participant by username asynchronously.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns>The deleted participant if found; otherwise, null.</returns>
         public Task<Participant?> DeleteByUsernameAsync(string username)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets all participants asynchronously.
+        /// </summary>
+        /// <returns>A list of all participants.</returns>
         public async Task<IEnumerable<Participant>> GetAll()
         {
             try
@@ -41,6 +58,11 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Gets a participant by username asynchronously.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns>The participant if found; otherwise, null.</returns>
         public async Task<Participant?> GetByUsernameAsync(string username)
         {
             try
@@ -54,6 +76,11 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Updates a participant asynchronously.
+        /// </summary>
+        /// <param name="participant">The participant to update.</param>
+        /// <returns>True if the update was successful; otherwise, false.</returns>
         public Task<bool> UpdateAsync(Participant participant)
         {
             throw new NotImplementedException();

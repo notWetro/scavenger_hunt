@@ -1,10 +1,17 @@
 <script lang="ts">
+	/**
+	 * Import necessary components from external libraries.
+	 */
 	import { Popover } from 'flowbite-svelte';
 	import { CircleHelpIcon } from 'lucide-svelte';
 
+	/**
+	 * Export a prop 'type' to determine the type of hint to display.
+	 */
 	export let type: number;
 </script>
 
+<!-- Display a help button with a popover containing hint information based on the type -->
 <div class="flex items-center p-4 text-sm font-light text-gray-500">
 	Need help?
 	<button id="b3">

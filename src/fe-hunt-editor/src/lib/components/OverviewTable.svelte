@@ -13,10 +13,18 @@
 	import { HintType } from '$lib/models/Hint';
 	import { SolutionType } from '$lib/models/Solution';
 	import { mapHintTypeToText, mapSolutionTypeToText } from '$lib/utils/typeMappingUtil';
+
+	/** The current hunt data from the store. */
 	$: hunt = $huntStore;
 
+	/** List of QR codes associated with the assignments. */
 	export let qrCodes: any[];
 
+	/**
+	 * Downloads the QR code image for a given assignment.
+	 * @param id - The ID of the assignment.
+	 * @param qrUrl - The URL of the QR code image.
+	 */
 	async function downloadQRCode(id: number, qrUrl: any) {
 		try {
 			const response = await fetch(qrUrl);

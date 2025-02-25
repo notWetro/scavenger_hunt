@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:fe_hunt_gui"
         mc:Ignorable="d"
-        Title="Hunt" Height="450" Width="800" Background="{DynamicResource BackgroundBrush}" ResizeMode="NoResize" WindowStyle="None"  MouseLeftButtonDown="Window_MouseLeftButtonDown" WindowStartupLocation="CenterScreen">
+        Title="Hunt" Height="440" Width="800" ResizeMode="NoResize" WindowStyle="None"  MouseLeftButtonDown="Window_MouseLeftButtonDown" WindowStartupLocation="CenterScreen">
+
+    <Window.Background>
+        <ImageBrush ImageSource="pack://application:,,,/Resources/burren.jpg"/>
+    </Window.Background>
+    
     <Grid x:Name="GUIGrid">
 
         <!-- Define the Row -->
@@ -18,7 +23,7 @@
         <Grid.ColumnDefinitions >
             <!--ColumnDefinition Width="15*" Name="TitleGrid"/-->
             <ColumnDefinition Width="*" Name="EditorColumn"/>
-            <ColumnDefinition Width="*" Name="ParticipationColumn"/>
+            <ColumnDefinition Width="200" Name="BufferColumn"/>
             <ColumnDefinition Width="*" Name="PlayColumn"/>
         </Grid.ColumnDefinitions>
 
@@ -27,24 +32,19 @@
 
 
         <!-- Define the Buttons -->
-        <Button Name="Editor_Button" Grid.Column="0" Height="150" Width="150" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,142,0,142" Click="Editor_Button_Clicked">
+        <Button Name="Editor_Button" Grid.Column="0" Height="150" Width="150" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,142,0,122" Click="Editor_Button_Clicked">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Start Editor" />
         </Button>
 
-        <Button Name="Participation_Button" Grid.Column="1" Height="150" Width="150" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,142,0,142" Click="Web_Game_Button_Clicked">
+        <Button Name="Play_Button" Grid.Column="2" Height="150" Width="150" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,142,0,122" Click="Web_Game_Button_Clicked">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Start Game" />
         </Button>
 
-        <Button Name="Play_Hunt_Button" Grid.Column="2" Height="150" Width="150" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,142,0,142" Click="Options_Button_Clicked">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Options" />
-        </Button>
-
-
         <local:StartingDocker x:Name="StartDocker" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
-        
-        <local:LoadingCircle x:Name="LoadingCircle" Grid.Column="0" Height="100" Width="100" Duration="0:0:2" SpinnerColor="DarkGray" Visibility="hidden"/>
 
-        <Button Name="Exit_Button" Grid.Column="0" Height="20" Width="50" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,120,0,10" Click="Exit_Button_Clicked" Visibility="Hidden">
+        <local:LoadingCircle x:Name="LoadingCircle" Grid.Column="0" Height="100" Width="100" Duration="0:0:2" SpinnerColor="DarkGray" Margin="0,142,0,122" Visibility="Hidden"/>
+
+        <Button Name="Exit_Button" Grid.Column="0" Height="20" Width="50" HorizontalAlignment="Center" Background="{DynamicResource ButtonBackroundBrush}" Margin="0,140,0,10" Click="Exit_Button_Clicked" Visibility="Hidden">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="Exit" />
         </Button>
 

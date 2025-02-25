@@ -16,6 +16,11 @@ namespace Participants.Api.Services
         private readonly string? _queueName;
         private const string EXCHANGE_NAME = "HuntExchange";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageBusSubscriber"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration settings.</param>
+        /// <param name="eventProcessor">The event processor to handle incoming messages.</param>
         public MessageBusSubscriber(IConfiguration configuration, IEventProcessor eventProcessor)
         {
             this._configuration = configuration;
@@ -43,17 +48,30 @@ namespace Participants.Api.Services
             }
         }
 
+        /// <summary>
+        /// Disposes the connection and channel.
+        /// </summary>
         public override void Dispose()
         {
             _channel?.Close();
             _connection?.Close();
         }
 
+        /// <summary>
+        /// Handles the connection shutdown event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The shutdown event arguments.</param>
         private void OnConnectionShutdown(object? sender, ShutdownEventArgs e)
         {
             Console.WriteLine("Connection to Message Bus shutting down.");
         }
 
+        /// <summary>
+        /// Executes the background service to listen for incoming messages.
+        /// </summary>
+        /// <param name="stoppingToken">The cancellation token.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();

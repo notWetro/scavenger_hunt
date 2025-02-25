@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using System.Text.Json;
 using Hunts.Api.DTOs.Hunt;
 using Hunts.Api.Services;
 using Hunts.Domain.Entities;
 using Hunts.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Hunts.Api.Controllers
 {
@@ -45,6 +47,32 @@ namespace Hunts.Api.Controllers
 
             return Ok(_mapper.Map<HuntGetDto>(scavengerHunt));
         }
+
+        /// <summary>
+        /// Format: GET: api/Hunts/server-ip
+        /// Get the server IP address from the configuration file.
+        /// </summary>
+        /// <returns>Server IP address.</returns>
+        [HttpGet("server-ip")]
+        public async Task<IActionResult> GetServerIPAddress()
+        {
+            try
+            {   
+                string filePath = Path.Combine(AppContext.BaseDirectory, "ipconfig.json");
+                using StreamReader r = new StreamReader(filePath);
+                string json = await r.ReadToEndAsync();
+                var config = JsonSerializer.Deserialize<IpAdress>(json);
+                Console.WriteLine(config?.Ip);
+                if (config?.Ip == null)
+                    return BadRequest(new { error = "Couldn not finde a IP Adress" });
+                return Ok(new { ip = config?.Ip });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
 
         #endregion
 
@@ -159,6 +187,11 @@ namespace Hunts.Api.Controllers
 
         #endregion
 
+        /// <summary>
+        /// Check if a scavenger hunt exists by id.
+        /// </summary>
+        /// <param name="id">Id of the scavenger hunt.</param>
+        /// <returns>True if the scavenger hunt exists, otherwise false.</returns>
         private bool ScavengerHuntExists(int id)
         {
             var hunt = _huntRepository.GetByIdAsync(id);

@@ -10,6 +10,7 @@
 	import SubmissionHintDisplay from './SubmissionHintDisplay.svelte';
 	import { get } from 'svelte/store';
 	import { tick } from 'svelte';
+	import HintDisplay from '$lib/components/hints/HintDisplay.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -82,7 +83,7 @@
 
 <div bind:this={resultRef}>
 	{#if submissionStatus === SubmissionStatus.InvalidSubmission}
-		<SubmissionHintDisplay {hintData} {type} />
+		 <SubmissionHintDisplay {hintData} {type} />
 	{:else if submissionStatus === SubmissionStatus.ValidSubmission}
 		<Alert color="green">You are correct!</Alert>
 	{/if}

@@ -26,12 +26,22 @@
 		attemptMade = false;
 	}
 
-	// New: Function to check if Password contains 8 chars, a upper case
+	/**
+	 * Checks if the password contains at least 8 characters, one uppercase letter, and one number.
+	 * @param password - The password to be checked.
+	 * @returns true if the password is valid, otherwise false.
+	 */
 	function isPasswordValid(password: string): boolean {
   		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
   		return passwordRegex.test(password);
 	}
 
+	/**
+	 * Submits the participation information to the server.
+	 * @param username - The participant's username.
+	 * @param password - The participant's password.
+	 * @param huntId - The ID of the scavenger hunt.
+	 */
 	async function submit(username: string, password: string, huntId: number) {
 		
 		attemptMade = true;
@@ -71,6 +81,9 @@
 		}
 	}
 
+	/**
+	 * Navigates to the login page.
+	 */
 	function navigateToLogin() {
     	goto('/login');
   	}
@@ -79,7 +92,7 @@
 
 <div class="relative w-full bg-gray-100">
 	<main>
-		<div class="flex gap-2 flex-row mb-4 items-center justify-between w-full">
+		<div class="flex gap-2 flex-row mb-4 items-center justify-center w-full">
 			<h1 class="text-2xl font-bold underline">Register for Scavenger Hunt:</h1>
 		</div>
 	
@@ -141,7 +154,7 @@
 				<!-- New: check if Password is Valid -->
 				{#if success === false && attemptMade && !validPassword}
 					<Helper class="text-red-900 text-sm">
-						Submission failed! Please try again.
+						Username already taken. Please try another one.
 					</Helper>
 				{:else if validPassword && attemptMade}
 					<Helper class="text-red-900 text-sm">

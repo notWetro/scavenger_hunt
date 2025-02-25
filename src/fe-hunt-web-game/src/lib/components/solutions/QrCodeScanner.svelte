@@ -3,12 +3,21 @@
 	import { Html5Qrcode } from 'html5-qrcode';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 
+	/**
+	 * Export a prop 'data' to hold the scanned QR code data.
+	 */
 	export let data: string = '';
 
+	/**
+	 * Initialize the QR code scanner on component mount.
+	 */
 	onMount(() => {
 		startScanner();
 	});
 
+	/**
+	 * Stop the QR code scanner on component destroy.
+	 */
 	onDestroy(() => {
 		try {
 			stopScanner();
@@ -17,6 +26,9 @@
 		}
 	});
 
+	/**
+	 * Log the scanned data whenever it changes.
+	 */
 	$: {
 		console.log(data);
 	}
@@ -30,7 +42,7 @@
 	const dispatch = createEventDispatcher();
 
 	/**
-	 * @brief Handles successful scan events.
+	 * Handles successful scan events.
 	 * @param decodedText The text decoded from the scan.
 	 */
 	function onScanSuccess(decodedText: string) {
@@ -42,6 +54,10 @@
 		dispatch('Finished');
 	}
 
+	/**
+	 * Handles scan failure events.
+	 * @param error The error message from the scan failure.
+	 */
 	function onScanFailure(error: string) {
 		// Only log or handle errors if the scanner is actively scanning
 		if (scannerActive) {
@@ -51,7 +67,7 @@
 	}
 
 	/**
-	 * @brief Initializes and starts the scanner.
+	 * Initializes and starts the scanner.
 	 */
 	function startScanner() {
 		scannerActive = true;
@@ -82,7 +98,7 @@
 	}
 
 	/**
-	 * @brief Stops the scanner.
+	 * Stops the scanner.
 	 */
 	function stopScanner() {
 		if (html5Qrcode) {
@@ -98,6 +114,7 @@
 	}
 </script>
 
+<!-- Display alerts for different error states and the QR code scanner -->
 {#if searchFailed}
 	<Alert color="yellow">Couldn't find QR-Code data!</Alert>
 {/if}

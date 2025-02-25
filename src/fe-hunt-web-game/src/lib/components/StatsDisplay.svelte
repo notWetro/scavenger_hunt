@@ -1,8 +1,13 @@
 <script lang="ts">
+	// Import necessary types and components
 	import type { Stats } from '$lib/models/stats';
 	import { Card } from 'flowbite-svelte';
 	import { LandPlotIcon, UsersIcon } from 'lucide-svelte';
 
+	/**
+	 * The stats prop holds the statistics data to be displayed.
+	 * @type {Stats}
+	 */
 	export let stats: Stats;
 </script>
 

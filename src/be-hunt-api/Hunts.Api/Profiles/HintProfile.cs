@@ -6,6 +6,10 @@ namespace Hunts.Api.Profiles
 {
     public sealed class HintProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HintProfile"/> class.
+        /// Configures the mappings between Hint and its DTOs.
+        /// </summary>
         public HintProfile()
         {
             CreateMap<Hint, HintInnerGetDto>();

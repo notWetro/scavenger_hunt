@@ -24,12 +24,18 @@
   let isFinished: boolean = false;
   let solutionCardRef: HTMLDivElement;
 
+  /**
+   * Called when the component is mounted.
+   * Sets the current hunt and fetches the current assignment.
+   */
   onMount(() => {
     currentHunt = $playingHunt;
     fetchCurrentAssignment();
   });
 
-  // Toggles the solution card and autoscrolles to the card.
+  /**
+   * Toggles the display of the solution card and auto-scrolls to the card.
+   */
   async function toggleSolutionInput() {
   	isSolutionShown = !isSolutionShown;
 	if (isSolutionShown) {
@@ -40,10 +46,17 @@
 	}
   }
 
+  /**
+   * Displays the "Next" button.
+   */
   function showNextButton() {
     isNextButtonShown = true;
   }
 
+  /**
+   * Fetches the current assignment for the current hunt.
+   * If the hunt is finished, updates the status.
+   */
   async function fetchCurrentAssignment() {
     if (!currentHunt) throw Error('currentHunt is not defined!');
 
@@ -79,12 +92,18 @@
     }
   }
 
+  /**
+   * Resets the state of the solution input.
+   */
   function resetState() {
     isSolutionShown = false;
     isNextButtonShown = false;
     solutionData = '';
   }
 
+  /**
+   * Fetches the next assignment and resets the state.
+   */
   async function fetchNextAssignment() {
     resetState();
     await fetchCurrentAssignment();
@@ -93,9 +112,11 @@
 
 <div class="h-screen p-4">
   {#if currentHunt}
-    <h1 class="text-3xl font-bold mb-4 text-center">
-      <a href="/home">{currentHunt.title}</a>
-    </h1>
+    <h1 class="text-3xl font-bold mb-4 text-center truncate">
+      <a href="/home" class="inline-block max-w-[50%] overflow-hidden text-ellipsis whitespace-nowrap">
+    {currentHunt.title}
+  </a>
+  </h1>
     <hr class="border-t-2 border-gray-300 my-4" />
   {/if}
 
@@ -103,7 +124,7 @@
     <CheerDisplay />
   {:else if currentAssignment}
     <div class="flex flex-col gap-2" transition:fade={{ delay: 0, duration: 250 }}>
-      {#if currentAssignment.hintType === 1 || currentAssignment.hintType === 2 && currentAssignment.additionalData !== null}
+      {#if (currentAssignment.hintType === 1 || currentAssignment.hintType === 2) && currentAssignment.additionalData !== null}
         <h1 class="text-center text-lg font-semibold">{currentAssignment.additionalData}</h1>
       {/if}
 

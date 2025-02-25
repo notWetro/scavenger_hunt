@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
 
+	/** The logo image for the navbar. */
 	import logo from '$lib/images/logo.png';
 	import NavContainer from 'flowbite-svelte/NavContainer.svelte';
 </script>

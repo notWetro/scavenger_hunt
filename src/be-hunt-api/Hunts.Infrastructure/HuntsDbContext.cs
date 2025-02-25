@@ -4,12 +4,18 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Hunts.Infrastructure
 {
-    
+    /// <summary>
+    /// DbContext für die Verwaltung der Hunts-Datenbank.
+    /// </summary>
     public sealed class HuntsDbContext(DbContextOptions<HuntsDbContext> options) : DbContext(options)
     {
         public required DbSet<Hunt> ScavengerHunts { get; set; }
         public required DbSet<Assignment> Assignments { get; set; }
 
+        /// <summary>
+        /// Konfiguriert die Modellbeziehungen und -eigenschaften.
+        /// </summary>
+        /// <param name="builder">Der ModelBuilder zum Konfigurieren der Modelle.</param>
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Assignment>()

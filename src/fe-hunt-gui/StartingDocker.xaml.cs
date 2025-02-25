@@ -19,6 +19,9 @@ namespace fe_hunt_gui
     /// </summary>
     public partial class StartingDocker : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the StartingDocker class.
+        /// </summary>
         public StartingDocker()
         {
             InitializeComponent();

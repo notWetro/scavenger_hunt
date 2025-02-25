@@ -12,6 +12,10 @@ namespace Participants.Api.Services
         private readonly ICache _cache = cache;
         private readonly IServiceProvider _serviceProvider = serviceProvider;
 
+        /// <summary>
+        /// Processes the specified event message.
+        /// </summary>
+        /// <param name="message">The event message to process.</param>
         public void ProcessEvent(string message)
         {
             // Decode message that contains ä, ö, ü, etc.
@@ -58,6 +62,11 @@ namespace Participants.Api.Services
             }
         }
 
+        /// <summary>
+        /// Determines the hunt from the event message.
+        /// </summary>
+        /// <param name="message">The event message.</param>
+        /// <returns>The hunt, or null if not found.</returns>
         private static Hunt? DetermineHunt(string message)
         {
             var huntPublishDto = JsonSerializer.Deserialize<HuntPublishDto>(message);
@@ -87,6 +96,11 @@ namespace Participants.Api.Services
             };
         }
 
+        /// <summary>
+        /// Determines the event type from the event message.
+        /// </summary>
+        /// <param name="message">The event message.</param>
+        /// <returns>The event type.</returns>
         private static EventType DetermineEvent(string message)
         {
             var evenType = JsonSerializer.Deserialize<GenericEventDto>(message);

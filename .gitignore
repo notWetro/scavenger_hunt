@@ -59,6 +59,7 @@ crashlytics-build.properties
 # C SHARP STUFF #
 
 appsettings.json
+ipconfig.json
 [Dd]ebug/
 [Rr]elease/
 x64/

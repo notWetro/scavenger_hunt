@@ -1,4 +1,7 @@
 <script>
+    /**
+     * Import the global CSS file and necessary modules.
+     */
     import '../../../app.css';
     import { Button } from 'flowbite-svelte'; 
     import { goto } from '$app/navigation'; 

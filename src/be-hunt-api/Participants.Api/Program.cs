@@ -2,10 +2,26 @@ using Participants.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
+/// <summary>
+/// Adds application services to the service collection.
+/// </summary>
 builder.Services.AddApplicationServices(builder.Configuration);
+
+/// <summary>
+/// Adds JWT configuration to the service collection.
+/// </summary>
 builder.Services.AddJwtConfiguration(builder.Configuration);
+
+/// <summary>
+/// Adds database configuration to the service collection.
+/// </summary>
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
+
+/// <summary>
+/// Adds CORS configuration to the service collection.
+/// </summary>
 builder.Services.AddCorsConfiguration();
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.Limits.MaxRequestBodySize = 100 * 1024 * 1024;

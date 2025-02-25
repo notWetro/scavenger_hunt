@@ -9,7 +9,7 @@
 
     <Grid Background="{DynamicResource TitleBarBackgroundBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Title Bar Icon -->
-        <Image Grid.Column="0" HorizontalAlignment="Left" Width="30" Height="30" Margin="5" Source="pack://application:,,,/Resources/icon_hunt-removebg-preview.ico" />
+        <Image Grid.Column="0" HorizontalAlignment="Left" Width="40" Height="40" Margin="5" Source="pack://application:,,,/Resources/aalen_university_logo_clear.png"/>
 
         <!-- Custom Title Text -->
         <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="{DynamicResource TextBrush}" Text="H u n t  G U I" FontSize="20"/>

@@ -2,7 +2,8 @@
 
 ## Introduction
 
-This project serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+This folder serves as the backend for our scavenger hunts, providing functionality to store, retrieve, and update hunts and participations.
+When you use the Hunt-Gui all the following steps become obsolet.
 
 ## Getting Started with Docker-Compose
 
@@ -43,7 +44,12 @@ PARTICIPANTS_DB_ROOT_PWD=desired_password_here
     }
     ```
 
-    2. **appsettings.json** for `Participations.Api`:
+    2. **ipconfig.json** for `Hunt.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
+    ```
+
+    3. **appsettings.json** for `Participations.Api`:
 
     ```json
     {
@@ -67,6 +73,10 @@ PARTICIPANTS_DB_ROOT_PWD=desired_password_here
         },
         "AllowedHosts": "*"
     }
+    ```
+    4. **ipconfig.json** for `Participations.Api`:
+    ```
+    {"Ip": "{YourIpAdress}"}
     ```
 
 ### Running the Application

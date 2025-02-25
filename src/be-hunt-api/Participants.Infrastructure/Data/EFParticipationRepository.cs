@@ -4,10 +4,18 @@ using Participants.Domain.Repositories;
 
 namespace Participants.Infrastructure.Data
 {
+    /// <summary>
+    /// Repository for managing participations using Entity Framework.
+    /// </summary>
     public sealed class EFParticipationRepository(ParticipantsDbContext dbContext) : IParticipationRepository
     {
         private readonly ParticipantsDbContext _context = dbContext;
 
+        /// <summary>
+        /// Adds a new participation asynchronously.
+        /// </summary>
+        /// <param name="participation">The participation to add.</param>
+        /// <returns>The ID of the added participation.</returns>
         public async Task<int> AddAsync(Participation participation)
         {
             try
@@ -23,6 +31,12 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Gets a participation by hunt ID and username asynchronously.
+        /// </summary>
+        /// <param name="huntId">The hunt ID.</param>
+        /// <param name="username">The username.</param>
+        /// <returns>The participation if found; otherwise, null.</returns>
         public async Task<Participation?> GetByIdAndUsernameAsync(int huntId, string username)
         {
             try
@@ -36,11 +50,20 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Deletes a participation by ID asynchronously.
+        /// </summary>
+        /// <param name="id">The participation ID.</param>
+        /// <returns>The deleted participation if found; otherwise, null.</returns>
         public Task<Participation?> DeleteByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets all participations asynchronously.
+        /// </summary>
+        /// <returns>A list of all participations.</returns>
         public async Task<IEnumerable<Participation>> GetAll()
         {
             try
@@ -54,11 +77,21 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Gets a participation by ID asynchronously.
+        /// </summary>
+        /// <param name="id">The participation ID.</param>
+        /// <returns>The participation if found; otherwise, null.</returns>
         public Task<Participation?> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Updates a participation asynchronously.
+        /// </summary>
+        /// <param name="participation">The participation to update.</param>
+        /// <returns>True if the update was successful; otherwise, false.</returns>
         public async Task<bool> UpdateAsync(Participation participation)
         {
             try
@@ -82,6 +115,11 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Gets participations by username asynchronously.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <returns>A list of participations for the given username.</returns>
         public async Task<IEnumerable<Participation>> GetByUsernameAsync(string username)
         {
             try
@@ -95,6 +133,11 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Deletes multiple participations by hunt ID asynchronously.
+        /// </summary>
+        /// <param name="huntId">The hunt ID.</param>
+        /// <returns>A list of participations that were marked as deleted.</returns>
         public async Task<IEnumerable<Participation>?> DeleteMultipleByHuntIdAsync(int huntId)
         {
             try
@@ -117,6 +160,10 @@ namespace Participants.Infrastructure.Data
             }
         }
 
+        /// <summary>
+        /// Marks participations as invalid by hunt ID asynchronously.
+        /// </summary>
+        /// <param name="huntId">The hunt ID.</param>
         public async Task MakeInvalidByHuntIdAsync(int huntId)
         {
             try

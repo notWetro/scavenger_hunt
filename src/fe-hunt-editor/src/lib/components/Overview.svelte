@@ -9,9 +9,10 @@
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
 	import { SolutionType } from '$lib/models/Solution';
 
+	/** List of QR codes associated with the assignments. */
 	let qrCodes: any[] = [];
 
-	// Subscribe to huntStore to access its current state
+	/** The current hunt data from the store. */
 	let hunt = $huntStore;
 
 	const dispatch = createEventDispatcher();
@@ -20,6 +21,9 @@
 		await generateQRCodes();
 	});
 
+	/**
+	 * Generates QR codes for assignments with QR code solutions.
+	 */
 	async function generateQRCodes() {
 		qrCodes = await Promise.all(
 			hunt.assignments.map(async (assignment) => {
@@ -41,45 +45,49 @@
 		);
 	}
 
+	/**
+	 * Submits the hunt data to the server.
+	 */
 	async function submitHunt() {
-    try {
-        console.log('Hunt:', hunt);
+		try {
+			console.log('Hunt:', hunt);
 
-		//Sets the additionalData to null if the field is empty
-		hunt.assignments.forEach((assignment) => {
-            if (!assignment.hint.additionalData) {
-                assignment.hint.additionalData = null;
-            }
-        });
+			// Sets the additionalData to null if the field is empty
+			hunt.assignments.forEach((assignment) => {
+				if (!assignment.hint.additionalData) {
+					assignment.hint.additionalData = null;
+				}
+			});
 
-        const huntData = { ...hunt };
+			const huntData = { ...hunt };
 
-        const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
-        const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(huntData)
-        });
-        const response = await Promise.race([fetchPromise, timeout(5000)]);
+			const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), ms));
+			const fetchPromise = fetch(`${PUBLIC_API_URL}/hunts`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(huntData)
+			});
+			const response = await Promise.race([fetchPromise, timeout(5000)]);
 
-        if (!response.ok) {
-            const errorData = await response.json();
-			console.error("Backend error:", errorData);
-            throw new Error(`Failed to create Hunt: ${response.status} - ${errorData.message || 'Unknown error'}`);
-        }
+			if (!response.ok) {
+				const errorData = await response.json();
+				console.error("Backend error:", errorData);
+				throw new Error(`Failed to create Hunt: ${response.status} - ${errorData.message || 'Unknown error'}`);
+			}
 
-        console.log("Hunt created successfully");
-        dispatch('Finished');
+			console.log("Hunt created successfully");
+			dispatch('Finished');
 		} catch (error) {
 			console.error("Error creating hunt:", error);
 		}
 	}
 
-// New: Calls the on:goBack={decreaseStep} in \src\routes\create\+page.svelte
-function goBackToPreviousStep() {
-  	dispatch('goBack');
-}
-
+	/**
+	 * Navigates back to the previous step.
+	 */
+	function goBackToPreviousStep() {
+		dispatch('goBack');
+	}
 </script>
 
 <div class="flex flex-col">

@@ -1,5 +1,8 @@
 ﻿namespace Hunts.Domain.Entities
 {
+    /// <summary>
+    /// Represents a hunt with multiple assignments.
+    /// </summary>
     public sealed class Hunt
     {
         /// <summary>

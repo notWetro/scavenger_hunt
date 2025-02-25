@@ -16,6 +16,9 @@ namespace fe_hunt_gui
 {
     public class HelperMethodes
     {
+        /// <summary>
+        /// Starts the Docker process and updates the UI elements accordingly.
+        /// </summary>
         public static void StartDocker()
         {
             try
@@ -24,6 +27,12 @@ namespace fe_hunt_gui
                 ElementsManager.LoadingCircle.Visibility = Visibility.Visible;
                 Grid.SetColumn(ElementsManager.LoadingCircle, 1);
 
+                ElementsManager.LoadingCircle.Height = 160;
+                ElementsManager.LoadingCircle.Width = 160;
+
+
+                //ElementsManager.Editor_Button.Visibility = Visibility.Hidden;
+                //ElementsManager.Play_Button.Visibility = Visibility.Hidden;
 
                 if (IsProcessRunning("Docker Desktop", null))
                 {
@@ -59,6 +68,10 @@ namespace fe_hunt_gui
                 {
                     ElementsManager.StartDocker.Visibility = Visibility.Hidden; // Hide the element
                     ElementsManager.LoadingCircle.Visibility = Visibility.Hidden; // Hide the element
+                    //ElementsManager.Editor_Button.Visibility = Visibility.Visible;
+                    //ElementsManager.Play_Button.Visibility = Visibility.Visible;
+                    ElementsManager.LoadingCircle.Height = 120;
+                    ElementsManager.LoadingCircle.Width = 120;
                     _timer.Stop(); // Stop the timer
                 };
 
@@ -84,6 +97,9 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Starts the backend Hunt API using docker-compose.
+        /// </summary>
         public static void Start_BE_Hunt()
         {
             try
@@ -117,6 +133,9 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Creates the appsettings.json files for the Hunts and Participants APIs.
+        /// </summary>
         public static void CreateAppsettings()
         {
             string folderPath = "C:\\ProgramData\\Hunt\\HSAA_Projektarbeit\\src\\be-hunt-api";
@@ -163,6 +182,21 @@ namespace fe_hunt_gui
 
         }
 
+        /// <summary>
+        /// Creates the ipconfig.json file with the local IP address.
+        /// </summary>
+        public static void CreateIpConfigs()
+        {
+            string folderPath = "C:\\ProgramData\\Hunt\\HSAA_Projektarbeit\\src\\be-hunt-api";
+            string ip = GetLocalIPAdress();
+            string ipConfigContent = $@"{{""Ip"": ""{ip}""}}";
+            CreateFile(folderPath + "\\Hunts.Api", "\\ipconfig.json", ipConfigContent);
+            CreateFile(folderPath + "\\Participants.Api", "\\ipconfig.json", ipConfigContent);
+        }
+
+        /// <summary>
+        /// Creates the .env files for the backend and frontend projects.
+        /// </summary>
         public static void CreateEnvFiles()
         {
             string hostIP = GetLocalIPAdress();
@@ -177,6 +211,10 @@ namespace fe_hunt_gui
 
         }
 
+        /// <summary>
+        /// Kills a process by its ID.
+        /// </summary>
+        /// <param name="processId">The ID of the process to kill.</param>
         public static void KillProcessById(int processId)
         {
             try
@@ -217,6 +255,9 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Stops the docker-compose process.
+        /// </summary>
         public static void StopDockerCompose()
         {
             try
@@ -249,6 +290,12 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Creates a file with the specified content at the given path.
+        /// </summary>
+        /// <param name="folderPath">The folder path where the file will be created.</param>
+        /// <param name="file">The name of the file to create.</param>
+        /// <param name="content">The content to write to the file.</param>
         public static void CreateFile(string folderPath,string file, string content)
         {
             try
@@ -258,14 +305,8 @@ namespace fe_hunt_gui
                 {
                     Directory.CreateDirectory(folderPath);
                 }
-                // Check if the file already exists
-                if (!System.IO.File.Exists(folderPath + file))
-                {
-                    // Create the file and write content to it
-                    System.IO.File.WriteAllText(folderPath + file, content);
-                    Console.WriteLine($"File successfully created at {folderPath + file}");
-                }
-                Console.WriteLine($"File successfully created at {folderPath + file}");
+                // Create the file and write content to it
+                System.IO.File.WriteAllText(folderPath + file, content);
             }
             catch (Exception ex)
             {
@@ -273,6 +314,10 @@ namespace fe_hunt_gui
             }
         }
 
+        /// <summary>
+        /// Gets the local IP address of the machine.
+        /// </summary>
+        /// <returns>The local IP address as a string.</returns>
         public static string GetLocalIPAdress()
         {
             try
@@ -287,13 +332,19 @@ namespace fe_hunt_gui
                 }
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Logfile.WriteLog("No network adapters with an IPv4 address in the system!");
                 return null;
             }
         }
 
+        /// <summary>
+        /// Checks if a process with the specified name and command is running.
+        /// </summary>
+        /// <param name="processName">The name of the process to check.</param>
+        /// <param name="command">The command line argument to check for.</param>
+        /// <returns>True if the process is running, otherwise false.</returns>
         private static bool IsProcessRunning(string processName, string command)
         {
             Process[] processes = Process.GetProcesses();
@@ -323,6 +374,11 @@ namespace fe_hunt_gui
             return false;
         }
 
+        /// <summary>
+        /// Gets the command line arguments of a process by its ID.
+        /// </summary>
+        /// <param name="processId">The ID of the process.</param>
+        /// <returns>The command line arguments as a string.</returns>
         private static string GetCommandLineArguments(int processId)
         {
             try
@@ -345,6 +401,10 @@ namespace fe_hunt_gui
             return null;
         }
 
+        /// <summary>
+        /// Gets the installation path of Docker Desktop from the registry.
+        /// </summary>
+        /// <returns>The path to Docker Desktop executable.</returns>
         private static string GetDockerDesktopPath()
         {
             const string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Docker Desktop";
@@ -361,6 +421,10 @@ namespace fe_hunt_gui
             return null;
         }
 
+        /// <summary>
+        /// Finds the Docker Desktop executable path by searching common installation directories.
+        /// </summary>
+        /// <returns>The path to Docker Desktop executable.</returns>
         private static string FindDockerDesktopPath()
         {
             // Explicitly handle 64-bit and 32-bit Program Files directories

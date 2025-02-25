@@ -8,7 +8,17 @@ namespace Participants.Api.Services
 {
     public interface ITokenService
     {
+        /// <summary>
+        /// Generates a JWT token for the specified user.
+        /// </summary>
+        /// <param name="user">The participant for whom the token is generated.</param>
+        /// <returns>A JWT token as a string.</returns>
         string GenerateToken(Participant user);
+
+        /// <summary>
+        /// Invalidates the specified token.
+        /// </summary>
+        /// <param name="token">The token to invalidate.</param>
         void InvalidateToken(string token);
     }
 
@@ -16,6 +26,11 @@ namespace Participants.Api.Services
     {
         private readonly IConfiguration _configuration = configuration;
 
+        /// <summary>
+        /// Generates a JWT token for the specified user.
+        /// </summary>
+        /// <param name="user">The participant for whom the token is generated.</param>
+        /// <returns>A JWT token as a string.</returns>
         public string GenerateToken(Participant user)
         {
             var claims = new[]
@@ -41,6 +56,10 @@ namespace Participants.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Invalidates the specified token.
+        /// </summary>
+        /// <param name="token">The token to invalidate.</param>
         public void InvalidateToken(string token)
         {
             // Token invalidation logic (if using a token store)

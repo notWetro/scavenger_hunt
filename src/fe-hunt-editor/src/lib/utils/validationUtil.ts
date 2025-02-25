@@ -2,6 +2,12 @@ import type { Assignment } from '$lib/models/Assignment';
 import { HintType } from '$lib/models/Hint';
 import { SolutionType } from '$lib/models/Solution';
 
+/**
+ * Checks if the given assignments contain valid data.
+ * 
+ * @param items - An array of assignments to be validated.
+ * @returns A boolean indicating whether all assignments contain valid data.
+ */
 export function checkValidData(items: Assignment[]): boolean {
 	return (
 		items.length > 0 &&

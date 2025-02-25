@@ -1,9 +1,13 @@
 <script lang="ts">
+	// Import necessary types and components
 	import type { Organisator } from '$lib/models/organisator';
-
 	import { Button, Card } from 'flowbite-svelte';
 	import { CircleUserIcon, MailIcon } from 'lucide-svelte';
 
+	/**
+	 * The organisator prop holds the organisator data to be displayed.
+	 * @type {Organisator}
+	 */
 	export let organisator: Organisator;
 
 	const subject = 'Scavenger Hunt Access';

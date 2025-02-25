@@ -8,8 +8,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 	const res = await fetch(`${PUBLIC_HUNT_API_URL}/Hunts/${huntId}`);
 
 	if (!res.ok) {
-		// Instead of throwing a generic error, throw a custom error message
-		// when the hunt is not found.
 		const errMsg =
 			res.status === 404
 				? 'There seems to be no hunt with this Id, please try a different one!'

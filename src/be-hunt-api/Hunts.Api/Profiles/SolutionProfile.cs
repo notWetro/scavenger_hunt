@@ -6,6 +6,10 @@ namespace Hunts.Api.Profiles
 {
     public sealed class SolutionProfile : Profile
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SolutionProfile"/> class.
+        /// Configures the mappings between Solution and its DTOs.
+        /// </summary>
         public SolutionProfile()
         {
             CreateMap<Solution, SolutionInnerGetDto>();

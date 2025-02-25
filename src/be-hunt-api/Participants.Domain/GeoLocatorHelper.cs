@@ -4,6 +4,14 @@
     {
         private const double RADIUS_OF_EARTH_METERS = 6_371_000;
 
+        /// <summary>
+        /// Calculates the distance between two geographical points using the Haversine formula.
+        /// </summary>
+        /// <param name="lat1">Latitude of the first point.</param>
+        /// <param name="lon1">Longitude of the first point.</param>
+        /// <param name="lat2">Latitude of the second point.</param>
+        /// <param name="lon2">Longitude of the second point.</param>
+        /// <returns>Distance in meters.</returns>
         public static double Haversine(double lat1, double lon1, double lat2, double lon2)
         {
             // Convert degrees to radians
@@ -22,6 +30,11 @@
             return RADIUS_OF_EARTH_METERS * c;
         }
 
+        /// <summary>
+        /// Converts an angle in degrees to radians.
+        /// </summary>
+        /// <param name="angleInDegrees">Angle in degrees.</param>
+        /// <returns>Angle in radians.</returns>
         private static double ToRadians(double angleInDegrees)
         {
             return angleInDegrees * Math.PI / 180.0;

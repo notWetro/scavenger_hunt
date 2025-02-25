@@ -1,5 +1,8 @@
 ﻿namespace Hunts.Domain.Entities
 {
+    /// <summary>
+    /// Represents a solution for an assignment.
+    /// </summary>
     public sealed class Solution
     {
         public int Id { get; set; }

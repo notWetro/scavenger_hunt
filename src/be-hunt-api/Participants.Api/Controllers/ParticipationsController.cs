@@ -18,11 +18,11 @@ namespace Participants.Api.Controllers
         private readonly IMapper _mapper = mapper;
 
         /// <summary>
-        /// POST Hunt/{huntId}: Creates a participation.
+        /// Creates a participation in a hunt.
         /// </summary>
-        /// <param name="huntId">Identifier of a hunt</param>
-        /// <param name="credentials">Credentials of the user (e.g. username and password)</param>
-        /// <returns>Participation information when success.</returns>
+        /// <param name="huntId">Identifier of the hunt.</param>
+        /// <param name="credentials">User credentials (e.g., username and password).</param>
+        /// <returns>Participation information on success.</returns>
         [HttpPost("Hunt/{huntId}")]
         public async Task<ActionResult<ParticipationGetDto>> PostParticipation(int huntId, [FromBody] UserCredentials credentials)
         {
@@ -55,6 +55,10 @@ namespace Participants.Api.Controllers
             return Ok(_mapper.Map<ParticipationGetDto>(participation));
         }
 
+        /// <summary>
+        /// Retrieves participation statistics.
+        /// </summary>
+        /// <returns>Participation statistics.</returns>
         [HttpGet("Stats")]
         public async Task<ActionResult<ParticipationStatsDto>> GetParticipationStats()
         {

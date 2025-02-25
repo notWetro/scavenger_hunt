@@ -1,16 +1,24 @@
 <script lang="ts">
 	import { Card } from 'flowbite-svelte';
 	import { ScanQrCodeIcon } from 'lucide-svelte';
-
 	import { createEventDispatcher } from 'svelte';
 	import QrCodeReader from '../qr-code-reader/QRCodeReader.svelte';
 
+	/**
+	 * Create an event dispatcher for custom events.
+	 */
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * Export a prop 'data' to hold the scanned QR code data.
+	 */
 	export let data: string;
 	let displayText: string = 'FOUND YOU!';
 	let isSend = false;
 
+	/**
+	 * Submit the scanned QR code data.
+	 */
 	async function submitSolution() {
 		if (!isSend) {
 			dispatch('SubmitData');
@@ -19,6 +27,7 @@
 	}
 </script>
 
+<!-- Display a card with a QR code reader and a submit button -->
 <Card class="p-4 mb-4 w-full max-w-none mx-auto">
 	<div class="flex flex-row items-center text-center">
 		<ScanQrCodeIcon class="w-8 h-8 mb-2 mr-2 text-primary-800" />

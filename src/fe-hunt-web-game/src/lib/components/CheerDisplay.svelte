@@ -4,6 +4,9 @@
 	import { fade } from 'svelte/transition';
 </script>
 
+<!-- 
+	Displays a congratulatory message with confetti animation when the user completes the scavenger hunt.
+-->
 <div class="flex flex-col justify-center items-center text-center w-full">
 	<h3 class="text-primary-600 font-semibold underline-offset-1">Congratulations!</h3>
 

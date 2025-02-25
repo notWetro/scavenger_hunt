@@ -25,6 +25,9 @@ namespace fe_hunt_gui
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Gets or sets the duration of the loading animation.
+        /// </summary>
         public Duration Duration
         {
             get { return (Duration)GetValue(DurationProperty); }
@@ -34,6 +37,9 @@ namespace fe_hunt_gui
         public static readonly DependencyProperty DurationProperty =
             DependencyProperty.Register("Duration", typeof(Duration), typeof(LoadingCircle), new PropertyMetadata(default(Duration)));
 
+        /// <summary>
+        /// Gets or sets the color of the spinner.
+        /// </summary>
         public Brush SpinnerColor
         {
             get { return (Brush)GetValue(SpinnerColorProperty); }
@@ -43,5 +49,4 @@ namespace fe_hunt_gui
         public static readonly DependencyProperty SpinnerColorProperty =
             DependencyProperty.Register("SpinnerColor", typeof(Brush), typeof(LoadingCircle), new PropertyMetadata(Brushes.DodgerBlue));
     }
-
 }

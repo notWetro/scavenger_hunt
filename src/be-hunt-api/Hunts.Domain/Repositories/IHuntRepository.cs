@@ -2,6 +2,9 @@
 
 namespace Hunts.Domain.Repositories
 {
+    /// <summary>
+    /// Interface for accessing hunt data.
+    /// </summary>
     public interface IHuntRepository
     {
         /// <summary>

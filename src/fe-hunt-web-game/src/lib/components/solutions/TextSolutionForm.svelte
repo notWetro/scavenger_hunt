@@ -1,12 +1,20 @@
 <script lang="ts">
+	// Import necessary components and functions
 	import { Button, Card, Input } from 'flowbite-svelte';
 	import { TextCursorInputIcon } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
+	/**
+	 * The data prop holds the solution text to be submitted.
+	 * @type {string}
+	 */
 	export let data: string;
 
+	/**
+	 * Dispatches the 'SubmitData' event when the solution is submitted.
+	 */
 	async function submitSolution() {
 		dispatch('SubmitData');
 	}

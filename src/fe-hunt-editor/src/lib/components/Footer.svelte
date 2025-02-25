@@ -2,7 +2,7 @@
 	<hr class="my-6 border-gray-300 sm:mx-auto lg:mx-40" />
 	<span class="block text-sm text-center">created by Lukas & Rosario. @HS-AA</span>
 	<span class="block text-sm text-center">expanded by Felix & Felix. @HS-AA</span>
-	<span class="block text-sm text-center"
-		>© 2024 <a class="hover:underline" href="/">Scavenger-Hunt Editor</a></span
-	>
+	<span class="block text-sm text-center">
+		© 2024 <a class="hover:underline" href="/">Scavenger-Hunt Editor</a>
+	</span>
 </div>
