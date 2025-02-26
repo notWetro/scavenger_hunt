@@ -9,6 +9,7 @@ using System.Windows;
 using System.Net.Sockets;
 using System.Net;
 using System.Windows.Controls;
+using System.Linq;
 
 
 
@@ -323,21 +324,22 @@ namespace fe_hunt_gui
             try
             {
                 var host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (var ip in host.AddressList)
+                IPAddress selectedIP = host.AddressList
+                    .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && ip.ToString().StartsWith("192"));
+                if (selectedIP != null)
                 {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        return ip.ToString();
-                    }
+                    return selectedIP.ToString();
                 }
-                return null;
+                selectedIP = host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                return selectedIP?.ToString();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logfile.WriteLog("No network adapters with an IPv4 address in the system!");
+                Logfile.WriteLog($"Error retrieving local IP address: {ex.Message}");
                 return null;
             }
         }
+
 
         /// <summary>
         /// Checks if a process with the specified name and command is running.
