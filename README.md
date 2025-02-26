@@ -41,7 +41,7 @@ For testing purposes (and for generating QR codes within the project), a utility
 
 ## Function and Usage of the Game
 
-To create a scavenger hunt, we recommend using the available [Hunt-GUI](src/fe-hunt-gui/README.md). However, if you prefer to create a hunt without a GUI, you can find instructions in the [Hunt-Editor](src/fe-hunt-editor/README.md) folder.
+To create a scavenger hunt, we recommend using the installer [installation Guide](demos/Installationsanleitung.pdf). However, if you prefer to create a hunt without a GUI, you can find instructions in the [Hunt-Editor](src/fe-hunt-editor/README.md) folder.
 
 To start a game, the [Hunt-API](src/be-hunt-api/README.md) must be running to manage the data – this is automatically handled when using the GUI.
 
