@@ -4,7 +4,7 @@
 
 This repository contains the system for a web-based scavenger hunt developed as part of a project and its extensions.
 
-**Authors**: Lukas Steckbauer, Rosario Aranzulla, Felix Kurz, and Felix Biedenbacher
+**Authors**: Lukas Steckbauer, Rosario Aranzulla, Felix Kurz, Felix Biedenbacher, Niklas Fichtner and Hikmet Gözaydin
 
 **Supervisor**: Dr. Marc Hermann
 
