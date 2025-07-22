@@ -40,3 +40,20 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+  background: #f4f4f4;
+  color: #222;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background: #121212;
+  color: #e0e0e0;
+}
+
+body.dark-mode select {
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+}

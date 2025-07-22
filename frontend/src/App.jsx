@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Hunts from "./pages/Hunts";
 import Navbar from "./components/Navbar";
+import "./App.css";
 
 export default function App() {
   return (

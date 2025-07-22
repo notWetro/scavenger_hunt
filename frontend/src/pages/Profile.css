@@ -1,0 +1,74 @@
+.profile-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 80px 20px 100px;
+  text-align: center;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.profile-container h1 {
+  margin-bottom: 20px;
+}
+
+.language-container {
+  margin: 20px 0;
+}
+
+.language-label {
+  margin-right: 10px;
+}
+
+.language-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(96, 96, 96, 0.588);
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .language-select {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.language-select:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.darkmode-container {
+  margin-top: 30px;
+}
+
+.darkmode-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(41, 41, 41, 0.422);
+  color: inherit;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: background 0.3s ease, color 0.3s ease;
+  font-size: 14px;
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.darkmode-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .darkmode-button {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}

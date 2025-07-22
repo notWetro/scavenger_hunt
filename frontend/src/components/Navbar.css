@@ -1,6 +1,6 @@
 .glass-radio-group {
   --bg: rgba(255, 255, 255, 0.06);
-  --text: #e5e5e5;
+  --text: #414141;
 
   display: flex;
   position: relative;
@@ -13,6 +13,10 @@
     0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   width: fit-content;
+}
+
+body.dark-mode .glass-radio-group {
+    --text: #e0e0e0;
 }
 
 .glass-radio-group input {
@@ -41,6 +45,10 @@
 }
 
 .glass-radio-group input:checked + label {
+  color: #414141;
+}
+
+body.dark-mode .glass-radio-group input:checked + label {
   color: #fff;
 }
 
@@ -60,7 +68,14 @@
 /* Hunts */
 #tab-hunts:checked ~ .glass-glider {
   transform: translateX(0%);
-  background: linear-gradient(135deg, #d0e7ff55, #a0d8ff);
+  background: linear-gradient(135deg, #d0e7ff55, #73c5ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
+}
+
+body.dark-mode .glass-glider {
+  background: linear-gradient(135deg, #ff55, #a0d8ff);
   box-shadow:
     0 0 18px rgba(160, 216, 255, 0.5),
     0 0 10px rgba(200, 240, 255, 0.4) inset;
@@ -78,6 +93,13 @@
 /* Profile */
 #tab-profile:checked ~ .glass-glider {
   transform: translateX(200%);
+  background: linear-gradient(135deg, #7b7b7b55, #949494);
+  box-shadow:
+    0 0 18px rgba(97, 97, 97, 0.5),
+    0 0 10px rgba(35, 35, 35, 0.4) inset;
+}
+
+body.dark-mode .glass-glider {
   background: linear-gradient(135deg, #c0c0c055, #e0e0e0);
   box-shadow:
     0 0 18px rgba(192, 192, 192, 0.5),

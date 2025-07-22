@@ -10,9 +10,10 @@ i18n
           home: "Home",
           welcome: "Welcome to my homepage!",
           profile: "Profile",
-          chooseLanguage: "Choose your language:",
-          save: "Save",
           hunts: "Hunts",
+          language: "Language",
+          light_mode: "Light Mode",
+          dark_mode: "Dark Mode"
         },
       },
       de: {
@@ -20,9 +21,10 @@ i18n
           home: "Startseite",
           welcome: "Willkommen auf meiner Homepage!",
           profile: "Profil",
-          chooseLanguage: "Wähle deine Sprache:",
-          save: "Speichern",
           hunts: "Jagden",
+          language: "Sprache",
+          light_mode: "Heller Modus",
+          dark_mode: "Dunkler Modus"
         },
       },
     },
