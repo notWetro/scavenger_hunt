@@ -41,7 +41,7 @@ export default function Profile() {
       {/* 🌙 Darkmode Umschalter */}
       <div className="darkmode-container">
         <button
-          className="darkmode-button"
+          className="main-button"
           onClick={() => setDarkMode(!darkMode)}
         >
           {darkMode ? "☀️ " + t("light_mode") : "🌙 " + t("dark_mode")}
