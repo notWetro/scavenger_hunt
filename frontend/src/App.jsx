@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Hunts from "./pages/Hunts";
 import Navbar from "./components/Navbar";
+import Join from "./pages/Join";
+import Create from "./pages/Create";
 import "./App.css";
 
 export default function App() {
@@ -13,6 +15,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/hunts" element={<Hunts />} />
+          <Route path="/join" element={<Join />} />
+          <Route path="/create" element={<Create />} />
         </Routes>
       </div>
       <Navbar />
