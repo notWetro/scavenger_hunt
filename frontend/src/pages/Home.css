@@ -61,3 +61,11 @@ body.dark-mode .main-button {
 body.dark-mode .main-button-green {
   background-color: #009f1b;
 }
+
+.main-button-red {
+  background-color: #ff0000;
+}
+
+body.dark-mode .main-button-red {
+  background-color: #b30000;
+}

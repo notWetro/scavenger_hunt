@@ -1,9 +1,11 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
 import "./Profile.css";
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
@@ -18,27 +20,62 @@ export default function Profile() {
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
 
+  // MOCK: Setze auf true/false um Login zu simulieren
+  const [user, setUser] = useState({
+    email: "test@example.com",
+  });
+
+  const handleLogout = () => {
+    setUser(false);
+    // Optional: navigate("/"); // oder wohin du nach dem Logout willst
+  };
+
   return (
     <div className="profile-container">
       <h1>{t("profile")}</h1>
+      <div className="button-column">
+        {user ? (
+          <>
+            <div>{user.email}</div>
+            <button
+              className="main-button"
+              onClick={() => navigate("/change-password")}
+            >
+              {t("change_password")}
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="main-button main-button-green"
+              onClick={() => setUser({ email: "test@example.com" })} // Simulate login change later to navigate("/login")
+            >
+              {t("login")}
+            </button>
+            <button
+              className="main-button"
+              onClick={() => setUser({ email: "test@example.com" })} // Simulate register change later to navigate("/register")
+            >
+              {t("register")}
+            </button>
+          </>
+        )}
+      </div>
 
-      {/* Sprachauswahl */}
+      {/* choose language */}
       <div className="language-container">
-        <label htmlFor="language" className="language-label">
-          {t("language")}:
-        </label>
+        <label className="language-label">{t("language")}:</label>
         <select
-          id="language"
           className="language-select"
-          onChange={(e) => i18n.changeLanguage(e.target.value)}
           value={i18n.language}
+          onChange={(e) => i18n.changeLanguage(e.target.value)}
         >
           <option value="de">{t("german")}</option>
           <option value="en">{t("english")}</option>
         </select>
       </div>
 
-      {/* Darkmode Umschalter */}
+      {/* darkmode button */}
       <div className="darkmode-container">
         <button
           className="main-button"
@@ -47,6 +84,18 @@ export default function Profile() {
           {darkMode ? "☀️ " + t("light_mode") : "🌙 " + t("dark_mode")}
         </button>
       </div>
+
+      {/* logout button */}
+      {user && (
+        <div className="logout-container">
+          <button
+            className="main-button main-button-red"
+            onClick={handleLogout}
+          >
+            {t("logout")}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
