@@ -15,7 +15,7 @@ export default function Join() {
 
   return (
     <div className="join-container">
-      <h1 className="join-title">{t("join_hunt")}</h1>
+      <h1 className="heading">{t("join_hunt")}</h1>
       <form className="join-form" onSubmit={handleJoin}>
         <input
           type="text"

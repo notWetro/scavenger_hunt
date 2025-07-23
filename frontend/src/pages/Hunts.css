@@ -1,15 +1,13 @@
 .hunts-container {
-  padding: 100px 16px 80px;
-  max-width: 600px;
+  margin-top: 40px;
+  max-width: 400px;
   margin: 0 auto;
-  text-align: center;
 }
 
 .hunt-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 20px;
 }
 
 .hunt-card {

@@ -27,7 +27,7 @@ export default function Hunts() {
 
   return (
     <div className="hunts-container">
-      <h2>{t("hunts")}</h2>
+      <h1 className="heading">{t("hunts")}</h1>
       <div className="hunt-list">
         {hunts.map((hunt) => (
           <div key={hunt.id} className="hunt-card">

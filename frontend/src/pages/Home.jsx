@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <h1>{t("scavenger_hunt")}</h1>
+      <h1 className="heading">{t("scavenger_hunt")}</h1>
       <div className="button-row">
         <button className="main-button main-button-green" onClick={() => navigate("/join")}>{t("join")}</button>
         <button className="main-button" onClick={() => navigate("/create")}>{t("create")}</button>

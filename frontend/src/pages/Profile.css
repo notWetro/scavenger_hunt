@@ -1,8 +1,9 @@
 .profile-container {
+  margin-top: 40px;
   max-width: 400px;
   margin: 0 auto;
-  padding: 80px 20px 100px;
   text-align: center;
+  flex-direction: column;
   color: inherit;
   transition: color 0.3s ease;
 }
@@ -28,6 +29,7 @@
 }
 
 .language-select {
+  color: inherit;
   appearance: none;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(96, 96, 96, 0.588);

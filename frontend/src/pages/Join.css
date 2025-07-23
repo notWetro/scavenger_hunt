@@ -1,11 +1,7 @@
 .join-container {
-  padding: 2rem;
+  margin-top: 40px;
   max-width: 400px;
   margin: 0 auto;
-}
-
-.join-title {
-  margin-bottom: 1.5rem;
 }
 
 .join-form {
@@ -23,13 +19,16 @@ body.dark-mode .join-form {
 }
 
 .join-input {
+  color: black;
   padding: 0.8rem 1rem;
   border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.04);
   border: 1px solid #ccc;
   font-size: 1rem;
 }
 
 body.dark-mode .join-input {
+  color: white;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }

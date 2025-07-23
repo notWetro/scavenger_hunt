@@ -1,9 +1,9 @@
 /* Mobile Standard */
 .home-container {
-  display: flex;
   flex-direction: column;
-  padding: 10px;
-  margin-top: 50px;
+  margin-top: 40px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 /* Desktop-Anpassungen */
@@ -14,9 +14,19 @@
   }
 }
 
+.heading {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+body.dark-mode .heading {
+  color: #e0e0e0;
+}
+
 .button-row {
   display: flex;
-  margin-top: 150px;
+  margin-top: 120px;
   justify-content: center;
   gap: 30px;
 }
@@ -43,10 +53,6 @@
     inset 1px 1px 4px rgba(255, 255, 255, 0.2),
     inset -1px -1px 6px rgba(0, 0, 0, 0.3),
     0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.main-button:hover {
-  background: rgba(255, 255, 255, 0.2);
 }
 
 body.dark-mode .main-button {

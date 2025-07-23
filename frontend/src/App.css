@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;600&display=swap');
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -56,4 +58,34 @@ body.dark-mode select {
   background: #222;
   color: white;
   border: 1px solid #555;
+}
+
+/* Text font and styles */
+body {
+  font-family: 'Sour Gummy', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+}
+body.dark-mode {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #121212;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+.sour-gummy-textfont {
+  font-family: "Sour Gummy", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+button, .hunt-card {
+  font-family: 'Sour Gummy', sans-serif;
 }

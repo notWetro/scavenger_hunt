@@ -32,7 +32,7 @@ export default function Profile() {
 
   return (
     <div className="profile-container">
-      <h1>{t("profile")}</h1>
+      <h1 className="heading">{t("profile")}</h1>
       <div className="button-column">
         {user ? (
           <>
