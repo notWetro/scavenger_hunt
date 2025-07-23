@@ -1,4 +1,5 @@
 import "./Hunts.css";
+import { useTranslation } from "react-i18next";
 
 const hunts = [
   {
@@ -22,9 +23,11 @@ const hunts = [
 ];
 
 export default function Hunts() {
+  const { t } = useTranslation();
+
   return (
     <div className="hunts-container">
-      <h2>Deine Jagden</h2>
+      <h2>{t("hunts")}</h2>
       <div className="hunt-list">
         {hunts.map((hunt) => (
           <div key={hunt.id} className="hunt-card">
