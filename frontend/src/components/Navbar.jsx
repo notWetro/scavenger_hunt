@@ -26,15 +26,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      style={{
-        position: "fixed",
-        bottom: "20px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 1000,
-      }}
-    >
+    <nav className="navbar-fixed">
       <div className="glass-radio-group">
         {/* Hunts */}
         <input
@@ -44,15 +36,9 @@ export default function Navbar() {
           checked={selected === "hunts"}
           onChange={() => handleChange("hunts")}
         />
-        <label htmlFor="tab-hunts">
-          <FaCrosshairs size={18} style={{ marginRight: "6px" }} />
-          {t("hunts")}
-        </label>
-        {/*
         <label htmlFor="tab-hunts" data-label={t("hunts")}>
           <FaCrosshairs size={22} />
         </label>
-        */}
 
         {/* Home */}
         <input
@@ -62,9 +48,8 @@ export default function Navbar() {
           checked={selected === "home"}
           onChange={() => handleChange("home")}
         />
-        <label htmlFor="tab-home">
-          <FaHome size={18} style={{ marginRight: "6px" }} />
-          {t("home")}
+        <label htmlFor="tab-home" data-label={t("home")}>
+          <FaHome size={22} />
         </label>
 
         {/* Profile */}
@@ -75,9 +60,8 @@ export default function Navbar() {
           checked={selected === "profile"}
           onChange={() => handleChange("profile")}
         />
-        <label htmlFor="tab-profile">
-          <FaUser size={18} style={{ marginRight: "6px" }} />
-          {t("profile")}
+        <label htmlFor="tab-profile" data-label={t("profile")}>
+          <FaUser size={22} />
         </label>
 
         <span className="glass-glider" />
