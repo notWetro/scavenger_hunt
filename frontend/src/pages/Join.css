@@ -32,3 +32,10 @@ body.dark-mode .join-input {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.error-message-hunt-ID {
+  color: red;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: center;
+}

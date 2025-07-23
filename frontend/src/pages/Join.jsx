@@ -5,12 +5,21 @@ import "./Join.css";
 
 export default function Join() {
   const [huntId, setHuntId] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  // Mock-Daten: Liste existierender Hunt-IDs
+  const mockHuntIds = ["12345", "hunt2025"];
+
   const handleJoin = (e) => {
     e.preventDefault();
-    alert(`${t("join_a_hunt")} ${huntId}`);
+    if (mockHuntIds.includes(huntId.trim())) {
+      setError("");
+      navigate(`/StartHunt/${huntId.trim()}`);
+    } else {
+      setError(t("hunt_id_not_exist"));
+    }
   };
 
   return (
@@ -25,6 +34,11 @@ export default function Join() {
           required
           className="join-input"
         />
+        {error && (
+          <div className="error-message-hunt-ID">
+            {error}
+          </div>
+        )}
         <button type="submit" className="main-button main-button-green">
           {t("join")}
         </button>
