@@ -25,12 +25,12 @@ export default function Join() {
           required
           className="join-input"
         />
-        <button type="submit" className="main-button">
+        <button type="submit" className="main-button main-button-green">
           {t("join")}
         </button>
         <button
           type="button"
-          className="main-button join-back"
+          className="main-button"
           onClick={() => navigate(-1)}
         >
           {t("back")}
