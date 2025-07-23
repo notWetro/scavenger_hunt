@@ -19,18 +19,26 @@ body.dark-mode .join-form {
 }
 
 .join-input {
-  color: black;
+  color: inherit;
   padding: 0.8rem 1rem;
   border-radius: 0.5rem;
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid #ccc;
   font-size: 1rem;
+  outline: none;
+}
+
+.join-input:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .join-input:focus {
+  border: 1.5px solid #00d423;
 }
 
 body.dark-mode .join-input {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #181818;
+  border: 1px solid #444;
 }
 
 .error-message-hunt-ID {

@@ -75,3 +75,70 @@ body.dark-mode .main-button-green {
 body.dark-mode .main-button-red {
   background-color: #b30000;
 }
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 30, 30, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: #fff;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  min-width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body.dark-mode .popup {
+  background: #232323;
+}
+
+.popup h2 {
+  margin-bottom: 18px;
+  font-size: 1.3rem;
+}
+
+.popup input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  background: #e9e9e9;
+  color: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.popup input[type="text"]:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .popup input[type="text"]:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .popup input[type="text"] {
+  background: #181818;
+  border: 1px solid #444;
+}
+
+.popup-buttons {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
