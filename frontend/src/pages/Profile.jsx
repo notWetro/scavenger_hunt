@@ -22,7 +22,7 @@ export default function Profile() {
     <div className="profile-container">
       <h1>{t("profile")}</h1>
 
-      {/* 🌐 Sprachauswahl */}
+      {/* Sprachauswahl */}
       <div className="language-container">
         <label htmlFor="language" className="language-label">
           {t("language")}:
@@ -33,12 +33,12 @@ export default function Profile() {
           onChange={(e) => i18n.changeLanguage(e.target.value)}
           value={i18n.language}
         >
-          <option value="de">Deutsch</option>
-          <option value="en">English</option>
+          <option value="de">{t("german")}</option>
+          <option value="en">{t("english")}</option>
         </select>
       </div>
 
-      {/* 🌙 Darkmode Umschalter */}
+      {/* Darkmode Umschalter */}
       <div className="darkmode-container">
         <button
           className="main-button"

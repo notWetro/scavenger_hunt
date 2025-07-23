@@ -24,7 +24,7 @@ const hunts = [
 export default function Hunts() {
   return (
     <div className="hunts-container">
-      <h2>🦌 Deine Jagden</h2>
+      <h2>Deine Jagden</h2>
       <div className="hunt-list">
         {hunts.map((hunt) => (
           <div key={hunt.id} className="hunt-card">

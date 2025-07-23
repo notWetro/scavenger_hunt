@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FaHome, FaUser, FaCrosshairs } from "react-icons/fa"; // Icons
+import { FaHome, FaUser, FaCrosshairs } from "react-icons/fa";
 import "./Navbar.css";
 
 export default function Navbar() {
