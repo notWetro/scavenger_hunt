@@ -1,27 +1,6 @@
-version: '3.8'
+# docker-compose.yml  –  works with Compose V2/V3 (no version key needed)
 
 services:
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-    environment:
-      - DATABASE_URL=postgresql://postgres:1967@db:5432/scavengerhunt
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules 
-
   db:
     image: postgres:13
     environment:
@@ -32,6 +11,33 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    # ← health‑check that reports “healthy” only when pg_isready succeeds
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d scavengerhunt"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgresql://postgres:1967@db:5432/scavengerhunt
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    # Wait until db service reports healthy
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"         # Vite dev server default
+    volumes:
+      - ./frontend:/app     # hot‑reload source
+      - /app/node_modules   # keep container’s node_modules (anonymous volume)
 
 volumes:
   db_data:
