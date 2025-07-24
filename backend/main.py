@@ -1,18 +1,46 @@
 from fastapi import FastAPI, Depends
-from sqlalchemy import (
-    create_engine, Column, Integer, String, Boolean, Float, Text,
-    ForeignKey, DateTime
+
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import declarative_base, Session
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    Float,
+    Text,
+    ForeignKey,
+    DateTime,
+    select
+)
+
+
 from datetime import datetime
+from fastapi_users.manager import BaseUserManager
+from fastapi_users import FastAPIUsers
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
+from fastapi_users_db_sqlalchemy import (
+     SQLAlchemyUserDatabase,
+     SQLAlchemyBaseUserTable,
+ )
+from schemas import UserRead, UserCreate, UserUpdate
+
+
 
 # === PostgreSQL DATABASE CONFIG ===
-DATABASE_URL = "postgresql://postgres:1967@db:5432/scavengerhunt"
+DATABASE_URL = "postgresql+asyncpg://postgres:1967@db:5432/scavengerhunt"
 
 
 # === SQLAlchemy Setup ===
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+async_engine = create_async_engine(DATABASE_URL, echo=False, future=True)
+AsyncSessionLocal = async_sessionmaker(
+    async_engine, expire_on_commit=False, autoflush=False
+)
 Base = declarative_base()
 
 # === FastAPI App ===
@@ -30,15 +58,90 @@ def get_db():
 
 # === MODELS ===
 
-class User(Base):
-    __tablename__ = "user"
+class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=False)
-    email = Column(String, unique=True, index=True)
-    language = Column(String, default="en")
-    dark_mode = Column(Boolean, default=False)
+    # --- primary key (required when you use SQLAlchemyBaseUserTable[int]) ---
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+
+    # --- your extra fields --------------------------------------------------
+    username   = Column(String, nullable=False)
+    language   = Column(String, default="en")
+    dark_mode  = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+
+
+async def get_async_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+async def get_user_db(session: AsyncSession = Depends(get_async_db)):
+    yield SQLAlchemyUserDatabase(session, User)
+
+
+    
+SECRET = "SUPER_SECRET"  # !!!!!!!!!!!!!!!!!!!!!!!!move to env in prod
+
+class UserManager(BaseUserManager[User, int]):
+    user_db_model = User
+    reset_password_token_secret = SECRET
+    verification_token_secret = SECRET
+
+    def parse_id(self, user_id: str | int) -> int:  # or UUID, etc.
+        
+        return int(user_id)
+
+async def get_user_manager(user_db=Depends(get_user_db)):
+    yield UserManager(user_db)
+
+bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+def get_jwt_strategy() -> JWTStrategy:
+    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+
+auth_backend = AuthenticationBackend(
+    name="jwt",
+    transport=bearer_transport,
+    get_strategy=get_jwt_strategy,
+)
+
+fastapi_users = FastAPIUsers(
+    get_user_manager,   # your new manager factory
+    [auth_backend],     # authentication backend(s)
+)
+
+
+# Auth (login + refresh)
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend), 
+    prefix="/auth/jwt", tags=["auth"]
+)
+
+# Register + verify
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),      
+    prefix="/auth", tags=["auth"]
+)
+app.include_router(
+    fastapi_users.get_verify_router(UserRead),        
+    prefix="/auth", tags=["auth"]
+)
+
+
+# Password reset
+app.include_router(
+    fastapi_users.get_reset_password_router(),  
+    prefix="/auth", tags=["auth"]
+)
+
+
+# User management (read, update, delete)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),         
+    prefix="/users", tags=["users"]
+)
+
 
 
 class Hunt(Base):
@@ -49,7 +152,7 @@ class Hunt(Base):
     description = Column(Text)
     place_to_play = Column(Text)
     start_point = Column(Text)
-    created_by = Column(Integer, ForeignKey("user.id"), nullable=False)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_active = Column(Boolean, default=True)
     private = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -83,7 +186,7 @@ class UserHuntProgress(Base):
     __tablename__ = "user_hunt_progress"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     hunt_id = Column(Integer, ForeignKey("hunt.id"), nullable=False)
     current_clue_id = Column(Integer, ForeignKey("clue.id"))
     finished_at = Column(DateTime)
@@ -93,7 +196,7 @@ class UserClueProgress(Base):
     __tablename__ = "user_clue_progress"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     clue_id = Column(Integer, ForeignKey("clue.id"), nullable=False)
     is_solved = Column(Boolean, default=False)
     solved_at = Column(DateTime)
@@ -101,13 +204,15 @@ class UserClueProgress(Base):
 
 # === Table Initialization ===
 @app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
+async def on_startup() -> None:
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 
 
 
-@app.get("/users")
+
+""" @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
@@ -130,20 +235,15 @@ def get_user_hunt_progress(db: Session = Depends(get_db)):
 @app.get("/user-clue-progress")
 def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
+ """
+# Dependency to get async DB session
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
 
-# Api endpoint to add a new user
-@app.post("/users")     
-def create_user(username: str, db: Session = Depends(get_db)):
-    new_user = User(username=username, email="")
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"id": new_user.id, "username": new_user.username, "email": new_user.email}
-
-# Create empty hunt 
+# Create empty hunt
 @app.post("/create-hunt")
-def create_hunt(user_id: int, db: Session = Depends(get_db)):
-    
+async def create_hunt(user_id: int, db: AsyncSession = Depends(get_db)):
     new_hunt = Hunt(
         name="Untitled Hunt",
         description="",
@@ -151,12 +251,12 @@ def create_hunt(user_id: int, db: Session = Depends(get_db)):
         start_point="",
         created_by=user_id,
         is_active=False,
-        private = False,
+        private=False,
         created_at=datetime.utcnow()
     )
     db.add(new_hunt)
-    db.commit()
-    db.refresh(new_hunt)
+    await db.commit()
+    await db.refresh(new_hunt)
 
     return {
         "id": new_hunt.id,
@@ -171,8 +271,9 @@ def create_hunt(user_id: int, db: Session = Depends(get_db)):
 
 # Update hunt
 @app.put("/update-hunt/{hunt_id}")
-def update_hunt(hunt_id: int, name: str = None, description: str = None, place_to_play: str = None, start_point: str = None, is_active: bool = None, private: bool = None, db: Session = Depends(get_db)):
-    hunt = db.query(Hunt).filter(Hunt.id == hunt_id).first()
+async def update_hunt(hunt_id: int, name: str = None, description: str = None, place_to_play: str = None, start_point: str = None, is_active: bool = None, private: bool = None, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
 
@@ -189,10 +290,8 @@ def update_hunt(hunt_id: int, name: str = None, description: str = None, place_t
     if private is not None:
         hunt.private = private
 
-
-
-    db.commit()
-    db.refresh(hunt)
+    await db.commit()
+    await db.refresh(hunt)
 
     return {
         "id": hunt.id,
@@ -210,8 +309,9 @@ def update_hunt(hunt_id: int, name: str = None, description: str = None, place_t
 
 # Get hunt
 @app.get("/hunts/{hunt_id}")
-def get_specific_hunt(hunt_id: int, db: Session = Depends(get_db)):
-    hunt = db.query(Hunt).filter(Hunt.id == hunt_id).first()
+async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
 
@@ -225,13 +325,13 @@ def get_specific_hunt(hunt_id: int, db: Session = Depends(get_db)):
         "created_by": hunt.created_by,
         "created_at": hunt.created_at,
         "private": hunt.private
-
     }
 
-# Get clue
+# Get specific clue
 @app.get("/hunts/{hunt_id}/clues/{clue_id}")
-def get_specific_clue(hunt_id: int, clue_id: int, db: Session = Depends(get_db)):
-    clue = db.query(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id).first()
+async def get_specific_clue(hunt_id: int, clue_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id))
+    clue = result.scalars().first()
     if not clue:
         return {"error": "Clue not found for this hunt"}
 
@@ -257,8 +357,9 @@ def get_specific_clue(hunt_id: int, clue_id: int, db: Session = Depends(get_db))
 
 # Update clue
 @app.put("/hunts/{hunt_id}/clues/{clue_id}")
-def update_clue(hunt_id: int, clue_id: int, title: str = None, description: str = None, hint: str = None, correct_answer: str = None, clue_order: int = None, image_url: str = None, audio_url: str = None, video_url: str = None, question_type: str = None, answer_type: str = None, choices: str = None, expected_gps: str = None, gps_radius: float = None, db: Session = Depends(get_db)):
-    clue = db.query(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id).first()
+async def update_clue(hunt_id: int, clue_id: int, title: str = None, description: str = None, hint: str = None, correct_answer: str = None, clue_order: int = None, image_url: str = None, audio_url: str = None, video_url: str = None, question_type: str = None, answer_type: str = None, choices: str = None, expected_gps: str = None, gps_radius: float = None, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id))
+    clue = result.scalars().first()
     if not clue:
         return {"error": "Clue not found for this hunt"}
 
@@ -289,8 +390,8 @@ def update_clue(hunt_id: int, clue_id: int, title: str = None, description: str 
     if gps_radius is not None:
         clue.gps_radius = gps_radius
 
-    db.commit()
-    db.refresh(clue)
+    await db.commit()
+    await db.refresh(clue)
 
     return {
         "hunt_id": hunt_id,
@@ -313,10 +414,9 @@ def update_clue(hunt_id: int, clue_id: int, title: str = None, description: str 
         "message": "Clue updated successfully"
     }
 
-# Create empty clue 
+# Create empty clue
 @app.post("/hunts/{hunt_id}/clues")
-def create_empty_clue(hunt_id: int, db: Session = Depends(get_db)):
-
+async def create_empty_clue(hunt_id: int, db: AsyncSession = Depends(get_db)):
     new_clue = Clue(
         hunt_id=hunt_id,
         title="Untitled Clue",
@@ -335,8 +435,8 @@ def create_empty_clue(hunt_id: int, db: Session = Depends(get_db)):
         created_at=datetime.utcnow()
     )
     db.add(new_clue)
-    db.commit()
-    db.refresh(new_clue)
+    await db.commit()
+    await db.refresh(new_clue)
 
     return {
         "hunt_id": hunt_id,
@@ -361,13 +461,12 @@ def create_empty_clue(hunt_id: int, db: Session = Depends(get_db)):
 
 # Join hunt
 @app.post("/join-hunt/{hunt_id}")
-def join_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
-    # Check if the hunt exists
-    hunt = db.query(Hunt).filter(Hunt.id == hunt_id).first()
+async def join_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
 
-    # Add user to the hunt
     user_hunt_progress = UserHuntProgress(
         user_id=user_id,
         hunt_id=hunt_id,
@@ -375,8 +474,8 @@ def join_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
         finished_at=None
     )
     db.add(user_hunt_progress)
-    db.commit()
-    db.refresh(user_hunt_progress)
+    await db.commit()
+    await db.refresh(user_hunt_progress)
 
     return {
         "message": "User successfully joined the hunt",
@@ -395,54 +494,52 @@ def join_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
 
 # Remove user from hunt
 @app.delete("/remove-user-from-hunt/{hunt_id}")
-def remove_user_from_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
-    # Check if the user is part of the hunt
-    user_hunt_progress = db.query(UserHuntProgress).filter(
+async def remove_user_from_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(UserHuntProgress).filter(
         UserHuntProgress.hunt_id == hunt_id, UserHuntProgress.user_id == user_id
-    ).first()
+    ))
+    user_hunt_progress = result.scalars().first()
 
     if not user_hunt_progress:
         return {"error": "User is not part of this hunt"}
 
-    # Remove the user from the hunt
-    db.delete(user_hunt_progress)
-    db.commit()
+    await db.delete(user_hunt_progress)
+    await db.commit()
 
     return {"message": "User successfully removed from the hunt"}
 
 # Start hunt with skipping solved clues and return all current clue details
 @app.post("/start-hunt/{hunt_id}")
-def start_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
-    # Check if the hunt exists
-    hunt = db.query(Hunt).filter(Hunt.id == hunt_id).first()
+async def start_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
 
-    # Check if the user is part of the hunt
-    user_hunt_progress = db.query(UserHuntProgress).filter(
+    result = await db.execute(select(UserHuntProgress).filter(
         UserHuntProgress.hunt_id == hunt_id, UserHuntProgress.user_id == user_id
-    ).first()
+    ))
+    user_hunt_progress = result.scalars().first()
 
     if not user_hunt_progress:
         return {"error": "User is not part of this hunt"}
 
-    # Get all clues for the hunt, ordered by clue_order
-    clues = db.query(Clue).filter(Clue.hunt_id == hunt_id).order_by(Clue.clue_order).all()
+    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id).order_by(Clue.clue_order))
+    clues = result.scalars().all()
     if not clues:
         return {"error": "No clues available for this hunt"}
 
-    # Find the first unsolved clue
     for clue in clues:
-        solved = db.query(UserClueProgress).filter(
+        result = await db.execute(select(UserClueProgress).filter(
             UserClueProgress.user_id == user_id,
             UserClueProgress.clue_id == clue.id,
             UserClueProgress.is_solved == True
-        ).first()
+        ))
+        solved = result.scalars().first()
         if not solved:
-            # Update the user's progress to the first unsolved clue
             user_hunt_progress.current_clue_id = clue.id
-            db.commit()
-            db.refresh(user_hunt_progress)
+            await db.commit()
+            await db.refresh(user_hunt_progress)
 
             return {
                 "message": "Hunt started successfully",
@@ -467,19 +564,18 @@ def start_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
 
 # Check if the answer is correct
 @app.post("/check-answer/{clue_id}")
-def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: Session = Depends(get_db)):
-    # Get the clue
-    clue = db.query(Clue).filter(Clue.id == clue_id).first()
+async def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Clue).filter(Clue.id == clue_id))
+    clue = result.scalars().first()
     if not clue:
         return {"error": "Clue not found"}
 
-    # Check if the answer is correct
     if clue.correct_answer.lower() == answer.lower():
-        # Mark the clue as solved for the user
-        user_clue_progress = db.query(UserClueProgress).filter(
+        result = await db.execute(select(UserClueProgress).filter(
             UserClueProgress.user_id == user_id,
             UserClueProgress.clue_id == clue_id
-        ).first()
+        ))
+        user_clue_progress = result.scalars().first()
 
         if not user_clue_progress:
             user_clue_progress = UserClueProgress(
@@ -493,11 +589,11 @@ def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: Session = 
             user_clue_progress.is_solved = True
             user_clue_progress.solved_at = datetime.utcnow()
 
-        db.commit()
-        db.refresh(user_clue_progress)
+        await db.commit()
+        await db.refresh(user_clue_progress)
 
         return {"message": "Correct answer", "is_correct": True}
 
-    return {"message": "Incorrect answer", "is_correct": False}
+    return {"message": "Incorrect answer", "is_correct": False}    
 
 
