@@ -1,25 +1,21 @@
-FROM node:20-slim
+FROM node:20
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Use legacy-peer-deps to avoid native module resolution issues
+RUN npm install --legacy-peer-deps && npm install rollup --force
 
-# Copy the rest of the application files
+
+# Copy all app files
 COPY . .
 
-# Build the application
-RUN npm run build
-
-# Install serve to serve the build folder
-RUN npm install -g serve
-
-# Expose the port the app runs on
+# Expose Vite dev server port
 EXPOSE 3000
 
-# Command to run the application
-CMD ["serve", "-s", "build"]
+# Start Vite in development mode
+CMD ["sh", "-c", "npm run dev -- --host"]
+

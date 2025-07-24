@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from datetime import datetime
 
 # === PostgreSQL DATABASE CONFIG ===
-DATABASE_URL = "postgresql://postgres:1967@localhost:5432/scavengerhunt"
+DATABASE_URL = "postgresql://postgres:1967@db:5432/scavengerhunt"
 
 
 # === SQLAlchemy Setup ===
