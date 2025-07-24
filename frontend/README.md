@@ -1,12 +1,79 @@
-# React + Vite
+# React Scavenger Hunt Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based application for creating and managing scavenger hunts. 
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+frontend
+├── src
+│   ├── pages
+│   │   └── EditHunt.jsx
+│   └── index.js
+├── public
+│   └── index.html
+├── package.json
+├── Dockerfile
+└── README.md
+```
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+To get a copy of this project up and running on your local machine, follow these steps:
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- npm (Node package manager)
+
+### Installation
+
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   ```
+2. Navigate to the project directory:
+   ```
+   cd frontend
+   ```
+3. Install the dependencies:
+   ```
+   npm install
+   ```
+
+### Running the Application
+
+To start the development server, run:
+```
+npm start
+```
+This will start the application on `http://localhost:3000`.
+
+### Building for Production
+
+To create a production build of the application, run:
+```
+npm run build
+```
+This will generate a `build` directory with the optimized production files.
+
+### Docker
+
+To build and run the application using Docker, follow these steps:
+
+1. Build the Docker image:
+   ```
+   docker build -t scavenger-hunt .
+   ```
+2. Run the Docker container:
+   ```
+   docker run -p 3000:3000 scavenger-hunt
+   ```
+
+### Contributing
+
+If you would like to contribute to this project, please fork the repository and submit a pull request with your changes.
+
+### License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
