@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./EditHunt.css";
 
 export default function EditHunt({ huntName }) {
@@ -37,6 +38,15 @@ export default function EditHunt({ huntName }) {
 
   const handleEditQuestion = (idx) => {
     navigate("/EditQuestion");
+  };
+
+  // Funktion zum Tauschen der Reihenfolge
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const newQuestions = Array.from(questions);
+    const [moved] = newQuestions.splice(result.source.index, 1);
+    newQuestions.splice(result.destination.index, 0, moved);
+    setQuestions(newQuestions);
   };
 
   const handleSaveAndExit = () => {
@@ -102,46 +112,64 @@ export default function EditHunt({ huntName }) {
         </button>
         {showQuestions && (
           <div className="accordion-content">
-            {questions.map((question, idx) => (
-              <div className="question-widget" key={idx}>
-                <button
-                  className="question-toggle"
-                  onClick={() => handleToggleQuestion(idx)}
-                >
-                  Frage {idx + 1} {question.open ? "▲" : "▼"}
-                </button>
-                {question.open && (
-                  <div className="question-content">
-                    <label>
-                      Frage:<br />
-                      <label>
-                        question text<br />
-                      </label>
-                    </label>
-                    <label>
-                      Antwort:<br />
-                      <label>
-                        answer text<br />
-                      </label>
-                    </label>
-                    <div className="question-actions">
-                      <button
-                        className="main-button main-button-orange"
-                        onClick={() => handleEditQuestion(idx)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="main-button main-button-red"
-                        onClick={() => handleRemoveQuestion(idx)}
-                      >
-                        Remove
-                      </button>
-                    </div>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="questions">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {questions.map((question, idx) => (
+                      <Draggable key={idx} draggableId={String(idx)} index={idx}>
+                        {(provided, snapshot) => (
+                          <div
+                            className={`question-widget${snapshot.isDragging ? " dragging" : ""}`}
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <button
+                              className="question-toggle"
+                              onClick={() => handleToggleQuestion(idx)}
+                            >
+                              Frage {idx + 1} {question.open ? "▲" : "▼"}
+                            </button>
+                            {question.open && (
+                              <div className="question-content">
+                                <label>
+                                  Frage:<br />
+                                  <label>
+                                    {question.text || "question text"}<br />
+                                  </label>
+                                </label>
+                                <label>
+                                  Antwort:<br />
+                                  <label>
+                                    {question.answer || "answer text"}<br />
+                                  </label>
+                                </label>
+                                <div className="question-actions">
+                                  <button
+                                    className="main-button main-button-orange"
+                                    onClick={() => handleEditQuestion(idx)}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className="main-button main-button-red"
+                                    onClick={() => handleRemoveQuestion(idx)}
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
                 )}
-              </div>
-            ))}
+              </Droppable>
+            </DragDropContext>
             <button className="main-button main-button-blue" onClick={handleAddQuestion}>
               Frage hinzufügen
             </button>
