@@ -51,6 +51,7 @@ class Hunt(Base):
     start_point = Column(Text)
     created_by = Column(Integer, ForeignKey("user.id"), nullable=False)
     is_active = Column(Boolean, default=True)
+    private = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
@@ -150,6 +151,7 @@ def create_hunt(user_id: int, db: Session = Depends(get_db)):
         start_point="",
         created_by=user_id,
         is_active=False,
+        private = False,
         created_at=datetime.utcnow()
     )
     db.add(new_hunt)
@@ -169,7 +171,7 @@ def create_hunt(user_id: int, db: Session = Depends(get_db)):
 
 # Update hunt
 @app.put("/update-hunt/{hunt_id}")
-def update_hunt(hunt_id: int, name: str = None, description: str = None, place_to_play: str = None, start_point: str = None, is_active: bool = None, db: Session = Depends(get_db)):
+def update_hunt(hunt_id: int, name: str = None, description: str = None, place_to_play: str = None, start_point: str = None, is_active: bool = None, private: bool = None, db: Session = Depends(get_db)):
     hunt = db.query(Hunt).filter(Hunt.id == hunt_id).first()
     if not hunt:
         return {"error": "Hunt not found"}
@@ -184,6 +186,10 @@ def update_hunt(hunt_id: int, name: str = None, description: str = None, place_t
         hunt.start_point = start_point
     if is_active is not None:
         hunt.is_active = is_active
+    if private is not None:
+        hunt.private = private
+
+
 
     db.commit()
     db.refresh(hunt)
@@ -197,7 +203,8 @@ def update_hunt(hunt_id: int, name: str = None, description: str = None, place_t
             "description": hunt.description,
             "place_to_play": hunt.place_to_play,
             "start_point": hunt.start_point,
-            "is_active": hunt.is_active
+            "is_active": hunt.is_active,
+            "private": hunt.private
         }
     }
 
@@ -216,7 +223,9 @@ def get_specific_hunt(hunt_id: int, db: Session = Depends(get_db)):
         "start_point": hunt.start_point,
         "is_active": hunt.is_active,
         "created_by": hunt.created_by,
-        "created_at": hunt.created_at
+        "created_at": hunt.created_at,
+        "private": hunt.private
+
     }
 
 # Get clue
@@ -379,7 +388,8 @@ def join_hunt(hunt_id: int, user_id: int, db: Session = Depends(get_db)):
             "start_point": hunt.start_point,
             "is_active": hunt.is_active,
             "created_by": hunt.created_by,
-            "created_at": hunt.created_at
+            "created_at": hunt.created_at,
+            "private": hunt.private,
         }
     }
 

@@ -1,4 +1,4 @@
-# docker-compose.yml  –  works with Compose V2/V3 (no version key needed)
+
 
 services:
   db:
@@ -11,7 +11,6 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-    # ← health‑check that reports “healthy” only when pg_isready succeeds
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d scavengerhunt"]
       interval: 5s
@@ -26,7 +25,6 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    # Wait until db service reports healthy
     depends_on:
       db:
         condition: service_healthy
@@ -34,10 +32,10 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"         # Vite dev server default
+      - "3000:3000"         
     volumes:
-      - ./frontend:/app     # hot‑reload source
-      - /app/node_modules   # keep container’s node_modules (anonymous volume)
+      - ./frontend:/app     
+      - /app/node_modules   
 
 volumes:
   db_data:
