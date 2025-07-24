@@ -36,6 +36,8 @@ i18n
           remove_hunt: "Remove Hunt",
           enter_hunt_name: "Enter Hunt Name",
           hunt_name: "Hunt Name",
+          save_and_exit: "Save and Exit",
+          hunt_saved_successfully: "Hunt saved successfully",
         },
       },
       de: {
@@ -69,6 +71,8 @@ i18n
           remove_hunt: "Jagd entfernen",
           enter_hunt_name: "Jagdname eingeben",
           hunt_name: "Jagdname",
+          save_and_exit: "Speichern und Beenden",
+          hunt_saved_successfully: "Jagd erfolgreich gespeichert",
         },
       },
     },
