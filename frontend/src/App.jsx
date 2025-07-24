@@ -4,8 +4,9 @@ import Profile from "./pages/Profile";
 import Hunts from "./pages/Hunts";
 import Navbar from "./components/Navbar";
 import Join from "./pages/Join";
-import EditHunt from "./pages/EditHunt";
 import StartHunt from "./pages/StartHunt";
+import EditHunt from "./pages/EditHunt";
+import EditQuestion from "./pages/EditQuestion";
 import "./App.css";
 
 export default function App() {
@@ -17,8 +18,9 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/hunts" element={<Hunts />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/edithunt" element={<EditHunt />} />
           <Route path="/starthunt/:huntId" element={<StartHunt />} />
+          <Route path="/edithunt" element={<EditHunt />} />
+          <Route path="/editquestion" element={<EditQuestion />} />
         </Routes>
       </div>
       <Navbar />

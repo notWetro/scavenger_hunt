@@ -76,6 +76,22 @@ body.dark-mode .main-button-red {
   background-color: #b30000;
 }
 
+.main-button-orange {
+  background-color: #ff8c00;
+}
+
+body.dark-mode .main-button-orange {
+  background-color: #cc6a00;
+}
+
+.main-button-blue {
+  background-color: #3195ff;
+}
+
+body.dark-mode .main-button-blue {
+  background-color: #006ee4;
+}
+
 .popup-overlay {
   position: fixed;
   top: 0;
