@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import declarative_base, Session
+from sqlalchemy.orm import declarative_base
 
 from sqlalchemy import (
     Column,
@@ -47,15 +47,6 @@ Base = declarative_base()
 app = FastAPI()
 
 
-# === Dependency to get DB session ===
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 # === MODELS ===
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -71,13 +62,13 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
-
-
-async def get_async_db():
+# Dependency to get async DB session
+async def get_db():
     async with AsyncSessionLocal() as session:
         yield session
 
-async def get_user_db(session: AsyncSession = Depends(get_async_db)):
+
+async def get_user_db(session: AsyncSession = Depends(get_db)):
     yield SQLAlchemyUserDatabase(session, User)
 
 
@@ -236,10 +227,7 @@ def get_user_hunt_progress(db: Session = Depends(get_db)):
 def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
  """
-# Dependency to get async DB session
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
+
 
 # Create empty hunt
 @app.post("/create-hunt")
