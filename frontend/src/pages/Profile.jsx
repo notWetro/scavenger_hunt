@@ -37,24 +37,26 @@ export default function Profile() {
         {user ? (
           <>
             <div>{user.email}</div>
+            {/*}
             <button
               className="main-button"
               onClick={() => navigate("/change-password")}
             >
               {t("change_password")}
             </button>
+            */}
           </>
         ) : (
           <>
             <button
               className="main-button main-button-green"
-              onClick={() => setUser({ email: "test@example.com" })} // Simulate login change later to navigate("/login")
+              onClick={() => navigate("/login")}
             >
               {t("login")}
             </button>
             <button
               className="main-button"
-              onClick={() => setUser({ email: "test@example.com" })} // Simulate register change later to navigate("/register")
+              onClick={() => navigate("/register")}
             >
               {t("register")}
             </button>
