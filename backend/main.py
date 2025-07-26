@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Body
 
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -239,13 +239,17 @@ def get_user_clue_progress(db: Session = Depends(get_db)):
 
 # Create empty hunt
 @app.post("/create-hunt")
-async def create_hunt(user_id: int, db: AsyncSession = Depends(get_db)):
+async def create_hunt(
+    name: str = Body(..., embed=True),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
     new_hunt = Hunt(
-        name="Untitled Hunt",
+        name=name,
         description="",
         place_to_play="",
         start_point="",
-        created_by=user_id,
+        created_by=current_user.id,
         is_active=False,
         private=False,
         created_at=datetime.utcnow()
@@ -255,14 +259,7 @@ async def create_hunt(user_id: int, db: AsyncSession = Depends(get_db)):
     await db.refresh(new_hunt)
 
     return {
-        "id": new_hunt.id,
-        "message": "New hunt created",
-        "hunt": {
-            "id": new_hunt.id,
-            "name": new_hunt.name,
-            "description": new_hunt.description,
-            "is_active": new_hunt.is_active
-        }
+        "hunt": {"id": new_hunt.id}
     }
 
 # Update hunt

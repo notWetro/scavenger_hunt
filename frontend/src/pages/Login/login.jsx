@@ -24,7 +24,7 @@ export default function Login() {
     if (res.ok) {
         console.log("Login successful:", data);
       login(data.access_token);
-      navigate("/");
+      navigate("/profile");
     } else {
         console.error("Login failed:", data);
       alert("Login failed");
