@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
+import "./login.css";
 
 export default function Login() {
   const { t } = useTranslation();
@@ -34,21 +35,25 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{t("login")}</h2>
-      <input
-        type="email"
-        placeholder={t("email")}
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button type="submit">{t("login")}</button>
-    </form>
+    <div className="login-container">
+      <form onSubmit={handleSubmit}>
+        <h1>{t("login")}</h1>
+        <input
+          className="input-field"
+          type="email"
+          placeholder={t("email")}
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          className="input-field"
+          type="password"
+          placeholder={t("password")}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button className="main-button main-button-green" type="submit">{t("login")}</button>
+      </form>
+    </div>
   );
 }

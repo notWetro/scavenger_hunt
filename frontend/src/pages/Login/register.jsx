@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import "./register.css";
 
 export default function Register() {
   const { t } = useTranslation();
@@ -24,27 +25,32 @@ export default function Register() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{t("register")}</h2>
-      <input
-        type="email"
-        placeholder={t("email")}
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <input
-        type="username"
-        placeholder={t("username")}
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-      />
-      <button type="submit">{t("register")}</button>
-    </form>
+    <div className="register-container">
+      <form onSubmit={handleSubmit}>
+        <h1>{t("register")}</h1>
+        <input
+          className="input-field"
+          type="email"
+          placeholder={t("email")}
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          className="input-field"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <input
+          className="input-field"
+          type="username"
+          placeholder={t("username")}
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+        />
+        <button className="main-button main-button-green" type="submit">{t("register")}</button>
+      </form>
+    </div>
   );
 }
