@@ -30,6 +30,8 @@ from fastapi_users_db_sqlalchemy import (
  )
 from schemas import UserRead, UserCreate, UserUpdate
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 # === PostgreSQL DATABASE CONFIG ===
@@ -46,7 +48,13 @@ Base = declarative_base()
 # === FastAPI App ===
 app = FastAPI()
 
-
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["http://localhost:3000"],
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
 # === MODELS ===
 
 class User(SQLAlchemyBaseUserTable[int], Base):
