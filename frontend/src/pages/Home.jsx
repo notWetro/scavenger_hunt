@@ -40,7 +40,7 @@ export default function Home() {
 
       setShowPopup(false);
       setHuntName("");
-      navigate(`/edit-hunt/${newHuntId}`);
+      navigate(`/EditHunt?name=${newHuntId}`);
     } catch (err) {
       console.error(err);
       setError(t("create_failed"));
