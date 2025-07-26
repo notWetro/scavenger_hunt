@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Profile.css";
+import { AuthContext } from "../AuthContext";
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { user, logout, authFetch } = React.useContext(AuthContext);
 
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
@@ -20,15 +22,26 @@ export default function Profile() {
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
 
-  // MOCK: Setze auf true/false um Login zu simulieren
-  const [user, setUser] = useState({
-    email: "test@example.com",
-  });
-
-  const handleLogout = () => {
-    setUser(false);
-    // Optional: navigate("/"); // oder wohin du nach dem Logout willst
+  const handleSave = async () => {
+    
+    try {
+      const resp = await authFetch("http://localhost:8000/users/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: user.username,
+          language: i18n.language,
+          dark_mode: darkMode,
+        }),
+      });
+      if (!resp.ok) throw new Error(await resp.text());
+      
+    } catch (err) {
+      console.error(err);
+      
+    }
   };
+
 
   return (
     <div className="profile-container">
@@ -37,6 +50,7 @@ export default function Profile() {
         {user ? (
           <>
             <div>{user.email}</div>
+            <div>{user.username}</div>
             {/*}
             <button
               className="main-button"
@@ -70,7 +84,10 @@ export default function Profile() {
         <select
           className="language-select"
           value={i18n.language}
-          onChange={(e) => i18n.changeLanguage(e.target.value)}
+          onChange={(e) => {
+            i18n.changeLanguage(e.target.value);
+            handleSave();
+          }}
         >
           <option value="de">{t("german")}</option>
           <option value="en">{t("english")}</option>
@@ -81,7 +98,10 @@ export default function Profile() {
       <div className="darkmode-container">
         <button
           className="main-button"
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={() => {
+            setDarkMode(!darkMode);
+            handleSave();
+          }}
         >
           {darkMode ? "☀️ " + t("light_mode") : "🌙 " + t("dark_mode")}
         </button>
@@ -92,7 +112,7 @@ export default function Profile() {
         <div className="logout-container">
           <button
             className="main-button main-button-red"
-            onClick={handleLogout}
+            onClick={logout}
           >
             {t("logout")}
           </button>
