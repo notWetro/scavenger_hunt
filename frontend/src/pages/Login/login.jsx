@@ -1,8 +1,10 @@
 import React, { useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 export default function Login() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
@@ -33,10 +35,10 @@ export default function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <h2>{t("login")}</h2>
       <input
         type="email"
-        placeholder="Email"
+        placeholder={t("email")}
         value={email}
         onChange={e => setEmail(e.target.value)}
       />
@@ -46,7 +48,7 @@ export default function Login() {
         value={password}
         onChange={e => setPassword(e.target.value)}
       />
-      <button type="submit">Log In</button>
+      <button type="submit">{t("login")}</button>
     </form>
   );
 }

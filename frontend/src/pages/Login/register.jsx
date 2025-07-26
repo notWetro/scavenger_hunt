@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -23,10 +25,10 @@ export default function Register() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Register</h2>
+      <h2>{t("register")}</h2>
       <input
         type="email"
-        placeholder="Email"
+        placeholder={t("email")}
         value={email}
         onChange={e => setEmail(e.target.value)}
       />
@@ -38,11 +40,11 @@ export default function Register() {
       />
       <input
         type="username"
-        placeholder="Username"
+        placeholder={t("username")}
         value={username}
         onChange={e => setUsername(e.target.value)}
       />
-      <button type="submit">Sign Up</button>
+      <button type="submit">{t("register")}</button>
     </form>
   );
 }
