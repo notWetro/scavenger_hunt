@@ -133,6 +133,7 @@ export default function EditHunt({ huntName }) {
                             </button>
                             {question.open && (
                               <div className="question-content">
+                                <div className="drag-icon">⋮⋮</div>
                                 <label>
                                   Frage:<br />
                                   <label>

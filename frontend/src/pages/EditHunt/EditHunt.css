@@ -54,6 +54,29 @@ input[type="text"] {
   padding: 16px;
   border-radius: 6px;
   border: 1px solid #eee;
+  position: relative;
+}
+
+.drag-icon {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1.2rem;
+  cursor: grab;
+  user-select: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.drag-icon:hover {
+  opacity: 1;
+  color: #555;
+}
+
+.drag-icon:active {
+  cursor: grabbing;
 }
 
 .question-actions {
