@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./EditHunt.css";
+import { useSearchParams } from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
 
 export default function EditHunt({ huntName }) {
   const { t } = useTranslation();
@@ -12,14 +14,81 @@ export default function EditHunt({ huntName }) {
   const [creatorName, setCreatorName] = useState("");
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
+  const [huntNameState, setHuntNameState] = useState(huntName || ""); 
   // Array für alle Fragen
-  const [questions, setQuestions] = useState([
-    { text: "", answer: "", open: false }
-  ]);
+
+  const [searchParams] = useSearchParams();
+  const huntId = searchParams.get("name");
+
+  const { authFetch } = useContext(AuthContext);
+
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    if (!huntId) return;
+
+    async function loadHunt() {
+      try {
+        const [huntRes, cluesRes] = await Promise.all([
+          authFetch(`http://localhost:8000/hunts/${huntId}`),
+          authFetch(`http://localhost:8000/hunts/${huntId}/clues`),
+        ]);
+
+        if (!huntRes.ok || !cluesRes.ok) {
+          throw new Error("Failed to fetch hunt or clues");
+        }
+
+
+        const hunt = await huntRes.json();
+        const clues = await cluesRes.json();
+        console.log(" hunt:", hunt);
+        console.log(" clues:", clues);
+
+        setCreatorName(hunt.description || "");
+        setHuntLocation(hunt.place_to_play || "");
+        setStartPoint(hunt.start_point || "");
+        setHuntNameState(hunt.name || "");
+
+        setQuestions(clues.map(clue => ({
+          id:     clue.id,
+          text:   clue.description   ?? "",
+          answer: clue.correct_answer ?? "",
+          open:   false
+        })));
+      } catch (err) {
+        console.error("Failed to load hunt or clues", err);
+      }
+    }
+
+    loadHunt();
+  }, [huntId, authFetch]);
+  
+
+
 
   // Neue Frage hinzufügen
   const handleAddQuestion = () => {
-    setQuestions([...questions, { text: "", answer: "", open: false }]);
+    async function addQuestion() {
+      try {
+        const res = await authFetch(
+          `http://localhost:8000/hunts/${huntId}/clues`,
+          { method: "POST" }
+        );
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || "Failed to create clue");
+        }
+
+        const payload = await res.json();
+        console.log("New clue created:", payload);
+        const newClueId = payload.id;
+        setQuestions([...questions, { text: "", answer: "", id: newClueId, open: false }]);
+      } catch (err) {
+        console.error("Failed to add question", err);
+      }
+    }
+
+    addQuestion();
   };
 
   // Frage öffnen/schließen
@@ -32,8 +101,19 @@ export default function EditHunt({ huntName }) {
   };
 
   // Frage entfernen
-  const handleRemoveQuestion = (idx) => {
-    setQuestions(questions => questions.filter((_, i) => i !== idx));
+  const handleRemoveQuestion = async (clueId) => {
+    if (!window.confirm("Delete this question?")) return;
+    try {
+      const res = await authFetch(
+        `http://localhost:8000/hunts/${huntId}/clues/${clueId}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) throw new Error("Delete failed");
+      setQuestions(qs => qs.filter(q => q.id !== clueId));
+    } catch (err) {
+      console.error("Failed to delete question", err);
+      alert("Could not remove question.");
+    }
   };
 
   const handleEditQuestion = (idx) => {
@@ -50,15 +130,33 @@ export default function EditHunt({ huntName }) {
   };
 
   const handleSaveAndExit = () => {
-    // Speichern der Änderungen im Backend
 
-    alert(t("hunt_saved_successfully")); // Alert für Rückmeldung
-    navigate(-1);
+    async function saveAndExit() {
+
+      const res = await authFetch(`http://localhost:8000/hunts/${huntId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          description:   creatorName,
+          place_to_play: huntLocation,
+          start_point:   startPoint,
+          is_active:     true
+        })
+      });
+      if (!res.ok) throw new Error('Failed to save hunt');
+      const updated = await res.json();
+      console.log('Saved hunt:', updated);
+      alert(t("hunt_saved_successfully")); 
+      // navigate(-1);
+    }
+
+    saveAndExit();
+    
   };
 
   return (
     <div className="edit-hunt-container">
-      <h1 className="heading">huntName</h1>
+      <h1 className="heading">{huntNameState}</h1>
 
       {/* Angaben Reiter */}
       <div className="accordion-section">
@@ -155,7 +253,7 @@ export default function EditHunt({ huntName }) {
                                   </button>
                                   <button
                                     className="main-button main-button-red"
-                                    onClick={() => handleRemoveQuestion(idx)}
+                                    onClick={() => handleRemoveQuestion(questions[idx].id)}
                                   >
                                     Remove
                                   </button>
