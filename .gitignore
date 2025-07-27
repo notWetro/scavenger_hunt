@@ -182,3 +182,7 @@ _NCrunch*
 
 .env
 /vs/
+
+# Python specific
+/backend/__pycache__/*
+*.pyc

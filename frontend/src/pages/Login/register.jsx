@@ -20,7 +20,8 @@ export default function Register() {
     if (res.ok) {
       navigate("/login");
     } else {
-      alert("Registration failed");
+      const errorData = await res.json();
+      alert("ERROR: " + (errorData.detail || t("registration_error")));
     }
   };
 
