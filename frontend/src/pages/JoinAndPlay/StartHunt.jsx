@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./StartHunt.css";
@@ -40,24 +40,41 @@ export default function StartHunt() {
   const { huntId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [hunt, setHunt] = useState({});
 
-  const hunt = mockHunts.find(h => h.id === huntId);
+  // const hunt = mockHunts.find(h => h.id === huntId);
+
+
+  useEffect(() => { 
+    const fetchHunt = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/hunts/${huntId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch hunt details");
+        }
+        const data = await response.json();
+        setHunt(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching hunt details:", error);
+      }
+    };
+    fetchHunt();
+  }, [huntId]);
 
   return (
     <div className="start-hunt-container">
       <h1 className="heading">
         {hunt.name}
       </h1>
-      {hunt ? ( // Is this check necessary? Alredy handled in Join.jsx
-        <div className="hunt-details">
-          <p><strong>{t("hunt_id")}:</strong> {hunt.id}</p>
-          <p><strong>{t("location")}:</strong> {hunt.location}</p>
-          <p><strong>{t("start_point")}:</strong> {hunt.startPoint.lat}, {hunt.startPoint.lng}</p>
-          <p><strong>{t("creator")}:</strong> {hunt.creator}</p>
-        </div>
-      ) : (
-        <p style={{ color: "red" }}>{t("hunt_not_found") || "Hunt nicht gefunden."}</p>
-      )}
+      
+      <div className="hunt-details">
+        <p><strong>{t("hunt_id")}:</strong> {hunt.id}</p>
+        <p><strong>{t("location")}:</strong> {hunt.place_to_play}</p>
+        <p><strong>{t("start_point")}:</strong> {hunt.start_point}</p>
+        <p><strong>{t("creator")}:</strong> {hunt.creator_username}</p>
+      </div>
+      
       <div className="button-column">
         <button
           className="main-button main-button-green"

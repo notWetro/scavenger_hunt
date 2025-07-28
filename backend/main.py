@@ -284,6 +284,7 @@ class HuntRead(BaseModel):
     private:       bool
     created_by:    int
     created_at:    datetime
+    creator_username: Optional[str] = None  
 
     class Config:
         orm_mode = True
@@ -317,6 +318,11 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
     hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
+    
+    creator_res = await db.execute(
+        select(User.username).where(User.id == hunt.created_by)
+    )
+    creator_username = creator_res.scalars().first() or "Unknown"
 
     return {
         "id": hunt.id,
@@ -327,7 +333,8 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
         "is_active": hunt.is_active,
         "created_by": hunt.created_by,
         "created_at": hunt.created_at,
-        "private": hunt.private
+        "private": hunt.private,
+        "creator_username": creator_username
     }
 
 
@@ -533,44 +540,46 @@ class JoinHuntResponse(BaseModel):
 @app.post("/hunts/{hunt_id}/join",response_model=JoinHuntResponse,status_code=status.HTTP_201_CREATED)
 async def join_hunt(
     hunt_id: int,
-    current_user: User = Depends(fastapi_users.current_user()),
+    current_user: Optional[User] = Depends(
+        fastapi_users.current_user(optional=True)
+    ),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
     hunt = result.scalars().first()
     if not hunt:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+        raise HTTPException(404, "Hunt not found")
 
-    existing = await db.execute(
-        select(UserHuntProgress).filter(
-            UserHuntProgress.hunt_id == hunt_id,
-            UserHuntProgress.user_id == current_user.id,
+    if current_user:
+        existing = await db.execute(
+            select(UserHuntProgress).where(
+                UserHuntProgress.hunt_id == hunt_id,
+                UserHuntProgress.user_id == current_user.id,
+            )
         )
-    )
-    if existing.scalars().first():
-        raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, "User already joined this hunt"
+        if existing.scalars().first():
+            raise HTTPException(400, "You’ve already joined this hunt")
+        progress = UserHuntProgress(
+            hunt_id=hunt_id,
+            user_id=current_user.id,
+            current_clue_id=None,
+            finished_at=None,
         )
+        db.add(progress)
+        await db.commit()
+        await db.refresh(progress)
 
-    progress = UserHuntProgress(
-        user_id=current_user.id,
-        hunt_id=hunt_id,
-        current_clue_id=None,
-        finished_at=None,
+    creator_res = await db.execute(
+        select(User.username).where(User.id == hunt.created_by)
     )
-    db.add(progress)
-    await db.commit()
-    await db.refresh(progress)
-
-    creator_res = await db.execute(select(User).where(User.id == hunt.created_by))
-    creator = creator_res.scalars().first()
+    creator_username = creator_res.scalars().first() or "Unknown"
 
     return JoinHuntResponse(
-        message="User successfully joined the hunt",
-        hunt_id=hunt_id,
+        message="Joined hunt",
+        hunt_id=hunt.id,
         place_to_play=hunt.place_to_play,
         start_point=hunt.start_point,
-        creator_username=creator.username if creator else "Unknown"
+        creator_username=creator_username,
     )
 
 # Remove user from hunt

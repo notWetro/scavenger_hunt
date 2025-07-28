@@ -294,7 +294,7 @@ export default function EditHunt() {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            <div>{question.order}</div>
+                            
                             <button
                               className={`question-toggle ${question.open ? "corners" : ""}`}
                               onClick={() => handleToggleQuestion(idx)}
