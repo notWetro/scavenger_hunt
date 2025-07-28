@@ -526,7 +526,7 @@ async def update_clue(
     await db.refresh(clue)
     return clue
 
-# Join hunt
+
 class JoinHuntResponse(BaseModel):
     message: str
     hunt_id: int
@@ -537,6 +537,7 @@ class JoinHuntResponse(BaseModel):
     class Config:
         orm_mode = True
 
+# Join hunt
 @app.post("/hunts/{hunt_id}/join",response_model=JoinHuntResponse,status_code=status.HTTP_201_CREATED)
 async def join_hunt(
     hunt_id: int,
@@ -551,14 +552,7 @@ async def join_hunt(
         raise HTTPException(404, "Hunt not found")
 
     if current_user:
-        existing = await db.execute(
-            select(UserHuntProgress).where(
-                UserHuntProgress.hunt_id == hunt_id,
-                UserHuntProgress.user_id == current_user.id,
-            )
-        )
-        if existing.scalars().first():
-            raise HTTPException(400, "You’ve already joined this hunt")
+        
         progress = UserHuntProgress(
             hunt_id=hunt_id,
             user_id=current_user.id,
@@ -583,20 +577,36 @@ async def join_hunt(
     )
 
 # Remove user from hunt
-@app.delete("/remove-user-from-hunt/{hunt_id}")
-async def remove_user_from_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(UserHuntProgress).filter(
-        UserHuntProgress.hunt_id == hunt_id, UserHuntProgress.user_id == user_id
-    ))
-    user_hunt_progress = result.scalars().first()
+@app.delete("/hunts/{hunt_id}/leave",response_model=BaseModel, status_code=status.HTTP_200_OK)
+async def leave_hunt(
+    hunt_id: int,
+    current_user: Optional[User] = Depends(
+        fastapi_users.current_user(optional=True)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    if not current_user:
+        # you could also return 204 No Content to be idempotent for anonymous
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Not authenticated")
 
-    if not user_hunt_progress:
-        return {"error": "User is not part of this hunt"}
+    # find their progress record
+    result = await db.execute(
+        select(UserHuntProgress).where(
+            UserHuntProgress.hunt_id == hunt_id,
+            UserHuntProgress.user_id == current_user.id,
+        )
+    )
+    progress = result.scalars().first()
+    if not progress:
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            "You are not part of this hunt",
+        )
 
-    await db.delete(user_hunt_progress)
+    await db.delete(progress)
     await db.commit()
 
-    return {"message": "User successfully removed from the hunt"}
+    return {"message": "Left the hunt successfully"}
 
 # Start hunt with skipping solved clues and return all current clue details
 @app.post("/start-hunt/{hunt_id}")

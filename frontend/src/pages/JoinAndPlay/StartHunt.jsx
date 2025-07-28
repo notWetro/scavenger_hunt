@@ -1,48 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./StartHunt.css";
+import { AuthContext } from "../../AuthContext";
 
-const mockHunts = [
-  {
-    id: "hunt2025",
-    name: "Abenteuer durch die Altstadt",
-    location: "München",
-    startPoint: {
-      lat: 48.137154,
-      lng: 11.576124
-    },
-    creator: "max.mustermann@email.de"
-  },
-  {
-    id: "1",
-    name: "Abenteuer durch die Altstadt",
-    location: "München",
-    startPoint: {
-      lat: 48.137154,
-      lng: 11.576124
-    },
-    creator: "max.mustermann@email.de"
-  },
-  {
-    id: "12345",
-    name: "Rätselrallye im Park",
-    location: "Berlin",
-    startPoint: {
-      lat: 52.520008,
-      lng: 13.404954
-    },
-    creator: "julia.schmidt@email.de"
-  }
-];
 
 export default function StartHunt() {
   const { huntId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [hunt, setHunt] = useState({});
-
-  // const hunt = mockHunts.find(h => h.id === huntId);
+  const { user, authFetch, logout } = useContext(AuthContext);
 
 
   useEffect(() => { 
@@ -61,6 +29,23 @@ export default function StartHunt() {
     };
     fetchHunt();
   }, [huntId]);
+
+  const removeHunt = async () => {
+    if (!window.confirm("Are you sure you want to leave this hunt?")) return;
+    try {
+      const response = await authFetch(`http://localhost:8000/hunts/${huntId}/leave`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to remove hunt");
+      }
+      alert("You’ve left the hunt.");
+      navigate("/join");
+    } catch (error) {
+      console.error("Error removing hunt:", error);
+      alert("Could not leave the hunt.");
+    }
+  };
 
   return (
     <div className="start-hunt-container">
@@ -82,12 +67,14 @@ export default function StartHunt() {
         >
           {t("start_hunt")}
         </button>
-        <button
-          className="main-button main-button-red"
-          // onClick={() => removeHunt(huntId)} // need to implement this function -> funktion removes hunt from user's list and navigates back (to Hunts page???)
-        >
-          {t("remove_hunt")}
-        </button>
+        {user && (
+          <button
+            className="main-button main-button-red"
+            onClick={() => removeHunt()}
+          >
+            {t("remove_hunt")}
+          </button>
+        )}
         <button
           type="button"
           className="main-button"
