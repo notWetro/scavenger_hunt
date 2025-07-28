@@ -200,7 +200,7 @@ export default function EditHunt() {
         )
       );
       alert(t("hunt_saved_successfully"));
-      // navigate(-1);
+      navigate(-1);
       } catch (err) {
         console.error("Failed to save question order", err);
         alert(t("could_not_save_order"));
