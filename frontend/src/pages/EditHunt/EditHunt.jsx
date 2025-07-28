@@ -10,7 +10,7 @@ export default function EditHunt({ huntName }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(true);
-  const [showQuestions, setShowQuestions] = useState(false);
+  const [showQuestions, setShowQuestions] = useState(true);
   const [creatorName, setCreatorName] = useState("");
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
@@ -168,14 +168,24 @@ export default function EditHunt({ huntName }) {
         </button>
         {showDetails && (
           <div className="accordion-content">
+{/*             <label>
+              Hunt Name:
+              <input
+                className="EditHunt-input"
+                type="text"
+                value={huntNameState}
+                onChange={(e) => setHuntNameState(e.target.value)}
+                placeholder="Hunt Name eingeben"
+              />
+            </label> */}
             <label>
-              Name des Erstellers:
+              Kurzinfo:
               <input
                 className="EditHunt-input"
                 type="text"
                 value={creatorName}
                 onChange={(e) => setCreatorName(e.target.value)}
-                placeholder="Dein Name"
+                placeholder="Kurzinfo eingeben"
               />
             </label>
             <label>
