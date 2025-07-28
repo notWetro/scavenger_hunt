@@ -444,7 +444,7 @@ async def create_empty_clue(
     return {"id": new_clue.id}
 
 
-
+# Delete clue
 @app.delete("/hunts/{hunt_id}/clues/{clue_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_clue(
     hunt_id: int,
@@ -520,37 +520,58 @@ async def update_clue(
     return clue
 
 # Join hunt
-@app.post("/join-hunt/{hunt_id}")
-async def join_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
+class JoinHuntResponse(BaseModel):
+    message: str
+    hunt_id: int
+    place_to_play: str
+    start_point: str
+    creator_username: str
+
+    class Config:
+        orm_mode = True
+
+@app.post("/hunts/{hunt_id}/join",response_model=JoinHuntResponse,status_code=status.HTTP_201_CREATED)
+async def join_hunt(
+    hunt_id: int,
+    current_user: User = Depends(fastapi_users.current_user()),
+    db: AsyncSession = Depends(get_db),
+):
     result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
     hunt = result.scalars().first()
     if not hunt:
-        return {"error": "Hunt not found"}
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
 
-    user_hunt_progress = UserHuntProgress(
-        user_id=user_id,
+    existing = await db.execute(
+        select(UserHuntProgress).filter(
+            UserHuntProgress.hunt_id == hunt_id,
+            UserHuntProgress.user_id == current_user.id,
+        )
+    )
+    if existing.scalars().first():
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST, "User already joined this hunt"
+        )
+
+    progress = UserHuntProgress(
+        user_id=current_user.id,
         hunt_id=hunt_id,
         current_clue_id=None,
-        finished_at=None
+        finished_at=None,
     )
-    db.add(user_hunt_progress)
+    db.add(progress)
     await db.commit()
-    await db.refresh(user_hunt_progress)
+    await db.refresh(progress)
 
-    return {
-        "message": "User successfully joined the hunt",
-        "hunt": {
-            "id": hunt.id,
-            "name": hunt.name,
-            "description": hunt.description,
-            "place_to_play": hunt.place_to_play,
-            "start_point": hunt.start_point,
-            "is_active": hunt.is_active,
-            "created_by": hunt.created_by,
-            "created_at": hunt.created_at,
-            "private": hunt.private,
-        }
-    }
+    creator_res = await db.execute(select(User).where(User.id == hunt.created_by))
+    creator = creator_res.scalars().first()
+
+    return JoinHuntResponse(
+        message="User successfully joined the hunt",
+        hunt_id=hunt_id,
+        place_to_play=hunt.place_to_play,
+        start_point=hunt.start_point,
+        creator_username=creator.username if creator else "Unknown"
+    )
 
 # Remove user from hunt
 @app.delete("/remove-user-from-hunt/{hunt_id}")

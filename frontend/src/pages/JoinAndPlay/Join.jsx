@@ -2,24 +2,40 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Join.css";
+import { AuthContext } from "../../AuthContext";
 
 export default function Join() {
   const [huntId, setHuntId] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { authFetch } = React.useContext(AuthContext);
 
-  // Mock-Daten: Liste existierender Hunt-IDs
-  const mockHuntIds = ["12345", "hunt2025", "1"];
 
-  const handleJoin = (e) => {
+  const handleJoin = async (e) => {
     e.preventDefault();
-    if (mockHuntIds.includes(huntId.trim())) {
-      setError("");
-      navigate(`/StartHunt/${huntId.trim()}`);
-    } else {
-      setError(t("hunt_id_not_exist"));
+    
+    try {
+      const res = await authFetch(
+        `http://localhost:8000/hunts/${huntId}/join`,
+        { method: "POST" }
+      );
+
+      if (!res.ok) {
+      const errorData = await res.json(); 
+      const errorDetail = errorData.detail || t("join_failed"); 
+      setError(errorDetail); 
+      return;
     }
+
+      const data = await res.json();
+      console.log(data);
+      navigate(`/StartHunt/${huntId}`, { state: data });
+    } catch (err) {
+      console.error(err);
+      setError(t("join_failed"));
+    }
+    
   };
 
   return (
