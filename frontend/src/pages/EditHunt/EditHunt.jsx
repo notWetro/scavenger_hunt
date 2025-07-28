@@ -6,7 +6,7 @@ import "./EditHunt.css";
 import { useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
-export default function EditHunt({ huntName }) {
+export default function EditHunt() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(true);
@@ -14,7 +14,7 @@ export default function EditHunt({ huntName }) {
   const [creatorName, setCreatorName] = useState("");
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
-  const [huntNameState, setHuntNameState] = useState(huntName || ""); 
+  const [huntNameState, setHuntNameState] = useState(""); 
   // Array für alle Fragen
 
   const [searchParams] = useSearchParams();
@@ -53,6 +53,7 @@ export default function EditHunt({ huntName }) {
           id:     clue.id,
           text:   clue.description   ?? "",
           answer: clue.correct_answer ?? "",
+          order: clue.clue_order ?? 0,
           open:   false
         })));
       } catch (err) {
@@ -64,15 +65,32 @@ export default function EditHunt({ huntName }) {
   }, [huntId, authFetch]);
   
 
-
+  async function syncOrder(updatedQuestions) {
+    await Promise.all(
+        updatedQuestions.map(({ id, order }) =>
+          authFetch(
+            `http://localhost:8000/hunts/${huntId}/clues/${id}`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ clue_order: order }),
+            }
+          )
+        )
+      );
+  }
 
   // Neue Frage hinzufügen
   const handleAddQuestion = () => {
     async function addQuestion() {
       try {
+        const nextOrder = questions.length + 1;
         const res = await authFetch(
           `http://localhost:8000/hunts/${huntId}/clues`,
-          { method: "POST" }
+          { method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ clue_order: nextOrder }),
+          }
         );
         if (!res.ok) {
           const text = await res.text();
@@ -82,7 +100,7 @@ export default function EditHunt({ huntName }) {
         const payload = await res.json();
         console.log("New clue created:", payload);
         const newClueId = payload.id;
-        setQuestions([...questions, { text: "", answer: "", id: newClueId, open: false }]);
+        setQuestions([...questions, { text: "", answer: "", id: newClueId, order: nextOrder, open: false }]);
       } catch (err) {
         console.error("Failed to add question", err);
       }
@@ -109,7 +127,16 @@ export default function EditHunt({ huntName }) {
         { method: "DELETE" }
       );
       if (!res.ok) throw new Error("Delete failed");
-      setQuestions(qs => qs.filter(q => q.id !== clueId));
+
+      const filtered = questions.filter((q) => q.id !== clueId);
+
+      const reindexed = filtered.map((q, idx) => ({
+        ...q,
+        order: idx + 1,
+      }));
+      setQuestions(reindexed);
+
+      await syncOrder(reindexed);
     } catch (err) {
       console.error("Failed to delete question", err);
       alert("Could not remove question.");
@@ -117,7 +144,12 @@ export default function EditHunt({ huntName }) {
   };
 
   const handleEditQuestion = (idx) => {
-    navigate("/EditQuestion");
+
+    const question = questions[idx];
+    if (!question) return;
+
+    // Navigate to EditQuestion page with huntId and clueId
+    navigate(`/EditQuestion?hunt=${huntId}&clue=${question.id}`);
   };
 
   // Funktion zum Tauschen der Reihenfolge
@@ -126,7 +158,16 @@ export default function EditHunt({ huntName }) {
     const newQuestions = Array.from(questions);
     const [moved] = newQuestions.splice(result.source.index, 1);
     newQuestions.splice(result.destination.index, 0, moved);
-    setQuestions(newQuestions);
+    const reordered = newQuestions.map((q, idx) => ({
+    ...q,
+    order: idx + 1,           
+    }));
+
+    setQuestions(reordered);
+
+    syncOrder(reordered).catch(err => {
+      console.error("Failed to sync order", err);
+    });
   };
 
   const handleSaveAndExit = () => {
@@ -144,10 +185,27 @@ export default function EditHunt({ huntName }) {
         })
       });
       if (!res.ok) throw new Error('Failed to save hunt');
-      const updated = await res.json();
-      console.log('Saved hunt:', updated);
-      alert(t("hunt_saved_successfully")); 
+      
+      try {
+      await Promise.all(
+        questions.map((q) =>
+          authFetch(
+            `http://localhost:8000/hunts/${huntId}/clues/${q.id}`,
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ clue_order: q.order }),
+            }
+          )
+        )
+      );
+      alert(t("hunt_saved_successfully"));
       // navigate(-1);
+      } catch (err) {
+        console.error("Failed to save question order", err);
+        alert(t("could_not_save_order"));
+      }
+
     }
 
     saveAndExit();
@@ -168,7 +226,7 @@ export default function EditHunt({ huntName }) {
         </button>
         {showDetails && (
           <div className="accordion-content">
-{/*             <label>
+          {/*             <label>
               Hunt Name:
               <input
                 className="EditHunt-input"
@@ -236,6 +294,7 @@ export default function EditHunt({ huntName }) {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
+                            <div>{question.order}</div>
                             <button
                               className={`question-toggle ${question.open ? "corners" : ""}`}
                               onClick={() => handleToggleQuestion(idx)}

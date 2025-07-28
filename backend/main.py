@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Depends, Body, HTTPException
-
+from fastapi import FastAPI, Depends, Body, HTTPException, status
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -331,39 +330,56 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
         "private": hunt.private
     }
 
+
+class ClueRead(BaseModel):
+    id: int
+    title: Optional[str]
+    description: Optional[str]
+    hint: Optional[str]
+    correct_answer: Optional[str]
+    clue_order: Optional[int]
+    image_url: Optional[str]
+    audio_url: Optional[str]
+    video_url: Optional[str]
+    question_type: Optional[str]
+    answer_type: Optional[str]
+    choices: Optional[str]
+    expected_gps: Optional[str]
+    gps_radius: Optional[float]
+
+    class Config:
+        orm_mode = True
+
 # Get specific clue
-@app.get("/hunts/{hunt_id}/clues/{clue_id}")
-async def get_specific_clue(hunt_id: int, clue_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id))
+@app.get("/hunts/{hunt_id}/clues/{clue_id}", response_model=ClueRead)
+async def get_clue(
+    hunt_id: int,
+    clue_id: int,
+    current_user: User = Depends(fastapi_users.current_user()),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify hunt ownership
+    user_result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = user_result.scalars().first()
+    if not hunt:
+        raise HTTPException(404, "Hunt not found")
+    if hunt.created_by != current_user.id:
+        raise HTTPException(403, "You are not allowed to access this hunt")
+    
+    result = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
     clue = result.scalars().first()
     if not clue:
-        return {"error": "Clue not found for this hunt"}
-
-    return {
-        "hunt_id": hunt_id,
-        "clue": {
-            "id": clue.id,
-            "title": clue.title,
-            "description": clue.description,
-            "hint": clue.hint,
-            "correct_answer": clue.correct_answer,
-            "clue_order": clue.clue_order,
-            "image_url": clue.image_url,
-            "audio_url": clue.audio_url,
-            "video_url": clue.video_url,
-            "question_type": clue.question_type,
-            "answer_type": clue.answer_type,
-            "choices": clue.choices,
-            "expected_gps": clue.expected_gps,
-            "gps_radius": clue.gps_radius
-        }
-    }
+        raise HTTPException(404, "Clue not found")
+    return clue
 
 # response schema for a clue
 class ClueRead(BaseModel):
     id:             int
     description:    str | None  
     correct_answer: str | None
+    clue_order:    int | None
 
     class Config:
         orm_mode = True
@@ -385,10 +401,14 @@ async def list_clues_for_hunt(
 class ClueCreateResponse(BaseModel):
     id: int
 
+class ClueCreate(BaseModel):
+    clue_order: Optional[int] = None
+
 # Create empty clue
-@app.post("/hunts/{hunt_id}/clues", response_model=ClueCreateResponse)
+@app.post("/hunts/{hunt_id}/clues", response_model=ClueCreateResponse, status_code=201)
 async def create_empty_clue(
     hunt_id: int,
+    payload: ClueCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(fastapi_users.current_user()),
 ):
@@ -400,12 +420,22 @@ async def create_empty_clue(
     if hunt.created_by != current_user.id:
         return {"error": "You are not allowed to create clues for this hunt"}
     
-
+    if payload.clue_order is None:
+        # count existing clues
+        count = (
+            await db.execute(
+                select(func.count()).select_from(Clue).where(Clue.hunt_id == hunt_id)
+            )
+        ).scalar_one()
+        order = count + 1
+    else:
+        order = payload.clue_order
+    
     new_clue = Clue(
         hunt_id=hunt_id,
         title="",
         description="",
-        clue_order=0,  # front‑end should assign real order
+        clue_order=order,
         created_at=datetime.utcnow(),
     )
     db.add(new_clue)
@@ -413,7 +443,7 @@ async def create_empty_clue(
     await db.refresh(new_clue)
     return {"id": new_clue.id}
 
-from fastapi import HTTPException, status
+
 
 @app.delete("/hunts/{hunt_id}/clues/{clue_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_clue(
@@ -441,64 +471,53 @@ async def delete_clue(
     await db.commit()
     # 204 → no body
 
+class ClueUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    hint: Optional[str] = None
+    correct_answer: Optional[str] = None
+    clue_order: Optional[int] = None
+    image_url: Optional[str] = None
+    audio_url: Optional[str] = None
+    video_url: Optional[str] = None
+    question_type: Optional[str] = None
+    answer_type: Optional[str] = None
+    choices: Optional[str] = None
+    expected_gps: Optional[str] = None
+    gps_radius: Optional[float] = None
+
 # Update clue
-@app.put("/hunts/{hunt_id}/clues/{clue_id}")
-async def update_clue(hunt_id: int, clue_id: int, title: str = None, description: str = None, hint: str = None, correct_answer: str = None, clue_order: int = None, image_url: str = None, audio_url: str = None, video_url: str = None, question_type: str = None, answer_type: str = None, choices: str = None, expected_gps: str = None, gps_radius: float = None, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id, Clue.id == clue_id))
+@app.patch("/hunts/{hunt_id}/clues/{clue_id}", response_model=ClueRead)
+async def update_clue(
+    hunt_id: int,
+    clue_id: int,
+    payload: ClueUpdate,
+    current_user: User = Depends(fastapi_users.current_user()),
+    db: AsyncSession = Depends(get_db),
+):
+    # check hunt exists & belongs to user
+    user_result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = user_result.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+    if hunt.created_by != current_user.id:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Not allowed to modify this hunt")
+    
+
+    # check clue exists in hunt
+    result = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
     clue = result.scalars().first()
     if not clue:
-        return {"error": "Clue not found for this hunt"}
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Clue not found")
 
-    if title is not None:
-        clue.title = title
-    if description is not None:
-        clue.description = description
-    if hint is not None:
-        clue.hint = hint
-    if correct_answer is not None:
-        clue.correct_answer = correct_answer
-    if clue_order is not None:
-        clue.clue_order = clue_order
-    if image_url is not None:
-        clue.image_url = image_url
-    if audio_url is not None:
-        clue.audio_url = audio_url
-    if video_url is not None:
-        clue.video_url = video_url
-    if question_type is not None:
-        clue.question_type = question_type
-    if answer_type is not None:
-        clue.answer_type = answer_type
-    if choices is not None:
-        clue.choices = choices
-    if expected_gps is not None:
-        clue.expected_gps = expected_gps
-    if gps_radius is not None:
-        clue.gps_radius = gps_radius
+    for field, value in payload.dict(exclude_unset=True).items():
+        setattr(clue, field, value)
 
     await db.commit()
     await db.refresh(clue)
-
-    return {
-        "hunt_id": hunt_id,
-        "clue": {
-            "id": clue.id,
-            "title": clue.title,
-            "description": clue.description,
-            "hint": clue.hint,
-            "correct_answer": clue.correct_answer,
-            "clue_order": clue.clue_order,
-            "image_url": clue.image_url,
-            "audio_url": clue.audio_url,
-            "video_url": clue.video_url,
-            "question_type": clue.question_type,
-            "answer_type": clue.answer_type,
-            "choices": clue.choices,
-            "expected_gps": clue.expected_gps,
-            "gps_radius": clue.gps_radius
-        },
-        "message": "Clue updated successfully"
-    }
+    return clue
 
 # Join hunt
 @app.post("/join-hunt/{hunt_id}")
