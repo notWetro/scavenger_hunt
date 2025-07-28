@@ -60,28 +60,36 @@ export default function EditQuestion() {
   };
 
   return (
-    <div className="edit-question-content">
-      <label>
-        Frage:
+    <div className="edit-question-container">
+      <div className="input-group">
+        <label htmlFor="question-input">Frage:</label>
         <input
+          id="question-input"
           type="text"
+          className="EditQuestion-input"
           value={question.text}
           onChange={(e) => setQuestion(f => ({ ...f, text: e.target.value }))}
           placeholder="Frage eingeben"
         />
-      </label>
-      <label>
-        Antwort:
+      </div>
+
+      <hr className="section-divider" />
+
+      <div className="input-group">
+        <label htmlFor="answer-input">Antwort:</label>
         <input
+          id="answer-input"
           type="text"
+          className="EditQuestion-input"
           value={question.answer}
           onChange={e => setQuestion(f => ({ ...f, answer: e.target.value }))}
           placeholder="Antwort eingeben"
         />
-      </label>
+      </div>
+
       <div className="question-actions">
         <button
-          className="main-button main-button-blue"
+          className="main-button main-button-green"
           onClick={() => saveChange()}
         >
           save and back

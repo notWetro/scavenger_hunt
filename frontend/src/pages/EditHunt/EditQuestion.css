@@ -2,4 +2,64 @@
   margin-top: 40px;
   max-width: 400px;
   margin: 0 auto;
+  padding: 20px;
+}
+
+.EditQuestion-input {
+  color: inherit;
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.EditQuestion-input:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .EditQuestion-input:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .EditQuestion-input {
+  background: #181818;
+  border: 1px solid #444;
+}
+
+.input-group {
+  width: 100%;
+  max-width: 400px;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+  display: block;
+  text-align: left;
+}
+
+.section-divider {
+  width: 100%;
+  max-width: 400px;
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 1.5rem 0;
+}
+
+body.dark-mode .section-divider {
+  border-top: 1px solid #444;
+}
+
+.question-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: center;
 }
