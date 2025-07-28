@@ -61,7 +61,7 @@ export default function EditHunt({ huntName }) {
       <h1 className="heading">huntName</h1>
 
       {/* Angaben Reiter */}
-      <div className="accordion-section">
+      <div className={`accordion-section ${showDetails ? "open" : ""}`}>
         <button
           className="accordion-toggle"
           onClick={() => setShowDetails((prev) => !prev)}
@@ -73,6 +73,7 @@ export default function EditHunt({ huntName }) {
             <label>
               Name des Erstellers:
               <input
+                className="EditHunt-input"
                 type="text"
                 value={creatorName}
                 onChange={(e) => setCreatorName(e.target.value)}
@@ -82,6 +83,7 @@ export default function EditHunt({ huntName }) {
             <label>
               Ort des Spieles:
               <input
+                className="EditHunt-input"
                 type="text"
                 value={huntLocation}
                 onChange={(e) => setHuntLocation(e.target.value)}
@@ -91,6 +93,7 @@ export default function EditHunt({ huntName }) {
             <label>
               Startpunkt:
               <input
+                className="EditHunt-input"
                 type="text"
                 value={startPoint}
                 onChange={(e) => setStartPoint(e.target.value)}
@@ -103,7 +106,7 @@ export default function EditHunt({ huntName }) {
       </div>
 
       {/* Fragen Reiter */}
-      <div className="accordion-section">
+      <div className={`accordion-section ${showQuestions ? "open" : ""}`}>
         <button
           className="accordion-toggle"
           onClick={() => setShowQuestions((prev) => !prev)}
@@ -126,7 +129,7 @@ export default function EditHunt({ huntName }) {
                             {...provided.dragHandleProps}
                           >
                             <button
-                              className="question-toggle"
+                              className={`question-toggle ${question.open ? "corners" : ""}`}
                               onClick={() => handleToggleQuestion(idx)}
                             >
                               Frage {idx + 1} {question.open ? "▲" : "▼"}
@@ -171,7 +174,7 @@ export default function EditHunt({ huntName }) {
                 )}
               </Droppable>
             </DragDropContext>
-            <button className="main-button main-button-blue" onClick={handleAddQuestion}>
+            <button className="main-button main-button-blue butt" onClick={handleAddQuestion}>
               Frage hinzufügen
             </button>
           </div>
