@@ -697,3 +697,98 @@ async def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: Asyn
     return {"message": "Incorrect answer", "is_correct": False}    
 
 
+class CurrentClueResponse(BaseModel):
+    current_clue_id: int | None
+
+    class Config:
+        orm_mode = True
+
+# Get current clue for user in a hunt
+@app.get("/hunts/{hunt_id}/current-clue", response_model=CurrentClueResponse, summary="Get the current clue for this user in a hunt")
+async def get_current_clue(
+    hunt_id: int,
+    current_user: Optional[User] = Depends(
+        fastapi_users.current_user(optional=True)
+    ),
+    db: AsyncSession = Depends(get_db),
+):  
+    if current_user:
+        result = await db.execute(
+            select(UserHuntProgress)
+            .where(
+                UserHuntProgress.hunt_id == hunt_id,
+                UserHuntProgress.user_id == current_user.id,
+            )
+        )
+    
+        progress = result.scalars().first()
+        if not progress:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, "User has not joined this hunt"
+            )
+
+        return {"current_clue_id": progress.current_clue_id}
+    else:
+        return {"current_clue_id": 0}
+    
+class ProgressPayload(BaseModel):
+    clue_id: int
+
+@app.post("/hunts/{hunt_id}/progress",status_code=status.HTTP_204_NO_CONTENT,summary="Record that the user reached/solved a clue")
+async def save_progress(
+    hunt_id: int,
+    payload: ProgressPayload,
+    current_user: Optional[User] = Depends(
+        fastapi_users.current_user(optional=True)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    if not current_user:
+        return 
+
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
+    if not hunt:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+
+    res = await db.execute(
+        select(UserClueProgress).where(
+            UserClueProgress.user_id == current_user.id,
+            UserClueProgress.clue_id == payload.clue_id,
+        )
+    )
+    ucp = res.scalars().first()
+    if not ucp:
+        ucp = UserClueProgress(
+            user_id=current_user.id,
+            clue_id=payload.clue_id,
+            is_solved=True,
+            solved_at=datetime.utcnow(),
+        )
+        db.add(ucp)
+    else:
+        ucp.is_solved = True
+        ucp.solved_at = datetime.utcnow()
+
+    res = await db.execute(
+        select(UserHuntProgress).where(
+            UserHuntProgress.user_id == current_user.id,
+            UserHuntProgress.hunt_id == hunt_id,
+        )
+    )
+    uhp = res.scalars().first()
+    if uhp:
+        r2 = await db.execute(
+            select(Clue).where(Clue.hunt_id == hunt_id).order_by(Clue.clue_order)
+        )
+        clues = r2.scalars().all()
+        idx = next((i for i,c in enumerate(clues) if c.id == payload.clue_id), None)
+        
+        if idx is not None and idx + 1 < len(clues):
+            uhp.current_clue_id = clues[idx + 1].id
+        else:
+            uhp.current_clue_id = None  
+
+    
+    await db.commit()
+    

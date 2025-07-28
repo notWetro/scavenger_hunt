@@ -27,14 +27,13 @@ export default function PlayHunt() {
     async function loadHunt() {
       try {
         setIsLoading(true);
-        const [huntRes, cluesRes] = await Promise.all([
+        const [huntRes, cluesRes, nextClueRes] = await Promise.all([
           authFetch(`http://localhost:8000/hunts/${huntId}`),
           authFetch(`http://localhost:8000/hunts/${huntId}/clues`),
-          // Wenn user angemeldet ist, wird hier der Fortschritt geladen (HuntProgressNumber)
+          authFetch(`http://localhost:8000/hunts/${huntId}/current-clue`),
         ]);
-
-        // Wenn user angemeldet ist, wird sein Fortschritt hier abgerufen
-        // setCurrentQuestionIndex(currentQuestionIndex + 1);
+        
+        
         if (!huntRes.ok || !cluesRes.ok) {
           throw new Error("Failed to fetch hunt or clues");
         }
@@ -44,6 +43,16 @@ export default function PlayHunt() {
 
         setHunt(huntData);
         setQuestions(cluesData);
+        console.log("Hunt loaded:", cluesData);
+        const nextClue = await nextClueRes.json();
+        console.log(nextClue);
+        if (nextClue) {
+          console.log("Next clue found:", nextClue.current_clue_id);
+          const idx = cluesData.findIndex(clue => clue.id === nextClue.current_clue_id);
+          setCurrentQuestionIndex(idx >= 0 ? idx : 0);
+          console.log(idx);
+        }
+        
       } catch (err) {
         console.error("Failed to load hunt", err);
         alert("Fehler beim Laden der Schnitzeljagd");
@@ -56,6 +65,23 @@ export default function PlayHunt() {
     loadHunt();
   }, [huntId, authFetch, navigate]);
 
+  async function saveClueProgress(huntId, clueId) {
+
+    const res = await authFetch(
+      `http://localhost:8000/hunts/${huntId}/progress`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clue_id: clueId }),
+      }
+    );
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Failed to record progress");
+    }
+  }
+
   const handleAnswer = () => {
     if (!userAnswer.trim()) {
       alert("Bitte geben Sie eine Antwort ein");
@@ -67,6 +93,9 @@ export default function PlayHunt() {
 
     if (isCorrect) {
       // Richtige Antwort
+
+      saveClueProgress(huntId, currentQuestion.id)
+
       if (currentQuestionIndex + 1 < questions.length) {
         // Nächste Frage laden
         setCurrentQuestionIndex(currentQuestionIndex + 1);
