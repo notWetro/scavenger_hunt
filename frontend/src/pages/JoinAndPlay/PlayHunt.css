@@ -1,0 +1,30 @@
+.play-hunt-container {
+  margin-top: 40px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.answer-input {
+  color: inherit;
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  width: 87%;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.answer-input:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .answer-input:focus {
+  border: 1.5px solid #00d423;
+}
+
+body.dark-mode .answer-input {
+  background: #181818;
+  border: 1px solid #444;
+}

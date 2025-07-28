@@ -15,6 +15,16 @@ const mockHunts = [
     creator: "max.mustermann@email.de"
   },
   {
+    id: "1",
+    name: "Abenteuer durch die Altstadt",
+    location: "München",
+    startPoint: {
+      lat: 48.137154,
+      lng: 11.576124
+    },
+    creator: "max.mustermann@email.de"
+  },
+  {
     id: "12345",
     name: "Rätselrallye im Park",
     location: "Berlin",
@@ -51,7 +61,7 @@ export default function StartHunt() {
       <div className="button-column">
         <button
           className="main-button main-button-green"
-          onClick={() => navigate("/PlayHunt", { state: { huntId } })} //navigate(`/PlayHunt/${huntId.trim()}`); From Join.jsx
+          onClick={() => navigate(`/PlayHunt/${huntId.trim()}`)}
         >
           {t("start_hunt")}
         </button>

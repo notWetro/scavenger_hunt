@@ -10,7 +10,7 @@ export default function Join() {
   const { t } = useTranslation();
 
   // Mock-Daten: Liste existierender Hunt-IDs
-  const mockHuntIds = ["12345", "hunt2025"];
+  const mockHuntIds = ["12345", "hunt2025", "1"];
 
   const handleJoin = (e) => {
     e.preventDefault();

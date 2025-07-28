@@ -7,9 +7,10 @@ import Join from "./pages/JoinAndPlay/Join";
 import StartHunt from "./pages/JoinAndPlay/StartHunt";
 import EditHunt from "./pages/EditHunt/EditHunt";
 import EditQuestion from "./pages/EditHunt/EditQuestion";
-import "./App.css";
 import Login from "./pages/Login/login";
 import Register from "./pages/Login/register";
+import PlayHunt from "./pages/JoinAndPlay/PlayHunt";
+import "./App.css";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/editquestion" element={<EditQuestion />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/playhunt/:huntId" element={<PlayHunt />} />
         </Routes>
       </div>
       <Navbar />
