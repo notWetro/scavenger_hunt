@@ -34,7 +34,7 @@ export default function PlayHunt() {
         ]);
 
         // Wenn user angemeldet ist, wird sein Fortschritt hier abgerufen
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        // setCurrentQuestionIndex(currentQuestionIndex + 1);
         if (!huntRes.ok || !cluesRes.ok) {
           throw new Error("Failed to fetch hunt or clues");
         }
