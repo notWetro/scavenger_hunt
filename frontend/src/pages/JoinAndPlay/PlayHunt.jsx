@@ -30,8 +30,11 @@ export default function PlayHunt() {
         const [huntRes, cluesRes] = await Promise.all([
           authFetch(`http://localhost:8000/hunts/${huntId}`),
           authFetch(`http://localhost:8000/hunts/${huntId}/clues`),
+          // Wenn user angemeldet ist, wird hier der Fortschritt geladen (HuntProgressNumber)
         ]);
 
+        // Wenn user angemeldet ist, wird sein Fortschritt hier abgerufen
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
         if (!huntRes.ok || !cluesRes.ok) {
           throw new Error("Failed to fetch hunt or clues");
         }
@@ -69,6 +72,7 @@ export default function PlayHunt() {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setUserAnswer("");
         setShowHint(false);
+        // Wenn user angemeldet ist, kann hier ein Fortschritt gespeichert werden (HuntProgressNumber)
         alert("Richtig! Nächste Frage wird geladen.");
       } else {
         // Schnitzeljagd beendet

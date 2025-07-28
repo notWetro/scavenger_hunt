@@ -81,7 +81,7 @@ export default function EditQuestion() {
       </label>
       <div className="question-actions">
         <button
-          className="save-question-btn"
+          className="main-button main-button-blue"
           onClick={() => saveChange()}
         >
           save and back
