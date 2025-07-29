@@ -15,4 +15,5 @@ psycopg2-binary>=2.9,<3.0
 uvicorn[standard]>=0.29,<1.0  
 python-dotenv>=1.0,<2.0       
 
-greenlet>=3.0,<4.0            
+greenlet>=3.0,<4.0        
+python-dotenv>=1.0,<2.0    

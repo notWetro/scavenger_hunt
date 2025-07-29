@@ -30,8 +30,8 @@ export default function EditHunt() {
     async function loadHunt() {
       try {
         const [huntRes, cluesRes] = await Promise.all([
-          authFetch(`http://localhost:8000/hunts/${huntId}`),
-          authFetch(`http://localhost:8000/hunts/${huntId}/clues`),
+          authFetch(`/hunts/${huntId}`),
+          authFetch(`/hunts/${huntId}/clues`),
         ]);
 
         if (!huntRes.ok || !cluesRes.ok) {
@@ -69,7 +69,7 @@ export default function EditHunt() {
     await Promise.all(
         updatedQuestions.map(({ id, order }) =>
           authFetch(
-            `http://localhost:8000/hunts/${huntId}/clues/${id}`,
+            `/hunts/${huntId}/clues/${id}`,
             {
               method: "PATCH",
               headers: { "Content-Type": "application/json" },
@@ -86,7 +86,7 @@ export default function EditHunt() {
       try {
         const nextOrder = questions.length + 1;
         const res = await authFetch(
-          `http://localhost:8000/hunts/${huntId}/clues`,
+          `/hunts/${huntId}/clues`,
           { method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ clue_order: nextOrder }),
@@ -123,7 +123,7 @@ export default function EditHunt() {
     if (!window.confirm("Delete this question?")) return;
     try {
       const res = await authFetch(
-        `http://localhost:8000/hunts/${huntId}/clues/${clueId}`,
+        `/hunts/${huntId}/clues/${clueId}`,
         { method: "DELETE" }
       );
       if (!res.ok) throw new Error("Delete failed");
@@ -174,7 +174,7 @@ export default function EditHunt() {
 
     async function saveAndExit() {
 
-      const res = await authFetch(`http://localhost:8000/hunts/${huntId}`, {
+      const res = await authFetch(`/hunts/${huntId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -190,7 +190,7 @@ export default function EditHunt() {
       await Promise.all(
         questions.map((q) =>
           authFetch(
-            `http://localhost:8000/hunts/${huntId}/clues/${q.id}`,
+            `/hunts/${huntId}/clues/${q.id}`,
             {
               method: "PATCH",
               headers: { "Content-Type": "application/json" },

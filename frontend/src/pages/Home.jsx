@@ -22,7 +22,7 @@ export default function Home() {
 
     try {
       const res = await authFetch(
-        "http://localhost:8000/create-hunt",
+        "/create-hunt",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

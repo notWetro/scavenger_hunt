@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./register.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function Register() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ export default function Register() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const res = await fetch("http://localhost:8000/auth/register", {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, username }),

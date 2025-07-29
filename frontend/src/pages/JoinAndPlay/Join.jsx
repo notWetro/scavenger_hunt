@@ -17,7 +17,7 @@ export default function Join() {
     
     try {
       const res = await authFetch(
-        `http://localhost:8000/hunts/${huntId}/join`,
+        `/hunts/${huntId}/join`,
         { method: "POST" }
       );
 
