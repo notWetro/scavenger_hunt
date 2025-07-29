@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import "./Hunts.css";
 import { useTranslation } from "react-i18next";
 import { AuthContext } from "../AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Hunts() {
   const { t } = useTranslation();
@@ -9,8 +10,13 @@ export default function Hunts() {
   const [selectedTab, setSelectedTab] = useState("joined");
   const [hunts, setHunts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchHunts = async (type) => {
+    if (!user && (type === "joined" || type === "own")) {
+      setHunts([]);
+      return;
+    }
     setLoading(true);
     try {
       let endpoint;
@@ -18,25 +24,22 @@ export default function Hunts() {
 
       switch (type) {
         case "joined":
-          endpoint = "http://localhost:8000/hunts/joined";
+          endpoint = "http://localhost:8000/hunts/search/joined";
           options = { method: "GET" };
           break;
         case "own":
-          endpoint = "http://localhost:8000/hunts/own";
+          endpoint = "http://localhost:8000/hunts/search/own";
           options = { method: "GET" };
           break;
         case "browse":
-          endpoint = "http://localhost:8000/hunts/public";
+          endpoint = "http://localhost:8000/hunts/search/public";
           options = { method: "GET" };
           break;
         default:
-          endpoint = "http://localhost:8000/hunts/public";
+          endpoint = "http://localhost:8000/hunts/search/public";
       }
 
-      const response =
-        user && (type === "joined" || type === "own")
-          ? await authFetch(endpoint, options)
-          : await fetch(endpoint, options);
+      const response = await authFetch(endpoint, options);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch ${type} hunts`);
@@ -108,6 +111,16 @@ export default function Hunts() {
       <div className="hunt-list">
         {loading ? (
           <div className="loading">{t("loading")}...</div>
+        ) : !user && (selectedTab === "joined" || selectedTab === "own") ? (
+          <div className="please-login">
+            <p>{t("please login to view")} {t(selectedTab)} {t("hunts")}</p>
+            <button
+              className="main-button main-button-green"
+              onClick={() => navigate("/login")}
+            >
+              {t("login")}
+            </button>
+          </div>
         ) : hunts.length > 0 ? (
           hunts.map((hunt) => (
             <div key={hunt.id} className="hunt-card">

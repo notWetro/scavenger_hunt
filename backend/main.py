@@ -738,6 +738,7 @@ async def get_current_clue(
 class ProgressPayload(BaseModel):
     clue_id: int
 
+# Save progress when user solves a clue
 @app.post("/hunts/{hunt_id}/progress",status_code=status.HTTP_204_NO_CONTENT,summary="Record that the user reached/solved a clue")
 async def save_progress(
     hunt_id: int,
@@ -796,3 +797,59 @@ async def save_progress(
     
     await db.commit()
     
+
+# List hunts the current user has joined
+@app.get(
+    "/hunts/search/joined",
+    response_model=List[HuntRead],
+    summary="List hunts the current user has joined",
+)
+async def list_joined_hunts(
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Hunt)
+        .join(UserHuntProgress, UserHuntProgress.hunt_id == Hunt.id)
+        .where(UserHuntProgress.user_id == current_user.id)
+        .order_by(Hunt.created_at.desc())
+    )
+    hunts = result.scalars().all()
+    return hunts
+
+
+# List hunts the current user owns
+@app.get(
+    "/hunts/search/own",
+    response_model=List[HuntRead],
+    summary="List hunts the current user owns",
+)
+async def list_own_hunts(
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Hunt)
+        .where(Hunt.created_by == current_user.id)
+        .order_by(Hunt.created_at.desc())
+    )
+    hunts = result.scalars().all()
+    return hunts
+
+
+# List all public hunts (not private)
+@app.get(
+    "/hunts/search/public",
+    response_model=List[HuntRead],
+    summary="List all public hunts",
+)
+async def list_public_hunts(
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Hunt)
+        .where(Hunt.private == False)
+        .order_by(Hunt.created_at.desc())
+    )
+    hunts = result.scalars().all()
+    return hunts
