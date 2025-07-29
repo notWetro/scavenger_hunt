@@ -38,3 +38,84 @@
   font-size: 0.85rem;
   color: #aaa;
 }
+
+/* New css Code */
+/* ...existing code... */
+
+.hunt-tab-slider {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.tab-radio-group {
+  position: relative;
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  padding: 4px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-radio-group input[type="radio"] {
+  display: none;
+}
+
+.tab-radio-group label {
+  position: relative;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  z-index: 2;
+  border-radius: 20px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.tab-radio-group input[type="radio"]:checked + label {
+  color: #fff;
+  font-weight: 600;
+}
+
+.tab-glider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: calc(33.33% - 4px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tab-radio-group input[type="radio"]:nth-child(1):checked ~ .tab-glider {
+  transform: translateX(0);
+}
+
+.tab-radio-group input[type="radio"]:nth-child(3):checked ~ .tab-glider {
+  transform: translateX(100%);
+}
+
+.tab-radio-group input[type="radio"]:nth-child(5):checked ~ .tab-glider {
+  transform: translateX(200%);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+}
+
+.no-hunts {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* ...existing code... */
