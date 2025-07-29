@@ -28,3 +28,13 @@ body.dark-mode .answer-input {
   background: #181818;
   border: 1px solid #444;
 }
+
+.button-group {
+  display: flex;
+  width: 35%;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-inline: auto;
+  gap: 10px;
+}

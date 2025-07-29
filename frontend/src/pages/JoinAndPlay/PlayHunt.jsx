@@ -118,6 +118,18 @@ export default function PlayHunt() {
     setShowHint(true);
   };
 
+  const handleBack = () => {
+    if (currentQuestionIndex > 0) {
+      if (window.confirm("Möchten Sie wirklich zur vorherigen Frage zurückkehren? Ihre aktuelle Antwort geht verloren.")) {
+        setCurrentQuestionIndex(currentQuestionIndex - 1);
+        setUserAnswer("");
+        setShowHint(false);
+      }
+    } else {
+      alert("Dies ist die erste Frage. Sie können nicht zurückgehen.");
+    }
+  };
+
   const handleEnd = () => {
     if (window.confirm("Möchten Sie die Schnitzeljagd wirklich beenden?")) {
       navigate("/");
@@ -166,6 +178,8 @@ export default function PlayHunt() {
           <h2>{currentQuestion.description}</h2>
         </div>
 
+        <hr className="section-divider" /> {/* css Code in EditQuestion.css */}
+
         <div className="answer-section">
           <input
             type="text"
@@ -182,19 +196,26 @@ export default function PlayHunt() {
 
           <div className="button-group">
             <button 
-              className="main-button main-button-blue"
+              className="main-button main-button-green"
               onClick={handleAnswer}
             >
               Antworten
             </button>
             
             <button 
-              className="main-button"
+              className="main-button main-button-blue"
               onClick={handleHint}
             >
               Hinweis
             </button>
             
+            <button 
+              className="main-button"
+              onClick={handleBack}
+            >
+              Zurück
+            </button>
+
             <button 
               className="main-button main-button-red"
               onClick={handleEnd}
