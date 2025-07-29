@@ -16,7 +16,7 @@ export default function StartHunt() {
   useEffect(() => { 
     const fetchHunt = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/hunts/${huntId}`);
+        const response = await authFetch(`/hunts/${huntId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch hunt details");
         }
@@ -33,7 +33,7 @@ export default function StartHunt() {
   const removeHunt = async () => {
     if (!window.confirm("Are you sure you want to leave this hunt?")) return;
     try {
-      const response = await authFetch(`http://localhost:8000/hunts/${huntId}/leave`, {
+      const response = await authFetch(`/hunts/${huntId}/leave`, {
         method: "DELETE",
       });
       if (!response.ok) {

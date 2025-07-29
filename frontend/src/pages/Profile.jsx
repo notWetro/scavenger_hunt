@@ -25,7 +25,7 @@ export default function Profile() {
   const handleSave = async () => {
     
     try {
-      const resp = await authFetch("http://localhost:8000/users/me", {
+      const resp = await authFetch("/users/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

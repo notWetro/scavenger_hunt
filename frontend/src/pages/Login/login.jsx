@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 import "./login.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function Login() {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function Login() {
     form.append('username', email);
     form.append('password', password);
 
-    const res = await fetch("http://localhost:8000/auth/jwt/login", {
+    const res = await fetch(`${API_BASE}/auth/jwt/login`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: form.toString(),

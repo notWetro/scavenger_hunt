@@ -28,9 +28,9 @@ export default function PlayHunt() {
       try {
         setIsLoading(true);
         const [huntRes, cluesRes, nextClueRes] = await Promise.all([
-          authFetch(`http://localhost:8000/hunts/${huntId}`),
-          authFetch(`http://localhost:8000/hunts/${huntId}/clues`),
-          authFetch(`http://localhost:8000/hunts/${huntId}/current-clue`),
+          authFetch(`/hunts/${huntId}`),
+          authFetch(`/hunts/${huntId}/clues`),
+          authFetch(`/hunts/${huntId}/current-clue`),
         ]);
         
         
@@ -68,7 +68,7 @@ export default function PlayHunt() {
   async function saveClueProgress(huntId, clueId) {
 
     const res = await authFetch(
-      `http://localhost:8000/hunts/${huntId}/progress`,
+      `/hunts/${huntId}/progress`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

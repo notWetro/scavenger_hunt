@@ -35,10 +35,14 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 # === PostgreSQL DATABASE CONFIG ===
-DATABASE_URL = "postgresql+asyncpg://postgres:1967@db:5432/scavengerhunt"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 # === SQLAlchemy Setup ===
@@ -83,8 +87,8 @@ async def get_user_db(session: AsyncSession = Depends(get_db)):
     yield SQLAlchemyUserDatabase(session, User)
 
 
-    
-SECRET = "SUPER_SECRET"  # !!!!!!!!!!!!!!!!!!!!!!!!move to env in prod
+
+SECRET = os.getenv("SECRET_KEY")
 
 class UserManager(BaseUserManager[User, int]):
     user_db_model = User

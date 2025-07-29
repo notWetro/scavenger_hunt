@@ -28,7 +28,7 @@ export default function EditQuestion() {
       try {
         console.log("Loading question data for", huntId, questionId);
         const res = await authFetch(
-          `http://localhost:8000/hunts/${huntId}/clues/${questionId}`
+          `/hunts/${huntId}/clues/${questionId}`
         );
         console.log("Response status:", res.status);
         if (!res.ok) throw new Error();
@@ -46,7 +46,7 @@ export default function EditQuestion() {
   const saveChange = async () => {
     try {
       const res = await authFetch(
-        `http://localhost:8000/hunts/${huntId}/clues/${questionId}`,
+        `/hunts/${huntId}/clues/${questionId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

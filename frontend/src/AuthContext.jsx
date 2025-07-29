@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 
+
+
 export const AuthContext = createContext({
   token: null,
   user: null,
@@ -8,7 +10,7 @@ export const AuthContext = createContext({
   authFetch: (url, opts) => Promise.reject("No authFetch"),
 });
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
