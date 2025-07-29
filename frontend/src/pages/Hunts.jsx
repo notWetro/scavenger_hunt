@@ -123,7 +123,7 @@ export default function Hunts() {
           </div>
         ) : hunts.length > 0 ? (
           hunts.map((hunt) => (
-            <div key={hunt.id} className="hunt-card">
+            <button key={hunt.id} className="hunt-card" onClick={() => {selectedTab == "own" ? navigate(`/EditHunt/${hunt.id}`) : navigate(`/StartHunt/${hunt.id}`)}}>
               <h3>{hunt.name}</h3>
               <p>
                 <strong>{t("location")}:</strong> {hunt.place_to_play}
@@ -139,7 +139,7 @@ export default function Hunts() {
                   {new Date(hunt.created_at).toLocaleDateString()}
                 </p>
               )}
-            </div>
+            </button>
           ))
         ) : (
           <div className="no-hunts">

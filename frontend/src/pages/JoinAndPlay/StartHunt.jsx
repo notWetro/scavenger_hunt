@@ -40,7 +40,7 @@ export default function StartHunt() {
         throw new Error("Failed to remove hunt");
       }
       alert("You’ve left the hunt.");
-      navigate("/join");
+      navigate(-1);
     } catch (error) {
       console.error("Error removing hunt:", error);
       alert("Could not leave the hunt.");

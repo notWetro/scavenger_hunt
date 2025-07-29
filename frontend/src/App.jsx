@@ -22,7 +22,7 @@ export default function App() {
           <Route path="/hunts" element={<Hunts />} />
           <Route path="/join" element={<Join />} />
           <Route path="/starthunt/:huntId" element={<StartHunt />} />
-          <Route path="/edithunt" element={<EditHunt />} />
+          <Route path="/edithunt/:huntId" element={<EditHunt />} />
           <Route path="/editquestion" element={<EditQuestion />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

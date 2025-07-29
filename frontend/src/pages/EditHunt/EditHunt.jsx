@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./EditHunt.css";
 import { useSearchParams } from "react-router-dom";
@@ -17,8 +17,7 @@ export default function EditHunt() {
   const [huntNameState, setHuntNameState] = useState(""); 
   // Array für alle Fragen
 
-  const [searchParams] = useSearchParams();
-  const huntId = searchParams.get("name");
+  const { huntId } = useParams();
 
   const { authFetch } = useContext(AuthContext);
 

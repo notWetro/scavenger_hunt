@@ -40,7 +40,7 @@ export default function Home() {
 
       setShowPopup(false);
       setHuntName("");
-      navigate(`/EditHunt?name=${newHuntId}`);
+      navigate(`/EditHunt/${newHuntId}`);
     } catch (err) {
       console.error(err);
       if (err.message.includes("Unauthorized")) {
