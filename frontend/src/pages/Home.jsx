@@ -10,7 +10,7 @@ export default function Home() {
   const { authFetch } = useContext(AuthContext);
   const [showPopup, setShowPopup] = useState(false);
   const [huntName, setHuntName] = useState("");
-   const [error, setError] = useState("");
+  const [error, setError] = useState("");
   
 
   const handleCreate = async () => {
@@ -43,7 +43,17 @@ export default function Home() {
       navigate(`/EditHunt?name=${newHuntId}`);
     } catch (err) {
       console.error(err);
-      setError(t("create_failed"));
+      if (err.message.includes("Unauthorized")) {
+        setError(t("Error: You should be logged in to create a hunt"));
+        <button
+              className="main-button main-button-green"
+              onClick={() => navigate("/login")}
+            >
+              {t("login")}
+        </button>
+        return;
+      }
+      setError(t(err.message || "An error occurred while creating the hunt"));
     }
   };
 
@@ -65,6 +75,7 @@ export default function Home() {
               placeholder={t("hunt_name")}
               autoFocus
             />
+            {error && <p className="error">{error}</p>}
             <div className="popup-buttons">
               {/* after pressing the create button -> save the hunt with hunt_id and hunt_name then call with the now existing hunt_id the edit page */}
               <button className="main-button main-button-green" onClick={handleCreate}>{t("create")}</button>
