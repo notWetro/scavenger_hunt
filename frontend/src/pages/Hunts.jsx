@@ -24,19 +24,19 @@ export default function Hunts() {
 
       switch (type) {
         case "joined":
-          endpoint = "http://localhost:8000/hunts/search/joined";
+          endpoint = "/hunts/search/joined";
           options = { method: "GET" };
           break;
         case "own":
-          endpoint = "http://localhost:8000/hunts/search/own";
+          endpoint = "/hunts/search/own";
           options = { method: "GET" };
           break;
         case "browse":
-          endpoint = "http://localhost:8000/hunts/search/public";
+          endpoint = "/hunts/search/public";
           options = { method: "GET" };
           break;
         default:
-          endpoint = "http://localhost:8000/hunts/search/public";
+          endpoint = "/hunts/search/public";
       }
 
       const response = await authFetch(endpoint, options);
