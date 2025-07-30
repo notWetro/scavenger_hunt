@@ -63,3 +63,93 @@ body.dark-mode .section-divider {
   margin-top: 1rem;
   justify-content: center;
 }
+
+.type-dropdown {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.media-upload {
+  margin: 10px 0;
+}
+
+.file-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.file-preview {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.gps-input {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.gps-field {
+  flex: 1;
+}
+
+.gps-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.multiple-choice-container {
+  margin: 10px 0;
+}
+
+.multiple-choice-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.multiple-choice-option input[type="radio"] {
+  flex-shrink: 0;
+}
+
+.multiple-choice-option input[type="text"] {
+  flex: 1;
+}
+
+.remove-option-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.add-option-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.add-option-btn:hover {
+  background: #45a049;
+}
+
+.remove-option-btn:hover {
+  background: #cc0000;
+}
