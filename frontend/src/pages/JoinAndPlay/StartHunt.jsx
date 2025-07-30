@@ -55,6 +55,7 @@ export default function StartHunt() {
       
       <div className="hunt-details">
         <p><strong>{t("hunt_id")}:</strong> {hunt.id}</p>
+        <p><strong>{t("hunt_info")}:</strong> {hunt.description}</p>
         <p><strong>{t("location")}:</strong> {hunt.place_to_play}</p>
         <p><strong>{t("start_point")}:</strong> {hunt.start_point}</p>
         <p><strong>{t("creator")}:</strong> {hunt.creator_username}</p>

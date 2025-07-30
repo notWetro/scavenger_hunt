@@ -131,9 +131,6 @@ export default function Hunts() {
               <p>
                 <strong>{t("start_point")}:</strong> {hunt.start_point}
               </p>
-              <p>
-                <strong>{t("creator")}:</strong> {hunt.creator_username}
-              </p>
               {hunt.created_at && (
                 <p className="date">
                   {new Date(hunt.created_at).toLocaleDateString()}

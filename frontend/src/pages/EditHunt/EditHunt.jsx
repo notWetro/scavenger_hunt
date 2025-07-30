@@ -142,7 +142,65 @@ export default function EditHunt() {
     }
   };
 
+  // Validierungsfunktion hinzufügen
+  const validateRequiredFields = () => {
+    const errors = [];
+    
+    if (!creatorName.trim()) {
+      errors.push("Kurzinfo ist erforderlich");
+    }
+    if (!huntLocation.trim()) {
+      errors.push("Ort des Spieles ist erforderlich");
+    }
+    if (!startPoint.trim()) {
+      errors.push("Startpunkt ist erforderlich");
+    }
+    
+    if (errors.length > 0) {
+      alert("Bitte füllen Sie alle Pflichtfelder aus:\n" + errors.join("\n"));
+      return false;
+    }
+    return true;
+  };
+
   const handleEditQuestion = (idx) => {
+    // Validierung vor dem Navigieren
+    if (!validateRequiredFields()) {
+      return;
+    }
+      async function save() {
+      try {
+        const res = await authFetch(`/hunts/${huntId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description:   creatorName,
+            place_to_play: huntLocation,
+            start_point:   startPoint,
+            is_active:     true
+          })
+        });
+        if (!res.ok) throw new Error('Failed to save hunt');
+        
+        await Promise.all(
+          questions.map((q) =>
+            authFetch(
+              `/hunts/${huntId}/clues/${q.id}`,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clue_order: q.order }),
+              }
+            )
+          )
+        );
+      } catch (err) {
+        console.error("Failed to save hunt", err);
+      }
+    }
+
+    save();
+    
 
     const question = questions[idx];
     if (!question) return;
@@ -170,45 +228,63 @@ export default function EditHunt() {
   };
 
   const handleSaveAndExit = () => {
+    // Validierung vor dem Speichern
+    if (!validateRequiredFields()) {
+      return;
+    }
 
     async function saveAndExit() {
-
-      const res = await authFetch(`/hunts/${huntId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          description:   creatorName,
-          place_to_play: huntLocation,
-          start_point:   startPoint,
-          is_active:     true
-        })
-      });
-      if (!res.ok) throw new Error('Failed to save hunt');
-      
       try {
-      await Promise.all(
-        questions.map((q) =>
-          authFetch(
-            `/hunts/${huntId}/clues/${q.id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ clue_order: q.order }),
-            }
+        const res = await authFetch(`/hunts/${huntId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description:   creatorName,
+            place_to_play: huntLocation,
+            start_point:   startPoint,
+            is_active:     true
+          })
+        });
+        if (!res.ok) throw new Error('Failed to save hunt');
+        
+        await Promise.all(
+          questions.map((q) =>
+            authFetch(
+              `/hunts/${huntId}/clues/${q.id}`,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clue_order: q.order }),
+              }
+            )
           )
-        )
-      );
-      alert(t("hunt_saved_successfully"));
-      navigate(-1);
+        );
+        alert(t("hunt_saved_successfully"));
+        navigate(-1);
       } catch (err) {
-        console.error("Failed to save question order", err);
+        console.error("Failed to save hunt", err);
         alert(t("could_not_save_order"));
       }
-
     }
 
     saveAndExit();
-    
+  };
+
+  const handleDeleteHunt = async () => {
+    if (!window.confirm("Are you sure you want to delete this hunt?")) return;
+    try {
+      const res = await authFetch(`/hunts/${huntId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete hunt");
+      }
+      alert("Hunt deleted successfully.");
+      navigate(-1);
+    } catch (error) {
+      console.error("Error deleting hunt:", error);
+      alert("Could not delete the hunt.");
+    }
   };
 
   return (
@@ -225,6 +301,7 @@ export default function EditHunt() {
         </button>
         {showDetails && (
           <div className="accordion-content">
+            <label>Hunt ID: {huntId}</label>
           {/*             <label>
               Hunt Name:
               <input
@@ -236,33 +313,45 @@ export default function EditHunt() {
               />
             </label> */}
             <label>
-              Kurzinfo:
+              Kurzinfo: <span style={{color: 'red'}}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={creatorName}
                 onChange={(e) => setCreatorName(e.target.value)}
+                required
                 placeholder="Kurzinfo eingeben"
+                style={{
+                  borderColor: !creatorName.trim() ? 'red' : undefined
+                }}
               />
             </label>
             <label>
-              Ort des Spieles:
+              Ort des Spieles: <span style={{color: 'red'}}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={huntLocation}
                 onChange={(e) => setHuntLocation(e.target.value)}
+                required
                 placeholder="Ort des Spieles"
+                style={{
+                  borderColor: !huntLocation.trim() ? 'red' : undefined
+                }}
               />
             </label>
             <label>
-              Startpunkt:
+              Startpunkt: <span style={{color: 'red'}}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={startPoint}
                 onChange={(e) => setStartPoint(e.target.value)}
+                required
                 placeholder="Startpunkt"
+                style={{
+                  borderColor: !startPoint.trim() ? 'red' : undefined
+                }}
               />
             </label>
 
@@ -351,6 +440,9 @@ export default function EditHunt() {
       <div className="save-exit-container">
         <button className="main-button main-button-green" onClick={handleSaveAndExit}>
           {t("save_and_exit")}
+        </button>
+        <button className="main-button main-button-red" onClick={handleDeleteHunt} disabled={true}>
+          {t("delete_Hunt")} (disabled)
         </button>
       </div>
     </div>
