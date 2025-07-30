@@ -49,58 +49,117 @@
 }
 
 .tab-radio-group {
-  position: relative;
+  --bg: rgba(255, 255, 255, 0.06);
+  --text: #414141;
+
   display: flex;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 25px;
-  padding: 4px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  background: var(--bg);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+    inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  width: fit-content;
 }
 
-.tab-radio-group input[type="radio"] {
+body.dark-mode .glass-radio-group {
+    --text: #e0e0e0;
+}
+
+.tab-radio-group input {
   display: none;
 }
 
 .tab-radio-group label {
-  position: relative;
-  padding: 12px 24px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  z-index: 2;
-  border-radius: 20px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 80px;
-  text-align: center;
+  font-size: 14px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease-in-out;
+}
+
+body.dark-mode .tab-radio-group {
+    --text: #e0e0e0;
 }
 
 .tab-radio-group input[type="radio"]:checked + label {
   font-weight: 600;
 }
 
+body.dark-mode .tab-radio-group input:checked + label {
+  color: #fff;
+}
+
 .tab-glider {
   position: absolute;
-  top: 4px;
-  bottom: 4px;
-  width: calc(33.33% - 4px);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
-  border-radius: 20px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  top: 0;
+  bottom: 0;
+  width: calc(100% / 3); /* 3 Buttons */
+  border-radius: 1rem;
+  z-index: 1;
+  transition:
+    transform 0.5s cubic-bezier(0.37, 1.95, 0.66, 0.56),
+    background 0.4s ease-in-out,
+    box-shadow 0.4s ease-in-out;
 }
 
-.tab-radio-group input[type="radio"]:nth-child(1):checked ~ .tab-glider {
-  transform: translateX(0);
+#tab-joined:checked ~ .tab-glider {
+  transform: translateX(0%);
+  background: linear-gradient(135deg, #d0e7ff55, #73c5ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
 }
 
-.tab-radio-group input[type="radio"]:nth-child(3):checked ~ .tab-glider {
+body.dark-mode .tab-glider {
+  background: linear-gradient(135deg, #ff55, #a0d8ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
+}
+
+#tab-own:checked ~ .tab-glider {
   transform: translateX(100%);
+  background: linear-gradient(135deg, #d0e7ff55, #73c5ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
 }
 
-.tab-radio-group input[type="radio"]:nth-child(5):checked ~ .tab-glider {
-  transform: translateX(200%);
+body.dark-mode .tab-glider {
+  background: linear-gradient(135deg, #ff55, #a0d8ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
 }
+
+#tab-browse:checked ~ .tab-glider {
+  transform: translateX(200%);
+  background: linear-gradient(135deg, #d0e7ff55, #73c5ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
+}
+
+body.dark-mode .tab-glider {
+  background: linear-gradient(135deg, #ff55, #a0d8ff);
+  box-shadow:
+    0 0 18px rgba(160, 216, 255, 0.5),
+    0 0 10px rgba(200, 240, 255, 0.4) inset;
+}
+
 
 .loading {
   text-align: center;
