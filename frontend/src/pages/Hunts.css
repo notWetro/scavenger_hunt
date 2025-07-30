@@ -11,8 +11,11 @@
 }
 
 .hunt-card {
+  color: inherit;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 1rem;
+  border: none;
+  cursor: pointer;
   padding: 16px;
   backdrop-filter: blur(10px);
   box-shadow:
@@ -30,7 +33,6 @@
 .hunt-card p {
   margin: 4px 0;
   font-size: 0.95rem;
-  color: #e0e0e0;
 }
 
 .hunt-card .date {
@@ -39,8 +41,6 @@
   color: #aaa;
 }
 
-/* New css Code */
-/* ...existing code... */
 
 .hunt-tab-slider {
   margin: 20px 0;
@@ -66,7 +66,6 @@
   position: relative;
   padding: 12px 24px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
   font-weight: 500;
   transition: all 0.3s ease;
   z-index: 2;
@@ -76,7 +75,6 @@
 }
 
 .tab-radio-group input[type="radio"]:checked + label {
-  color: #fff;
   font-weight: 600;
 }
 
@@ -107,15 +105,10 @@
 .loading {
   text-align: center;
   padding: 40px;
-  color: rgba(255, 255, 255, 0.7);
   font-size: 18px;
 }
 
 .no-hunts {
   text-align: center;
   padding: 40px;
-  color: rgba(255, 255, 255, 0.5);
-  font-style: italic;
 }
-
-/* ...existing code... */
