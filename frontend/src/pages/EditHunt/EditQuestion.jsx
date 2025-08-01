@@ -17,13 +17,19 @@ export default function EditQuestion() {
   const [question, setQuestion] = useState({ 
     text: "", 
     answer: "",
+    hint: "",
     questionType: "text", // text, image, audio, gps
     answerType: "text", // text, multiple_choice, gps
+    hintType: "text", // text, image, audio, gps
     imageFile: null,
     audioFile: null,
-    gpsCoordinates: { lat: "", lng: "" },
-    multipleChoiceOptions: ["", "", "", ""],
-    correctOptionIndex: 0
+    hintImageFile: null,
+    hintAudioFile: null,
+    questionGpsCoordinates: { lat: "", lng: "" },
+    answerGpsCoordinates: { lat: "", lng: "" },
+    hintGpsCoordinates: { lat: "", lng: "" },
+    multipleChoiceOptions: ["", "", ""],
+    correctOptionIndex: 0 // for multiple choice
   });
 
   useEffect(() => {
@@ -41,9 +47,10 @@ export default function EditQuestion() {
           ...prev,
           text: data.description || "", 
           answer: data.correct_answer || "",
+          hint: data.hint || "",
           // Hier können Sie zusätzliche Felder aus der Datenbank laden
           questionType: data.question_type || "text",
-          answerType: data.answer_type || "text"
+          answerType: data.answer_type || "text",
         }));
       } catch (error) {
         console.error("Error loading question:", error);
@@ -58,6 +65,10 @@ export default function EditQuestion() {
 
   const handleAnswerTypeChange = (type) => {
     setQuestion(prev => ({ ...prev, answerType: type }));
+  };
+
+  const handleHintTypeChange = (type) => {
+    setQuestion(prev => ({ ...prev, hintType: type }));
   };
 
   const handleImageUpload = (e) => {
@@ -101,35 +112,89 @@ export default function EditQuestion() {
     }
   };
 
+  const clearOtherFields = () => {
+    switch (question.questionType) {
+      case "text":
+        question.imageFile = null;
+        question.audioFile = null;
+        question.questionGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "image":
+        question.audioFile = null;
+        question.questionGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "audio":
+        question.imageFile = null;
+        question.questionGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "gps":
+        question.imageFile = null;
+        question.audioFile = null;
+        break;
+      default:
+        break;
+    }
+    switch (question.answerType) {
+      case "text":
+        question.multipleChoiceOptions = [];
+        question.answerGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "multiple_choice":
+        question.answer = "";
+        question.answerGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "gps":
+        question.answer = "";
+        question.multipleChoiceOptions = [];
+        break;
+      default:
+        break;
+    }
+    switch (question.hintType) {
+      case "text":
+        question.hintImageFile = null;
+        question.hintAudioFile = null;
+        question.hintGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "image":
+        question.hint = "";
+        question.hintAudioFile = null;
+        question.hintGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "audio":
+        question.hint = "";
+        question.hintImageFile = null;
+        question.hintGpsCoordinates = { lat: "", lng: "" };
+        break;
+      case "gps":
+        question.hint = "";
+        question.hintImageFile = null;
+        question.hintAudioFile = null;
+        break;
+      default:
+        break;
+    }
+  }
+
   const saveChange = async () => {
+    clearOtherFields();
     try {
-      const formData = new FormData();
-      formData.append("description", question.text);
-      formData.append("question_type", question.questionType);
-      formData.append("answer_type", question.answerType);
-
-      if (question.answerType === "multiple_choice") {
-        formData.append("correct_answer", question.multipleChoiceOptions[question.correctOptionIndex]);
-        formData.append("multiple_choice_options", JSON.stringify(question.multipleChoiceOptions));
-      } else {
-        formData.append("correct_answer", question.answer);
-      }
-
-      if (question.questionType === "image" && question.imageFile) {
-        formData.append("image", question.imageFile);
-      }
-
-      if (question.questionType === "audio" && question.audioFile) {
-        formData.append("audio", question.audioFile);
-      }
-
-      if (question.questionType === "gps") {
-        formData.append("gps_coordinates", JSON.stringify(question.gpsCoordinates));
-      }
-
       const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`, {
         method: "PATCH",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          {
+            description: question.text,
+            correct_answer: question.answer,
+            question_type: question.questionType,
+            answer_type: question.answerType,
+            //hint_type: question.hintType,
+            hint: question.hint,
+            image_url: question.imageFile ? question.imageFile.name : null,
+            audio_url: question.audioFile ? question.audioFile.name : null,
+            expected_gps: toString(question.answerGpsCoordinates),
+            //hint_gps_coordinates: question.hintGpsCoordinates,
+          }),
       });
 
       if (!res.ok) throw new Error(await res.text());
@@ -182,7 +247,7 @@ export default function EditQuestion() {
               <input
                 type="number"
                 step="any"
-                value={question.gpsCoordinates.lat}
+                value={question.questionGpsCoordinates.lat}
                 onChange={(e) => handleGpsChange("lat", e.target.value)}
                 placeholder="z.B. 52.5200"
                 className="EditQuestion-input"
@@ -193,7 +258,7 @@ export default function EditQuestion() {
               <input
                 type="number"
                 step="any"
-                value={question.gpsCoordinates.lng}
+                value={question.questionGpsCoordinates.lng}
                 onChange={(e) => handleGpsChange("lng", e.target.value)}
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
@@ -266,7 +331,7 @@ export default function EditQuestion() {
               <input
                 type="number"
                 step="any"
-                value={question.gpsCoordinates.lat}
+                value={question.answerGpsCoordinates.lat}
                 onChange={(e) => handleGpsChange("lat", e.target.value)}
                 placeholder="z.B. 52.5200"
                 className="EditQuestion-input"
@@ -277,7 +342,83 @@ export default function EditQuestion() {
               <input
                 type="number"
                 step="any"
-                value={question.gpsCoordinates.lng}
+                value={question.answerGpsCoordinates.lng}
+                onChange={(e) => handleGpsChange("lng", e.target.value)}
+                placeholder="z.B. 13.4050"
+                className="EditQuestion-input"
+              />
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderHintContent = () => {
+    switch (question.hintType) {
+      case "text":
+        return (
+          <input
+            type="text"
+            className="EditQuestion-input"
+            value={question.hint}
+            onChange={(e) => setQuestion(prev => ({ ...prev, hint: e.target.value }))}
+            placeholder="Hinweis eingeben"
+          />
+        );
+      case "image":
+        return (
+          <div className="media-upload">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setQuestion(prev => ({ ...prev, hintImageFile: e.target.files[0] }))}
+              className="file-input"
+            />
+            {question.hintImageFile && (
+              <div className="file-preview">
+                <p>Ausgewählte Datei: {question.hintImageFile.name}</p>
+              </div>
+            )}
+          </div>
+        );
+      case "audio":
+        return (
+          <div className="media-upload">
+            <input
+              type="file"
+              accept="audio/*"
+              onChange={(e) => setQuestion(prev => ({ ...prev, hintAudioFile: e.target.files[0] }))}
+              className="file-input"
+            />
+            {question.hintAudioFile && (
+              <div className="file-preview">
+                <p>Ausgewählte Datei: {question.hintAudioFile.name}</p>
+              </div>
+            )}
+          </div>
+        );
+      case "gps":
+        return (
+          <div className="gps-input">
+            <div className="gps-field">
+              <label>Breitengrad:</label>
+              <input
+                type="number"
+                step="any"
+                value={question.hintGpsCoordinates.lat}
+                onChange={(e) => handleGpsChange("lat", e.target.value)}
+                placeholder="z.B. 52.5200"
+                className="EditQuestion-input"
+              />
+            </div>
+            <div className="gps-field">
+              <label>Längengrad:</label>
+              <input
+                type="number"
+                step="any"
+                value={question.hintGpsCoordinates.lng}
                 onChange={(e) => handleGpsChange("lng", e.target.value)}
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
@@ -303,9 +444,9 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          <option value="image">Bild</option>
-          <option value="audio">Audio</option>
-          <option value="gps">GPS</option>
+          {/* <option value="image">Bild</option> */}
+          {/* <option value="audio">Audio</option> */}
+          {/* <option value="gps">GPS</option> */}
         </select>
       </div>
 
@@ -335,8 +476,8 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          <option value="multiple_choice">Multiple Choice</option>
-          <option value="gps">GPS</option>
+          {/* <option value="multiple_choice">Multiple Choice</option> */}
+          {/* <option value="gps">GPS</option> */}
         </select>
       </div>
 
@@ -347,6 +488,29 @@ export default function EditQuestion() {
         {renderAnswerContent()}
       </div>
 
+      <hr className="section-divider" />
+
+      {/* Hinweis Sektion */}
+      <div className="input-group">
+        <label htmlFor="hint-type">Hinweis Typ:</label>
+        <select
+          id="hint-type"
+          value={question.hintType}
+          onChange={(e) => handleHintTypeChange(e.target.value)}
+          className="type-dropdown"
+        >
+          <option value="text">Text</option>
+          {/* <option value="image">Bild</option> */}
+          {/* <option value="audio">Audio</option> */}
+          {/* <option value="gps">GPS</option> */}
+        </select>
+        <div className="hint-content">
+          <label htmlFor="hint-input">Hinweis (optional):</label>
+          {renderHintContent()}
+        </div>
+      </div>
+
+      {/* Aktionen Sektion */}
       <div className="question-actions">
         <button
           className="main-button main-button-green"
@@ -361,6 +525,7 @@ export default function EditQuestion() {
           Abbrechen
         </button>
       </div>
+
     </div>
   );
 }
