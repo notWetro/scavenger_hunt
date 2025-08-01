@@ -391,6 +391,15 @@ class ClueRead(BaseModel):
     description:    str | None  
     correct_answer: str | None
     clue_order:    int | None
+    hint:           str | None
+    question_type:   str | None
+    answer_type:     str | None
+    choices:        str | None
+    image_url:      str | None
+    audio_url:      str | None
+    video_url:      str | None
+    expected_gps:   str | None
+    gps_radius:     float | None
 
     class Config:
         orm_mode = True
