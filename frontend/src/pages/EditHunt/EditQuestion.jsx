@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./EditQuestion.css";
+import MapComponent from "../../components/MapComponent.jsx";
 import { AuthContext } from "../../AuthContext";
+import { getCurrentLocation } from "../../utils/geolocation";
 
 export default function EditQuestion() {
   const { t } = useTranslation();
@@ -27,6 +29,7 @@ export default function EditQuestion() {
     hintAudioFile: null,
     questionGpsCoordinates: { lat: "", lng: "" },
     answerGpsCoordinates: { lat: "", lng: "" },
+    answerGpsRadius: null,
     hintGpsCoordinates: { lat: "", lng: "" },
     multipleChoiceOptions: ["", "", ""],
     correctOptionIndex: 0, // for multiple choice
@@ -42,6 +45,8 @@ export default function EditQuestion() {
         const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`);
         if (!res.ok) throw new Error();
         const data = await res.json();
+        // data.expected_gps returns an undefined object
+        console.log("Loaded question:", data.expected_gps);
 
         setQuestion((prev) => ({
           ...prev,
@@ -51,6 +56,11 @@ export default function EditQuestion() {
           // Hier können Sie zusätzliche Felder aus der Datenbank laden
           questionType: data.question_type || "text",
           answerType: data.answer_type || "text",
+          //questionGpsCoordinates: data.question_gps_coordinates || { lat: "", lng: "" },
+          //answerGpsCoordinates: data.answer_gps_coordinates || { lat: "", lng: "" },
+          //hintGpsCoordinates: data.hint_gps_coordinates || { lat: "", lng: "" },
+          // data.expected_gps returns an undefined object
+          //questionGpsCoordinates: data.expected_gps || { lat: "", lng: "" },
         }));
       } catch (error) {
         console.error("Error loading question:", error);
@@ -81,10 +91,10 @@ export default function EditQuestion() {
     setQuestion((prev) => ({ ...prev, audioFile: file }));
   };
 
-  const handleGpsChange = (field, value) => {
+  const handleGpsChange = (coordinateType, field, value) => {
     setQuestion((prev) => ({
       ...prev,
-      gpsCoordinates: { ...prev.gpsCoordinates, [field]: value },
+      [coordinateType]: { ...prev[coordinateType], [field]: value },
     }));
   };
 
@@ -196,7 +206,7 @@ export default function EditQuestion() {
           hint: question.hint,
           image_url: question.imageFile ? question.imageFile.name : null,
           audio_url: question.audioFile ? question.audioFile.name : null,
-          expected_gps: toString(question.answerGpsCoordinates),
+          expected_gps: toString(question.questionGpsCoordinates), // Es fehlen im Backend GPS für Frage und Hinweis, deshalb wird vorrübergehend hier nur die Frage-GPS-Koordinate gespeichert
           //hint_gps_coordinates: question.hintGpsCoordinates,
         }),
       });
@@ -252,7 +262,13 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.questionGpsCoordinates.lat}
-                onChange={(e) => handleGpsChange("lat", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange(
+                    "questionGpsCoordinates",
+                    "lat",
+                    e.target.value,
+                  )
+                }
                 placeholder="z.B. 52.5200"
                 className="EditQuestion-input"
               />
@@ -263,10 +279,53 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.questionGpsCoordinates.lng}
-                onChange={(e) => handleGpsChange("lng", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange(
+                    "questionGpsCoordinates",
+                    "lng",
+                    e.target.value,
+                  )
+                }
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
               />
+            </div>
+            <div>
+              <h4>Position</h4>
+              <MapComponent
+                latitude={
+                  question.questionGpsCoordinates.lat == ""
+                    ? 0
+                    : parseInt(question.questionGpsCoordinates.lat)
+                }
+                longitude={
+                  question.questionGpsCoordinates.lng == ""
+                    ? 0
+                    : parseInt(question.questionGpsCoordinates.lng)
+                }
+                zoom={15}
+                height="300px"
+                popupText="Antwort Ort"
+                className="map-container"
+              />
+              <button
+                className="main-button main-button-blue"
+                onClick={async () => {
+                  const position = await getCurrentLocation();
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      questionGpsCoordinates: {
+                        lat: position.latitude,
+                        lng: position.longitude,
+                      },
+                    });
+                  }
+                }}
+              >
+                Get your Position
+              </button>
             </div>
           </div>
         );
@@ -345,7 +404,9 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.answerGpsCoordinates.lat}
-                onChange={(e) => handleGpsChange("lat", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange("answerGpsCoordinates", "lat", e.target.value)
+                }
                 placeholder="z.B. 52.5200"
                 className="EditQuestion-input"
               />
@@ -356,9 +417,30 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.answerGpsCoordinates.lng}
-                onChange={(e) => handleGpsChange("lng", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange("answerGpsCoordinates", "lng", e.target.value)
+                }
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
+              />
+            </div>
+            <div>
+              <h4>Position</h4>
+              <MapComponent
+                latitude={
+                  question.answerGpsCoordinates.lat == ""
+                    ? 0
+                    : parseInt(question.answerGpsCoordinates.lat)
+                }
+                longitude={
+                  question.answerGpsCoordinates.lng == ""
+                    ? 0
+                    : parseInt(question.answerGpsCoordinates.lng)
+                }
+                zoom={15}
+                height="300px"
+                popupText="Antwort Ort"
+                className="map-container"
               />
             </div>
           </div>
@@ -433,7 +515,9 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.hintGpsCoordinates.lat}
-                onChange={(e) => handleGpsChange("lat", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange("hintGpsCoordinates", "lat", e.target.value)
+                }
                 placeholder="z.B. 52.5200"
                 className="EditQuestion-input"
               />
@@ -444,7 +528,9 @@ export default function EditQuestion() {
                 type="number"
                 step="any"
                 value={question.hintGpsCoordinates.lng}
-                onChange={(e) => handleGpsChange("lng", e.target.value)}
+                onChange={(e) =>
+                  handleGpsChange("hintGpsCoordinates", "lng", e.target.value)
+                }
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
               />
@@ -470,7 +556,7 @@ export default function EditQuestion() {
           <option value="text">Text</option>
           {/* <option value="image">Bild</option> */}
           {/* <option value="audio">Audio</option> */}
-          {/* <option value="gps">GPS</option> */}
+          <option value="gps">GPS</option>
         </select>
       </div>
 
@@ -503,7 +589,7 @@ export default function EditQuestion() {
         >
           <option value="text">Text</option>
           {/* <option value="multiple_choice">Multiple Choice</option> */}
-          <option value="gps">GPS</option>
+          {/* <option value="gps">GPS</option> */}
         </select>
       </div>
 

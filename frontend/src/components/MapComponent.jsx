@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -13,6 +13,31 @@ L.Icon.Default.mergeOptions({
   shadowUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
+
+// Komponente zum automatischen Fokussieren auf neue Koordinaten
+const MapUpdater = ({ latitude, longitude, zoom }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (typeof latitude === "number" && typeof longitude === "number") {
+      // Prüfen ob die Koordinaten gültig sind
+      if (
+        latitude >= -90 &&
+        latitude <= 90 &&
+        longitude >= -180 &&
+        longitude <= 180
+      ) {
+        // Sanft zur neuen Position bewegen
+        map.setView([latitude, longitude], zoom || map.getZoom(), {
+          animate: true,
+          duration: 1.0, // Animation dauert 1 Sekunde
+        });
+      }
+    }
+  }, [latitude, longitude, zoom, map]);
+
+  return null;
+};
 
 /**
  * MapComponent - Wiederverwendbare Karten-Komponente mit OpenStreetMap
@@ -85,8 +110,9 @@ const MapComponent = ({
 
   const position = [latitude, longitude];
 
+  // TODO: css und classNames überarbeiten
   return (
-    <div style={{ width, height }} className={className}>
+    <div style={{ width, height }} className="map-container">
       <MapContainer
         key={mapKey}
         center={position}
@@ -100,6 +126,7 @@ const MapComponent = ({
         boxZoom={interactive}
         keyboard={interactive}
       >
+        <MapUpdater latitude={latitude} longitude={longitude} zoom={zoom} />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
