@@ -11,7 +11,6 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [huntName, setHuntName] = useState("");
   const [error, setError] = useState("");
-  
 
   const handleCreate = async () => {
     setError("");
@@ -21,14 +20,11 @@ export default function Home() {
     }
 
     try {
-      const res = await authFetch(
-        "/create-hunt",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: huntName.trim() }),
-        }
-      );
+      const res = await authFetch("/create-hunt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: huntName.trim() }),
+      });
 
       if (!res.ok) {
         const err = await res.text();
@@ -46,11 +42,11 @@ export default function Home() {
       if (err.message.includes("Unauthorized")) {
         setError(t("Error: You should be logged in to create a hunt"));
         <button
-              className="main-button main-button-green"
-              onClick={() => navigate("/login")}
-            >
-              {t("login")}
-        </button>
+          className="main-button main-button-green"
+          onClick={() => navigate("/login")}
+        >
+          {t("login")}
+        </button>;
         return;
       }
       setError(t(err.message || "An error occurred while creating the hunt"));
@@ -61,8 +57,15 @@ export default function Home() {
     <div className="home-container">
       <h1 className="heading">{t("scavenger_hunt")}</h1>
       <div className="button-row">
-        <button className="main-button main-button-green" onClick={() => navigate("/join")}>{t("join")}</button>
-        <button className="main-button" onClick={() => setShowPopup(true)}>{t("create")}</button>
+        <button
+          className="main-button main-button-green"
+          onClick={() => navigate("/join")}
+        >
+          {t("join")}
+        </button>
+        <button className="main-button" onClick={() => setShowPopup(true)}>
+          {t("create")}
+        </button>
       </div>
       {showPopup && (
         <div className="popup-overlay">
@@ -71,15 +74,28 @@ export default function Home() {
             <input
               type="text"
               value={huntName}
-              onChange={e => setHuntName(e.target.value)}
+              onChange={(e) => setHuntName(e.target.value)}
               placeholder={t("hunt_name")}
               autoFocus
             />
             {error && <p className="error">{error}</p>}
             <div className="popup-buttons">
-              {/* after pressing the create button -> save the hunt with hunt_id and hunt_name then call with the now existing hunt_id the edit page */}
-              <button className="main-button main-button-green" onClick={handleCreate}>{t("create")}</button>
-              <button className="main-button" onClick={() => {setShowPopup(false);setError("");setHuntName("");}}>{t("cancel")}</button>
+              <button
+                className="main-button main-button-green"
+                onClick={handleCreate}
+              >
+                {t("create")}
+              </button>
+              <button
+                className="main-button"
+                onClick={() => {
+                  setShowPopup(false);
+                  setError("");
+                  setHuntName("");
+                }}
+              >
+                {t("cancel")}
+              </button>
             </div>
           </div>
         </div>

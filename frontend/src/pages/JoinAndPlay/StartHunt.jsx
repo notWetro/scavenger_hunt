@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import "./StartHunt.css";
 import { AuthContext } from "../../AuthContext";
 
-
 export default function StartHunt() {
   const { huntId } = useParams();
   const navigate = useNavigate();
@@ -12,8 +11,7 @@ export default function StartHunt() {
   const [hunt, setHunt] = useState({});
   const { user, authFetch, logout } = useContext(AuthContext);
 
-
-  useEffect(() => { 
+  useEffect(() => {
     const fetchHunt = async () => {
       try {
         const response = await authFetch(`/hunts/${huntId}`);
@@ -30,6 +28,7 @@ export default function StartHunt() {
     fetchHunt();
   }, [huntId]);
 
+  //ToDo: add translation and change alerts to notifications from our side
   const removeHunt = async () => {
     if (!window.confirm("Are you sure you want to leave this hunt?")) return;
     try {
@@ -49,18 +48,26 @@ export default function StartHunt() {
 
   return (
     <div className="start-hunt-container">
-      <h1 className="heading">
-        {hunt.name}
-      </h1>
-      
+      <h1 className="heading">{hunt.name}</h1>
+
       <div className="hunt-details">
-        <p><strong>{t("hunt_id")}:</strong> {hunt.id}</p>
-        <p><strong>{t("hunt_info")}:</strong> {hunt.description}</p>
-        <p><strong>{t("location")}:</strong> {hunt.place_to_play}</p>
-        <p><strong>{t("start_point")}:</strong> {hunt.start_point}</p>
-        <p><strong>{t("creator")}:</strong> {hunt.creator_username}</p>
+        <p>
+          <strong>{t("hunt_id")}:</strong> {hunt.id}
+        </p>
+        <p>
+          <strong>{t("hunt_info")}:</strong> {hunt.description}
+        </p>
+        <p>
+          <strong>{t("location")}:</strong> {hunt.place_to_play}
+        </p>
+        <p>
+          <strong>{t("start_point")}:</strong> {hunt.start_point}
+        </p>
+        <p>
+          <strong>{t("creator")}:</strong> {hunt.creator_username}
+        </p>
       </div>
-      
+
       <div className="button-column">
         <button
           className="main-button main-button-green"

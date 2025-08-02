@@ -113,7 +113,9 @@ export default function Hunts() {
           <div className="loading">{t("loading")}...</div>
         ) : !user && (selectedTab === "joined" || selectedTab === "own") ? (
           <div className="please-login">
-            <p>{t("please login to view")} {t(selectedTab)} {t("hunts")}</p>
+            <p>
+              {t("please_login_to_view")} {t(selectedTab)} {t("hunts")}
+            </p>
             <button
               className="main-button main-button-green"
               onClick={() => navigate("/login")}
@@ -123,7 +125,15 @@ export default function Hunts() {
           </div>
         ) : hunts.length > 0 ? (
           hunts.map((hunt) => (
-            <button key={hunt.id} className="hunt-card" onClick={() => {selectedTab == "own" ? navigate(`/EditHunt/${hunt.id}`) : navigate(`/StartHunt/${hunt.id}`)}}>
+            <button
+              key={hunt.id}
+              className="hunt-card"
+              onClick={() => {
+                selectedTab == "own"
+                  ? navigate(`/EditHunt/${hunt.id}`)
+                  : navigate(`/StartHunt/${hunt.id}`);
+              }}
+            >
               <h3>{hunt.name}</h3>
               <p>
                 <strong>{t("location")}:</strong> {hunt.place_to_play}

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./EditHunt.css";
-import { useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
 
 export default function EditHunt() {
@@ -14,7 +13,7 @@ export default function EditHunt() {
   const [creatorName, setCreatorName] = useState("");
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
-  const [huntNameState, setHuntNameState] = useState(""); 
+  const [huntNameState, setHuntNameState] = useState("");
   // Array für alle Fragen
 
   const { huntId } = useParams();
@@ -37,7 +36,6 @@ export default function EditHunt() {
           throw new Error("Failed to fetch hunt or clues");
         }
 
-
         const hunt = await huntRes.json();
         const clues = await cluesRes.json();
         console.log(" hunt:", hunt);
@@ -48,13 +46,15 @@ export default function EditHunt() {
         setStartPoint(hunt.start_point || "");
         setHuntNameState(hunt.name || "");
 
-        setQuestions(clues.map(clue => ({
-          id:     clue.id,
-          text:   clue.description   ?? "",
-          answer: clue.correct_answer ?? "",
-          order: clue.clue_order ?? 0,
-          open:   false
-        })));
+        setQuestions(
+          clues.map((clue) => ({
+            id: clue.id,
+            text: clue.description ?? "",
+            answer: clue.correct_answer ?? "",
+            order: clue.clue_order ?? 0,
+            open: false,
+          })),
+        );
       } catch (err) {
         console.error("Failed to load hunt or clues", err);
       }
@@ -62,21 +62,17 @@ export default function EditHunt() {
 
     loadHunt();
   }, [huntId, authFetch]);
-  
 
   async function syncOrder(updatedQuestions) {
     await Promise.all(
-        updatedQuestions.map(({ id, order }) =>
-          authFetch(
-            `/hunts/${huntId}/clues/${id}`,
-            {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ clue_order: order }),
-            }
-          )
-        )
-      );
+      updatedQuestions.map(({ id, order }) =>
+        authFetch(`/hunts/${huntId}/clues/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clue_order: order }),
+        }),
+      ),
+    );
   }
 
   // Neue Frage hinzufügen
@@ -84,13 +80,11 @@ export default function EditHunt() {
     async function addQuestion() {
       try {
         const nextOrder = questions.length + 1;
-        const res = await authFetch(
-          `/hunts/${huntId}/clues`,
-          { method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ clue_order: nextOrder }),
-          }
-        );
+        const res = await authFetch(`/hunts/${huntId}/clues`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clue_order: nextOrder }),
+        });
         if (!res.ok) {
           const text = await res.text();
           throw new Error(text || "Failed to create clue");
@@ -99,7 +93,16 @@ export default function EditHunt() {
         const payload = await res.json();
         console.log("New clue created:", payload);
         const newClueId = payload.id;
-        setQuestions([...questions, { text: "", answer: "", id: newClueId, order: nextOrder, open: false }]);
+        setQuestions([
+          ...questions,
+          {
+            text: "",
+            answer: "",
+            id: newClueId,
+            order: nextOrder,
+            open: false,
+          },
+        ]);
       } catch (err) {
         console.error("Failed to add question", err);
       }
@@ -110,10 +113,8 @@ export default function EditHunt() {
 
   // Frage öffnen/schließen
   const handleToggleQuestion = (idx) => {
-    setQuestions(questions =>
-      questions.map((q, i) =>
-        i === idx ? { ...q, open: !q.open } : q
-      )
+    setQuestions((questions) =>
+      questions.map((q, i) => (i === idx ? { ...q, open: !q.open } : q)),
     );
   };
 
@@ -121,10 +122,9 @@ export default function EditHunt() {
   const handleRemoveQuestion = async (clueId) => {
     if (!window.confirm("Delete this question?")) return;
     try {
-      const res = await authFetch(
-        `/hunts/${huntId}/clues/${clueId}`,
-        { method: "DELETE" }
-      );
+      const res = await authFetch(`/hunts/${huntId}/clues/${clueId}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Delete failed");
 
       const filtered = questions.filter((q) => q.id !== clueId);
@@ -145,7 +145,7 @@ export default function EditHunt() {
   // Validierungsfunktion hinzufügen
   const validateRequiredFields = () => {
     const errors = [];
-    
+
     if (!creatorName.trim()) {
       errors.push("Kurzinfo ist erforderlich");
     }
@@ -155,7 +155,7 @@ export default function EditHunt() {
     if (!startPoint.trim()) {
       errors.push("Startpunkt ist erforderlich");
     }
-    
+
     if (errors.length > 0) {
       alert("Bitte füllen Sie alle Pflichtfelder aus:\n" + errors.join("\n"));
       return false;
@@ -168,31 +168,28 @@ export default function EditHunt() {
     if (!validateRequiredFields()) {
       return;
     }
-      async function save() {
+    async function save() {
       try {
         const res = await authFetch(`/hunts/${huntId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            description:   creatorName,
+            description: creatorName,
             place_to_play: huntLocation,
-            start_point:   startPoint,
-            is_active:     true
-          })
+            start_point: startPoint,
+            is_active: true,
+          }),
         });
-        if (!res.ok) throw new Error('Failed to save hunt');
-        
+        if (!res.ok) throw new Error("Failed to save hunt");
+
         await Promise.all(
           questions.map((q) =>
-            authFetch(
-              `/hunts/${huntId}/clues/${q.id}`,
-              {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ clue_order: q.order }),
-              }
-            )
-          )
+            authFetch(`/hunts/${huntId}/clues/${q.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ clue_order: q.order }),
+            }),
+          ),
         );
       } catch (err) {
         console.error("Failed to save hunt", err);
@@ -200,7 +197,6 @@ export default function EditHunt() {
     }
 
     save();
-    
 
     const question = questions[idx];
     if (!question) return;
@@ -216,13 +212,13 @@ export default function EditHunt() {
     const [moved] = newQuestions.splice(result.source.index, 1);
     newQuestions.splice(result.destination.index, 0, moved);
     const reordered = newQuestions.map((q, idx) => ({
-    ...q,
-    order: idx + 1,           
+      ...q,
+      order: idx + 1,
     }));
 
     setQuestions(reordered);
 
-    syncOrder(reordered).catch(err => {
+    syncOrder(reordered).catch((err) => {
       console.error("Failed to sync order", err);
     });
   };
@@ -236,28 +232,25 @@ export default function EditHunt() {
     async function saveAndExit() {
       try {
         const res = await authFetch(`/hunts/${huntId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            description:   creatorName,
+            description: creatorName,
             place_to_play: huntLocation,
-            start_point:   startPoint,
-            is_active:     true
-          })
+            start_point: startPoint,
+            is_active: true,
+          }),
         });
-        if (!res.ok) throw new Error('Failed to save hunt');
-        
+        if (!res.ok) throw new Error("Failed to save hunt");
+
         await Promise.all(
           questions.map((q) =>
-            authFetch(
-              `/hunts/${huntId}/clues/${q.id}`,
-              {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ clue_order: q.order }),
-              }
-            )
-          )
+            authFetch(`/hunts/${huntId}/clues/${q.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ clue_order: q.order }),
+            }),
+          ),
         );
         alert(t("hunt_saved_successfully"));
         navigate(-1);
@@ -302,7 +295,7 @@ export default function EditHunt() {
         {showDetails && (
           <div className="accordion-content">
             <label>Hunt ID: {huntId}</label>
-          {/*             <label>
+            {/*             <label>
               Hunt Name:
               <input
                 className="EditHunt-input"
@@ -313,7 +306,7 @@ export default function EditHunt() {
               />
             </label> */}
             <label>
-              Kurzinfo: <span style={{color: 'red'}}>*</span>
+              Kurzinfo: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
@@ -322,12 +315,12 @@ export default function EditHunt() {
                 required
                 placeholder="Kurzinfo eingeben"
                 style={{
-                  borderColor: !creatorName.trim() ? 'red' : undefined
+                  borderColor: !creatorName.trim() ? "red" : undefined,
                 }}
               />
             </label>
             <label>
-              Ort des Spieles: <span style={{color: 'red'}}>*</span>
+              Ort des Spieles: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
@@ -336,12 +329,12 @@ export default function EditHunt() {
                 required
                 placeholder="Ort des Spieles"
                 style={{
-                  borderColor: !huntLocation.trim() ? 'red' : undefined
+                  borderColor: !huntLocation.trim() ? "red" : undefined,
                 }}
               />
             </label>
             <label>
-              Startpunkt: <span style={{color: 'red'}}>*</span>
+              Startpunkt: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
@@ -350,11 +343,10 @@ export default function EditHunt() {
                 required
                 placeholder="Startpunkt"
                 style={{
-                  borderColor: !startPoint.trim() ? 'red' : undefined
+                  borderColor: !startPoint.trim() ? "red" : undefined,
                 }}
               />
             </label>
-
           </div>
         )}
       </div>
@@ -374,7 +366,11 @@ export default function EditHunt() {
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
                     {questions.map((question, idx) => (
-                      <Draggable key={idx} draggableId={String(idx)} index={idx}>
+                      <Draggable
+                        key={idx}
+                        draggableId={String(idx)}
+                        index={idx}
+                      >
                         {(provided, snapshot) => (
                           <div
                             className={`question-widget${snapshot.isDragging ? " dragging" : ""}`}
@@ -382,7 +378,6 @@ export default function EditHunt() {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                           >
-                            
                             <button
                               className={`question-toggle ${question.open ? "corners" : ""}`}
                               onClick={() => handleToggleQuestion(idx)}
@@ -393,15 +388,19 @@ export default function EditHunt() {
                               <div className="question-content">
                                 <div className="drag-icon">⋮⋮</div>
                                 <label>
-                                  Frage:<br />
+                                  Frage:
+                                  <br />
                                   <label>
-                                    {question.text || "question text"}<br />
+                                    {question.text || "question text"}
+                                    <br />
                                   </label>
                                 </label>
                                 <label>
-                                  Antwort:<br />
+                                  Antwort:
+                                  <br />
                                   <label>
-                                    {question.answer || "answer text"}<br />
+                                    {question.answer || "answer text"}
+                                    <br />
                                   </label>
                                 </label>
                                 <div className="question-actions">
@@ -413,7 +412,9 @@ export default function EditHunt() {
                                   </button>
                                   <button
                                     className="main-button main-button-red"
-                                    onClick={() => handleRemoveQuestion(questions[idx].id)}
+                                    onClick={() =>
+                                      handleRemoveQuestion(questions[idx].id)
+                                    }
                                   >
                                     Remove
                                   </button>
@@ -429,7 +430,10 @@ export default function EditHunt() {
                 )}
               </Droppable>
             </DragDropContext>
-            <button className="main-button main-button-blue butt" onClick={handleAddQuestion}>
+            <button
+              className="main-button main-button-blue butt"
+              onClick={handleAddQuestion}
+            >
               Frage hinzufügen
             </button>
           </div>
@@ -438,10 +442,17 @@ export default function EditHunt() {
 
       {/* Save and Exit Button */}
       <div className="save-exit-container">
-        <button className="main-button main-button-green" onClick={handleSaveAndExit}>
+        <button
+          className="main-button main-button-green"
+          onClick={handleSaveAndExit}
+        >
           {t("save_and_exit")}
         </button>
-        <button className="main-button main-button-red" onClick={handleDeleteHunt} disabled={true}>
+        <button
+          className="main-button main-button-red"
+          onClick={handleDeleteHunt}
+          disabled={true}
+        >
           {t("delete_Hunt")} (disabled)
         </button>
       </div>

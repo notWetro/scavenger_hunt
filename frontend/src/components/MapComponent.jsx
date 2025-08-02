@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -63,6 +64,7 @@ const MapComponent = ({
   interactive = true,
 }) => {
   const [mapKey, setMapKey] = useState(0);
+  const { t } = useTranslation();
 
   // Validierung der Koordinaten
   if (typeof latitude !== "number" || typeof longitude !== "number") {
@@ -80,7 +82,7 @@ const MapComponent = ({
             color: "#666",
           }}
         >
-          Ungültige Koordinaten: Breitengrad und Längengrad müssen Zahlen sein
+          {t("coordinates_invalid")}
         </div>
       </div>
     );
@@ -102,7 +104,7 @@ const MapComponent = ({
             color: "#666",
           }}
         >
-          Koordinaten außerhalb des gültigen Bereichs
+          {t("coordinates_to_big")}
         </div>
       </div>
     );
