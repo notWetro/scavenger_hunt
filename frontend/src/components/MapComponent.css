@@ -1,0 +1,30 @@
+/* MapComponent Styling */
+.map-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-error {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-small {
+    border-radius: 4px;
+}
+
+.map-large {
+    min-height: 500px;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+    .map-container {
+        border-radius: 4px;
+    }
+
+    .leaflet-container {
+        font-size: 12px;
+    }
+}

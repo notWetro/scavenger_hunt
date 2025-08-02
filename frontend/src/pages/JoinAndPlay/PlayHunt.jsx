@@ -32,8 +32,7 @@ export default function PlayHunt() {
           authFetch(`/hunts/${huntId}/clues`),
           authFetch(`/hunts/${huntId}/current-clue`),
         ]);
-        
-        
+
         if (!huntRes.ok || !cluesRes.ok) {
           throw new Error("Failed to fetch hunt or clues");
         }
@@ -48,11 +47,12 @@ export default function PlayHunt() {
         console.log(nextClue);
         if (nextClue) {
           console.log("Next clue found:", nextClue.current_clue_id);
-          const idx = cluesData.findIndex(clue => clue.id === nextClue.current_clue_id);
+          const idx = cluesData.findIndex(
+            (clue) => clue.id === nextClue.current_clue_id,
+          );
           setCurrentQuestionIndex(idx >= 0 ? idx : 0);
           console.log(idx);
         }
-        
       } catch (err) {
         console.error("Failed to load hunt", err);
         alert("Fehler beim Laden der Schnitzeljagd");
@@ -66,15 +66,11 @@ export default function PlayHunt() {
   }, [huntId, authFetch, navigate]);
 
   async function saveClueProgress(huntId, clueId) {
-
-    const res = await authFetch(
-      `/hunts/${huntId}/progress`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clue_id: clueId }),
-      }
-    );
+    const res = await authFetch(`/hunts/${huntId}/progress`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clue_id: clueId }),
+    });
 
     if (!res.ok) {
       const text = await res.text();
@@ -89,12 +85,14 @@ export default function PlayHunt() {
     }
 
     const currentQuestion = questions[currentQuestionIndex];
-    const isCorrect = userAnswer.toLowerCase().trim() === currentQuestion.correct_answer.toLowerCase().trim();
+    const isCorrect =
+      userAnswer.toLowerCase().trim() ===
+      currentQuestion.correct_answer.toLowerCase().trim();
 
     if (isCorrect) {
       // Richtige Antwort
 
-      saveClueProgress(huntId, currentQuestion.id)
+      saveClueProgress(huntId, currentQuestion.id);
 
       if (currentQuestionIndex + 1 < questions.length) {
         // Nächste Frage laden
@@ -106,11 +104,15 @@ export default function PlayHunt() {
       } else {
         // Schnitzeljagd beendet
         setGameCompleted(true);
-        alert("Herzlichen Glückwunsch! Sie haben die Schnitzeljagd erfolgreich beendet!");
+        alert(
+          "Herzlichen Glückwunsch! Sie haben die Schnitzeljagd erfolgreich beendet!",
+        );
       }
     } else {
       // Falsche Antwort
-      alert("Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.");
+      alert(
+        "Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.",
+      );
     }
   };
 
@@ -120,7 +122,11 @@ export default function PlayHunt() {
 
   const handleBack = () => {
     if (currentQuestionIndex > 0) {
-      if (window.confirm("Möchten Sie wirklich zur vorherigen Frage zurückkehren? Ihre aktuelle Antwort geht verloren.")) {
+      if (
+        window.confirm(
+          "Möchten Sie wirklich zur vorherigen Frage zurückkehren? Ihre aktuelle Antwort geht verloren.",
+        )
+      ) {
         setCurrentQuestionIndex(currentQuestionIndex - 1);
         setUserAnswer("");
         setShowHint(false);
@@ -152,8 +158,10 @@ export default function PlayHunt() {
     return (
       <div className="play-hunt-container">
         <h1>Schnitzeljagd beendet!</h1>
-        <p>Herzlichen Glückwunsch! Sie haben alle Fragen erfolgreich beantwortet.</p>
-        <button 
+        <p>
+          Herzlichen Glückwunsch! Sie haben alle Fragen erfolgreich beantwortet.
+        </p>
+        <button
           className="main-button main-button-green"
           onClick={() => navigate("/")}
         >
@@ -168,18 +176,32 @@ export default function PlayHunt() {
   return (
     <div className="play-hunt-container">
       <h1>{hunt.name}</h1>
-      
+
       <div className="progress-info">
-        Frage {currentQuestionIndex + 1} von {questions.length}
+        {t("Frage")} {currentQuestionIndex + 1} von {questions.length}
       </div>
 
       <div className="question-section">
         <div className="question-text">
           <h2>{currentQuestion.description}</h2>
+          {currentQuestion.image_url && ( // Aktuell noch fehlerhaft
+            <div className="image-container">
+              <p>Debug: {currentQuestion.image_url}</p>
+              <p>Full URL: `{`./${currentQuestion.image_url}`}`</p>
+              <img
+                src={`./${currentQuestion.image_url}`}
+                alt="Frage Bild"
+                style={{ maxWidth: "100%", height: "auto" }}
+                onError={(e) => {
+                  console.error("Image load error:", e.target.src);
+                  e.target.style.border = "2px solid red";
+                }}
+                onLoad={() => console.log("Image loaded successfully")}
+              />
+            </div>
+          )}
         </div>
-
         <hr className="section-divider" /> {/* css Code in EditQuestion.css */}
-
         <div className="answer-section">
           <input
             type="text"
@@ -188,38 +210,32 @@ export default function PlayHunt() {
             onChange={(e) => setUserAnswer(e.target.value)}
             placeholder="Ihre Antwort hier eingeben..."
             onKeyPress={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 handleAnswer();
               }
             }}
           />
 
           <div className="button-group">
-            <button 
+            <button
               className="main-button main-button-green"
               onClick={handleAnswer}
             >
               Antworten
             </button>
-            
-            <button 
+
+            <button
               className="main-button main-button-blue"
               onClick={handleHint}
             >
               Hinweis
             </button>
-            
-            <button 
-              className="main-button"
-              onClick={handleBack}
-            >
+
+            <button className="main-button" onClick={handleBack}>
               Zurück
             </button>
 
-            <button 
-              className="main-button main-button-red"
-              onClick={handleEnd}
-            >
+            <button className="main-button main-button-red" onClick={handleEnd}>
               Beenden
             </button>
           </div>
@@ -232,8 +248,11 @@ export default function PlayHunt() {
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="hint-content">
               <h3>Hinweis</h3>
-              <p>{currentQuestion.hint || "Kein Hinweis verfügbar für diese Frage."}</p>
-              <button 
+              <p>
+                {currentQuestion.hint ||
+                  "Kein Hinweis verfügbar für diese Frage."}
+              </p>
+              <button
                 className="main-button main-button-gray"
                 onClick={closeHintPopup}
               >
