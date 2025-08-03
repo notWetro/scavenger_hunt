@@ -1,10 +1,12 @@
-from fastapi import FastAPI, Depends, Body, HTTPException, status
+from fastapi import FastAPI, Depends, Body, HTTPException, status, File, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.dialects.postgresql import JSON
 
 from sqlalchemy import (
     Column,
@@ -167,25 +169,32 @@ class Hunt(Base):
 class Clue(Base):
     __tablename__ = "clue"
 
-    id = Column(Integer, primary_key=True, index=True)
-    hunt_id = Column(Integer, ForeignKey("hunt.id"), nullable=False)
-    title = Column(String, nullable=False)
-    description = Column(Text)
-    hint = Column(Text)
-    correct_answer = Column(String)
-    clue_order = Column(Integer)
+    id                 = Column(Integer, primary_key=True, index=True)
+    hunt_id            = Column(Integer, ForeignKey("hunt.id"), nullable=False)
+    title              = Column(String, nullable=False)
+    description        = Column(Text)
+    hint               = Column(Text)
+    correct_answer     = Column(String)
+    clue_order         = Column(Integer)
 
-    image_url = Column(String)
-    audio_url = Column(String)
-    video_url = Column(String)
+    image_url          = Column(String)
+    audio_url          = Column(String)
+    question_gps_coordinates =  Column(JSON, nullable=True) 
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    hint_type               = Column(String, nullable=True)    # "text" | "image" | "audio"
+    hint_image_file         = Column(String, nullable=True)    
+    hint_audio_file         = Column(String, nullable=True)
+    hint_gps_coordinates    =  Column(JSON, nullable=True)    # "48.123,11.456"
+    hint_gps_radius         = Column(Float, nullable=True)     
 
-    question_type = Column(String)         
-    answer_type = Column(String)           
-    choices = Column(Text)                 # JSON 
-    expected_gps = Column(String)          
-    gps_radius = Column(Float)
+    question_type           = Column(String)                   
+    answer_type             = Column(String)                   
+    answer_gps_coordinates  = Column(JSON, nullable=True)    
+    answer_gps_radius       = Column(Float, nullable=True)
+
+    choices                  = Column(JSON, nullable=True)     
+    created_at               = Column(DateTime, default=datetime.utcnow)
+
 
 
 class UserHuntProgress(Base):
@@ -243,6 +252,40 @@ def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
  """
 
+UPLOAD_DIR = "uploads"
+
+# Endpoint to upload images
+@app.post("/images/upload", summary="Upload an image", status_code=201)
+async def upload_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+):
+    # ensure uploads/ exists
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+    # generate safe filename, e.g. prefix with user ID and timestamp
+    ext = os.path.splitext(file.filename)[1]
+    fname = f"{current_user.id}_{int(datetime.utcnow().timestamp())}{ext}"
+    path = os.path.join(UPLOAD_DIR, fname)
+
+    # write file to disk
+    with open(path, "wb") as out:
+        content = await file.read()
+        out.write(content)
+
+    # return the URL path clients can use to fetch it
+    return {"filename": fname, "url": f"/images/{fname}"}
+
+@app.get("/images/{filename}",summary="Serve an uploaded image",responses={200: {"content": {"image/*": {}}}})
+async def serve_image(filename: str):
+    """
+    Read the file `uploads/{filename}` and stream it back.
+    """
+    path = os.path.join(UPLOAD_DIR, filename)
+    if not os.path.isfile(path):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Image not found")
+    # Let Starlette guess the correct media type
+    return FileResponse(path)
 
 # Create empty hunt
 @app.post("/create-hunt")
@@ -342,24 +385,34 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
     }
 
 
+# response schema for a clue
 class ClueRead(BaseModel):
-    id: int
-    title: Optional[str]
-    description: Optional[str]
-    hint: Optional[str]
-    correct_answer: Optional[str]
-    clue_order: Optional[int]
-    image_url: Optional[str]
-    audio_url: Optional[str]
-    video_url: Optional[str]
-    question_type: Optional[str]
-    answer_type: Optional[str]
-    choices: Optional[str]
-    expected_gps: Optional[str]
-    gps_radius: Optional[float]
+    id:                  int
+    description:         Optional[str]
+    hint:                Optional[str]
+    correct_answer:      Optional[str]
+    clue_order:          Optional[int]
+
+    image_url:           Optional[str]
+    audio_url:           Optional[str]
+    question_gps_coordinates: Optional[dict[str, str]]  
+
+    hint_type:           Optional[str]
+    hint_image_file:     Optional[str]
+    hint_audio_file:     Optional[str]
+    hint_gps_coordinates: Optional[dict[str, str]]
+    hint_gps_radius:     Optional[float]
+
+    question_type:       Optional[str]
+    answer_type:         Optional[str]
+    answer_gps_coordinates: Optional[dict[str, str]]
+    answer_gps_radius:   Optional[float]
+
+    choices:             Optional[List[str]]
 
     class Config:
         orm_mode = True
+
 
 # Get specific clue
 @app.get("/hunts/{hunt_id}/clues/{clue_id}", response_model=ClueRead)
@@ -385,24 +438,7 @@ async def get_clue(
         raise HTTPException(404, "Clue not found")
     return clue
 
-# response schema for a clue
-class ClueRead(BaseModel):
-    id:             int
-    description:    str | None  
-    correct_answer: str | None
-    clue_order:    int | None
-    hint:           str | None
-    question_type:   str | None
-    answer_type:     str | None
-    choices:        str | None
-    image_url:      str | None
-    audio_url:      str | None
-    video_url:      str | None
-    expected_gps:   str | None
-    gps_radius:     float | None
 
-    class Config:
-        orm_mode = True
 
 # List clues for a specific hunt
 @app.get("/hunts/{hunt_id}/clues", response_model=List[ClueRead])
@@ -492,19 +528,23 @@ async def delete_clue(
     # 204 → no body
 
 class ClueUpdate(BaseModel):
-    title: Optional[str] = None
     description: Optional[str] = None
     hint: Optional[str] = None
     correct_answer: Optional[str] = None
     clue_order: Optional[int] = None
     image_url: Optional[str] = None
     audio_url: Optional[str] = None
-    video_url: Optional[str] = None
+    question_gps_coordinates: Optional[dict[str, str]] = None
+    hint_type: Optional[str] = None
+    hint_image_file: Optional[str] = None
+    hint_audio_file: Optional[str] = None
+    hint_gps_coordinates: Optional[dict[str, str]] = None
+    hint_gps_radius: Optional[float] = None
     question_type: Optional[str] = None
     answer_type: Optional[str] = None
-    choices: Optional[str] = None
-    expected_gps: Optional[str] = None
-    gps_radius: Optional[float] = None
+    answer_gps_coordinates: Optional[dict[str, str]] = None
+    answer_gps_radius: Optional[float] = None
+    choices: Optional[List[str]] = None
 
 # Update clue
 @app.patch("/hunts/{hunt_id}/clues/{clue_id}", response_model=ClueRead)
@@ -620,94 +660,7 @@ async def leave_hunt(
     await db.commit()
 
     return {"message": "Left the hunt successfully"}
-
-# Start hunt with skipping solved clues and return all current clue details
-@app.post("/start-hunt/{hunt_id}")
-async def start_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
-    hunt = result.scalars().first()
-    if not hunt:
-        return {"error": "Hunt not found"}
-
-    result = await db.execute(select(UserHuntProgress).filter(
-        UserHuntProgress.hunt_id == hunt_id, UserHuntProgress.user_id == user_id
-    ))
-    user_hunt_progress = result.scalars().first()
-
-    if not user_hunt_progress:
-        return {"error": "User is not part of this hunt"}
-
-    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id).order_by(Clue.clue_order))
-    clues = result.scalars().all()
-    if not clues:
-        return {"error": "No clues available for this hunt"}
-
-    for clue in clues:
-        result = await db.execute(select(UserClueProgress).filter(
-            UserClueProgress.user_id == user_id,
-            UserClueProgress.clue_id == clue.id,
-            UserClueProgress.is_solved == True
-        ))
-        solved = result.scalars().first()
-        if not solved:
-            user_hunt_progress.current_clue_id = clue.id
-            await db.commit()
-            await db.refresh(user_hunt_progress)
-
-            return {
-                "message": "Hunt started successfully",
-                "current_clue": {
-                    "id": clue.id,
-                    "title": clue.title,
-                    "description": clue.description,
-                    "hint": clue.hint,
-                    "clue_order": clue.clue_order,
-                    "question_type": clue.question_type,
-                    "answer_type": clue.answer_type,
-                    "choices": clue.choices,
-                    "image_url": clue.image_url,
-                    "audio_url": clue.audio_url,
-                    "video_url": clue.video_url,
-                    "expected_gps": clue.expected_gps,
-                    "gps_radius": clue.gps_radius
-                }
-            }
-
-    return {"message": "All clues have already been solved"}
-
-# Check if the answer is correct
-@app.post("/check-answer/{clue_id}")
-async def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Clue).filter(Clue.id == clue_id))
-    clue = result.scalars().first()
-    if not clue:
-        return {"error": "Clue not found"}
-
-    if clue.correct_answer.lower() == answer.lower():
-        result = await db.execute(select(UserClueProgress).filter(
-            UserClueProgress.user_id == user_id,
-            UserClueProgress.clue_id == clue_id
-        ))
-        user_clue_progress = result.scalars().first()
-
-        if not user_clue_progress:
-            user_clue_progress = UserClueProgress(
-                user_id=user_id,
-                clue_id=clue_id,
-                is_solved=True,
-                solved_at=datetime.utcnow()
-            )
-            db.add(user_clue_progress)
-        else:
-            user_clue_progress.is_solved = True
-            user_clue_progress.solved_at = datetime.utcnow()
-
-        await db.commit()
-        await db.refresh(user_clue_progress)
-
-        return {"message": "Correct answer", "is_correct": True}
-
-    return {"message": "Incorrect answer", "is_correct": False}    
+  
 
 
 class CurrentClueResponse(BaseModel):
@@ -808,11 +761,7 @@ async def save_progress(
     
 
 # List hunts the current user has joined
-@app.get(
-    "/hunts/search/joined",
-    response_model=List[HuntRead],
-    summary="List hunts the current user has joined",
-)
+@app.get("/hunts/search/joined",response_model=List[HuntRead],summary="List hunts the current user has joined")
 async def list_joined_hunts(
     current_user: User = Depends(fastapi_users.current_user(active=True)),
     db: AsyncSession = Depends(get_db),
@@ -828,11 +777,7 @@ async def list_joined_hunts(
 
 
 # List hunts the current user owns
-@app.get(
-    "/hunts/search/own",
-    response_model=List[HuntRead],
-    summary="List hunts the current user owns",
-)
+@app.get("/hunts/search/own",response_model=List[HuntRead],summary="List hunts the current user owns")
 async def list_own_hunts(
     current_user: User = Depends(fastapi_users.current_user(active=True)),
     db: AsyncSession = Depends(get_db),
@@ -847,11 +792,7 @@ async def list_own_hunts(
 
 
 # List all public hunts (not private)
-@app.get(
-    "/hunts/search/public",
-    response_model=List[HuntRead],
-    summary="List all public hunts",
-)
+@app.get("/hunts/search/public",response_model=List[HuntRead],summary="List all public hunts")
 async def list_public_hunts(
     db: AsyncSession = Depends(get_db),
 ):
