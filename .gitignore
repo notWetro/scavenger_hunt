@@ -185,3 +185,4 @@ _NCrunch*
 # Python specific
 /backend/__pycache__/*
 *.pyc
+/backend/uploads/clue-images/*

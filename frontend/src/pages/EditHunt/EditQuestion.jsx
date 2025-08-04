@@ -6,6 +6,8 @@ import MapComponent from "../../components/MapComponent.jsx";
 import { AuthContext } from "../../AuthContext";
 import { getCurrentLocation } from "../../utils/geolocation";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function EditQuestion() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -15,6 +17,9 @@ export default function EditQuestion() {
   const huntId = params.get("hunt");
   const questionId = params.get("clue");
   const { authFetch } = useContext(AuthContext);
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewHintUrl, setPreviewHintUrl] = useState("");
 
   const [question, setQuestion] = useState({
     text: "",
@@ -46,8 +51,6 @@ export default function EditQuestion() {
         if (!res.ok) throw new Error();
         const data = await res.json();
 
-        // data.expected_gps returns an undefined object
-        console.log("Loaded question:", data.answer_gps_coordinates);
         console.log("Loaded question:", data);
 
         setQuestion((prev) => ({
@@ -55,14 +58,14 @@ export default function EditQuestion() {
           text: data.description || "",
           hint: data.hint || "",
           answer: data.correct_answer || "",
-          
-          imageFile: data.image_url ? { name: data.image_url } : null,
-          audioFile: data.audio_url ? { name: data.audio_url } : null,
+
+          imageFile: data.image_url || null,
+          audioFile: data.audio_url || null,
           questionGpsCoordinates: data.question_gps_coordinates || { lat: "", lng: "" },
 
           hintType: data.hint_type || "text",
-          hintImageFile: data.hint_image_url ? { name: data.hint_image_url } : null,
-          hintAudioFile: data.hint_audio_url ? { name: data.hint_audio_url } : null,
+          hintImageFile: data.hint_image_file || null,
+          hintAudioFile: data.hint_audio_file || null,
           hintGpsCoordinates: data.hint_gps_coordinates || { lat: "", lng: "" },
           hintGpsRadius: data.hint_gps_radius || null,
 
@@ -72,6 +75,8 @@ export default function EditQuestion() {
           answerGpsRadius: data.answer_gps_radius || null,
           multipleChoiceOptions: data.choices || ["", "", ""],
         }));
+        setPreviewUrl(`${API_BASE}${data.image_url || ""}`);
+        setPreviewHintUrl(`${API_BASE}${data.hint_image_file || ""}`);
         console.log("Question loaded successfully:", question);
       } catch (error) {
         console.error("Error loading question:", error);
@@ -90,6 +95,56 @@ export default function EditQuestion() {
 
   const handleHintTypeChange = (type) => {
     setQuestion((prev) => ({ ...prev, hintType: type }));
+  };
+
+  const handleHintImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return alert("Pick a hint image first");
+
+    setPreviewHintUrl(URL.createObjectURL(file));
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await authFetch(
+      `/hunts/${huntId}/clues/${questionId}/hint-image`,
+      { method: "POST", body: form }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      return console.error("Hint upload failed:", err);
+    }
+    const { hint_image_url } = await res.json();
+    setQuestion(q => ({ ...q, hintImageFile: hint_image_url }));
+    setPreviewHintUrl(`${API_BASE}${hint_image_url}`);
+    console.log("Hint image uploaded successfully:", hint_image_url);
+  };
+
+
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    console.log("Selected file:", file);
+    setImageFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const uploadQuestionImage = async () => {
+    if (!imageFile) return alert("Choose an image first");
+    const formData = new FormData();
+    formData.append("file", imageFile);
+
+    const res = await authFetch(
+      `/hunts/${huntId}/clues/${questionId}/image`,
+      { method: "POST", body: formData }
+    );
+    if (!res.ok) {
+      const err = await res.text();
+      return console.error("Upload failed:", err);
+    }
+    const { image_url } = await res.json();
+    setQuestion((prev) => ({ ...prev, imageFile: image_url }));
+    return image_url;
+   
   };
 
   const handleImageUpload = (e) => {
@@ -205,8 +260,11 @@ export default function EditQuestion() {
 
   const saveChange = async () => {
     clearOtherFields();
-    console.log(question.multipleChoiceOptions.filter((opt) => opt.trim() !== ""));
     try {
+      let finalQuestionImageUrl = question.imageFile;  
+      if (imageFile instanceof File) {
+        finalQuestionImageUrl = await uploadQuestionImage();
+      }
       const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -217,17 +275,31 @@ export default function EditQuestion() {
           question_type: question.questionType,
           answer_type: question.answerType,
           hint_type: question.hintType,
-          image_url: question.imageFile,
+          image_url: finalQuestionImageUrl,
           audio_url: question.audioFile,
           question_gps_coordinates: question.questionGpsCoordinates,
           answer_gps_coordinates: question.answerGpsCoordinates,
           answer_gps_radius: question.answerGpsRadius || null,
-          hint_image_url: question.hintImageFile ? question.hintImageFile.name : null,
-          hint_audio_url: question.hintAudioFile ? question.hintAudioFile.name : null,
+          hint_image_url: question.hintImageFile || null,
+          hint_audio_url: question.hintAudioFile || null,
           hint_gps_coordinates: question.hintGpsCoordinates,
           hint_gps_radius: question.hintGpsRadius || null,
           choices: question.multipleChoiceOptions,
         }),
+      });
+
+      console.log("uploaded question:", {
+        description: question.text,
+        image_url: finalQuestionImageUrl,
+        audio_url: question.audioFile,
+        question_gps_coordinates: question.questionGpsCoordinates,
+        answer_gps_coordinates: question.answerGpsCoordinates,
+        answer_gps_radius: question.answerGpsRadius || null,
+        hint_image_url: question.hintImageFile || null,
+        hint_audio_url: question.hintAudioFile || null,
+        hint_gps_coordinates: question.hintGpsCoordinates,
+        hint_gps_radius: question.hintGpsRadius || null,
+        choices: question.multipleChoiceOptions,
       });
 
       if (!res.ok) throw new Error(await res.text());
@@ -242,18 +314,10 @@ export default function EditQuestion() {
     switch (question.questionType) {
       case "image":
         return (
-          <div className="media-upload">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="file-input"
-            />
-            {question.imageFile && (
-              <div className="file-preview">
-                <p>Ausgewählte Datei: {question.imageFile.name}</p>
-              </div>
-            )}
+          <div>
+            <h2>Edit Clue #{questionId}</h2>
+            <input type="file" onChange={handleImageChange} />
+            {previewUrl && <img src={previewUrl} style={{maxWidth:200}} />}
           </div>
         );
       case "audio":
@@ -315,12 +379,12 @@ export default function EditQuestion() {
                 latitude={
                   question.questionGpsCoordinates.lat == ""
                     ? 0
-                    : parseInt(question.questionGpsCoordinates.lat)
+                    : parseFloat(question.questionGpsCoordinates.lat)
                 }
                 longitude={
                   question.questionGpsCoordinates.lng == ""
                     ? 0
-                    : parseInt(question.questionGpsCoordinates.lng)
+                    : parseFloat(question.questionGpsCoordinates.lng)
                 }
                 zoom={15}
                 height="300px"
@@ -336,8 +400,8 @@ export default function EditQuestion() {
                     setQuestion({
                       ...question,
                       questionGpsCoordinates: {
-                        lat: position.latitude,
-                        lng: position.longitude,
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
                       },
                     });
                   }
@@ -485,23 +549,11 @@ export default function EditQuestion() {
         );
       case "image":
         return (
-          <div className="media-upload">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                setQuestion((prev) => ({
-                  ...prev,
-                  hintImageFile: e.target.files[0],
-                }))
-              }
-              className="file-input"
-            />
-            {question.hintImageFile && (
-              <div className="file-preview">
-                <p>Ausgewählte Datei: {question.hintImageFile.name}</p>
-              </div>
-            )}
+          <div>
+            <h2>Hint Clue #{questionId}</h2>
+            <input type="file" onChange={handleHintImageUpload} />
+            {previewHintUrl && <img src={previewHintUrl} style={{maxWidth:200}} />}
+            <div>{previewHintUrl}</div>
           </div>
         );
       case "audio":
@@ -574,7 +626,7 @@ export default function EditQuestion() {
         >
           <option value="text">Text</option>
           <option value="image">Bild</option>
-          <option value="audio">Audio</option>
+          {/* <option value="audio">Audio</option> */}
           <option value="gps">GPS</option>
         </select>
       </div>
@@ -634,7 +686,7 @@ export default function EditQuestion() {
         >
           <option value="text">Text</option>
           <option value="image">Bild</option>
-          <option value="audio">Audio</option>
+          {/* <option value="audio">Audio</option> */}
           <option value="gps">GPS</option>
         </select>
         <div className="hint-content">
