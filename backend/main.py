@@ -62,8 +62,8 @@ app.add_middleware(
   allow_origins=[
     "http://localhost:3000",
     "http://werwoelfe.fun:3000",
-    "https://werwoelfe.fun",
-    "https://www.werwoelfe.fun"
+    "https://werwoelfe.fun:3000",
+    "https://www.werwoelfe.fun:3000"
   ],
   allow_credentials=True,
   allow_methods=["*"],

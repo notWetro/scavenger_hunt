@@ -55,7 +55,7 @@ services:
   frontend:
     build: ./frontend
     environment:
-      - VITE_API_BASE=https://werwoelfe.fun
+      - VITE_API_BASE=https://werwoelfe.fun:8000
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
