@@ -46,16 +46,19 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`werwoelfe.fun`) && (PathPrefix(`/create-hunt`) || PathPrefix(`/hunts`) || PathPrefix(`/clues`) || PathPrefix(`/docs`) || PathPrefix(`/openapi.json`))"
+      - "traefik.http.routers.backend.rule=Host(`werwoelfe.fun`) && PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
       - "traefik.http.routers.backend.priority=100"
+      # Entferne /api prefix bevor es an Backend weitergeleitet wird
+      - "traefik.http.routers.backend.middlewares=backend-stripprefix"
+      - "traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes=/api"
 
   frontend:
     build: ./frontend
     environment:
-      - VITE_API_BASE=https://werwoelfe.fun
+      - VITE_API_BASE=https://werwoelfe.fun/api
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
