@@ -57,7 +57,12 @@ app = FastAPI()
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:3000", "http://werwoelfe.fun:3000"],
+  allow_origins=[
+    "http://localhost:3000",
+    "http://werwoelfe.fun:3000",
+    "https://werwoelfe.fun",
+    "https://www.werwoelfe.fun"
+  ],
   allow_credentials=True,
   allow_methods=["*"],
   allow_headers=["*"],
@@ -96,7 +101,7 @@ class UserManager(BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     def parse_id(self, user_id: str | int) -> int:  # or UUID, etc.
-        
+
         return int(user_id)
 
 async def get_user_manager(user_db=Depends(get_user_db)):
@@ -120,31 +125,31 @@ fastapi_users = FastAPIUsers(
 
 # Auth (login + refresh)
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend), 
+    fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt", tags=["auth"]
 )
 
 # Register + verify
 app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),      
+    fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth", tags=["auth"]
 )
 app.include_router(
-    fastapi_users.get_verify_router(UserRead),        
+    fastapi_users.get_verify_router(UserRead),
     prefix="/auth", tags=["auth"]
 )
 
 
 # Password reset
 app.include_router(
-    fastapi_users.get_reset_password_router(),  
+    fastapi_users.get_reset_password_router(),
     prefix="/auth", tags=["auth"]
 )
 
 
 # User management (read, update, delete)
 app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),         
+    fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users", tags=["users"]
 )
 
@@ -181,10 +186,10 @@ class Clue(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    question_type = Column(String)         
-    answer_type = Column(String)           
-    choices = Column(Text)                 # JSON 
-    expected_gps = Column(String)          
+    question_type = Column(String)
+    answer_type = Column(String)
+    choices = Column(Text)                 # JSON
+    expected_gps = Column(String)
     gps_radius = Column(Float)
 
 
@@ -288,7 +293,7 @@ class HuntRead(BaseModel):
     private:       bool
     created_by:    int
     created_at:    datetime
-    creator_username: Optional[str] = None  
+    creator_username: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -322,7 +327,7 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
     hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
-    
+
     creator_res = await db.execute(
         select(User.username).where(User.id == hunt.created_by)
     )
@@ -376,7 +381,7 @@ async def get_clue(
         raise HTTPException(404, "Hunt not found")
     if hunt.created_by != current_user.id:
         raise HTTPException(403, "You are not allowed to access this hunt")
-    
+
     result = await db.execute(
         select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
     )
@@ -388,7 +393,7 @@ async def get_clue(
 # response schema for a clue
 class ClueRead(BaseModel):
     id:             int
-    description:    str | None  
+    description:    str | None
     correct_answer: str | None
     clue_order:    int | None
     hint:           str | None
@@ -439,7 +444,7 @@ async def create_empty_clue(
         return {"error": "Hunt not found"}
     if hunt.created_by != current_user.id:
         return {"error": "You are not allowed to create clues for this hunt"}
-    
+
     if payload.clue_order is None:
         # count existing clues
         count = (
@@ -450,7 +455,7 @@ async def create_empty_clue(
         order = count + 1
     else:
         order = payload.clue_order
-    
+
     new_clue = Clue(
         hunt_id=hunt_id,
         title="",
@@ -522,7 +527,7 @@ async def update_clue(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
     if hunt.created_by != current_user.id:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Not allowed to modify this hunt")
-    
+
 
     # check clue exists in hunt
     result = await db.execute(
@@ -565,7 +570,7 @@ async def join_hunt(
         raise HTTPException(404, "Hunt not found")
 
     if current_user:
-        
+
         progress = UserHuntProgress(
             hunt_id=hunt_id,
             user_id=current_user.id,
@@ -707,7 +712,7 @@ async def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: Asyn
 
         return {"message": "Correct answer", "is_correct": True}
 
-    return {"message": "Incorrect answer", "is_correct": False}    
+    return {"message": "Incorrect answer", "is_correct": False}
 
 
 class CurrentClueResponse(BaseModel):
@@ -724,7 +729,7 @@ async def get_current_clue(
         fastapi_users.current_user(optional=True)
     ),
     db: AsyncSession = Depends(get_db),
-):  
+):
     if current_user:
         result = await db.execute(
             select(UserHuntProgress)
@@ -733,7 +738,7 @@ async def get_current_clue(
                 UserHuntProgress.user_id == current_user.id,
             )
         )
-    
+
         progress = result.scalars().first()
         if not progress:
             raise HTTPException(
@@ -743,7 +748,7 @@ async def get_current_clue(
         return {"current_clue_id": progress.current_clue_id}
     else:
         return {"current_clue_id": 0}
-    
+
 class ProgressPayload(BaseModel):
     clue_id: int
 
@@ -758,7 +763,7 @@ async def save_progress(
     db: AsyncSession = Depends(get_db),
 ):
     if not current_user:
-        return 
+        return
 
     result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
     hunt = result.scalars().first()
@@ -797,15 +802,15 @@ async def save_progress(
         )
         clues = r2.scalars().all()
         idx = next((i for i,c in enumerate(clues) if c.id == payload.clue_id), None)
-        
+
         if idx is not None and idx + 1 < len(clues):
             uhp.current_clue_id = clues[idx + 1].id
         else:
-            uhp.current_clue_id = None  
+            uhp.current_clue_id = None
 
-    
+
     await db.commit()
-    
+
 
 # List hunts the current user has joined
 @app.get(
