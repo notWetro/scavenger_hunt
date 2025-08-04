@@ -45,23 +45,34 @@ export default function EditQuestion() {
         const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`);
         if (!res.ok) throw new Error();
         const data = await res.json();
+
         // data.expected_gps returns an undefined object
-        console.log("Loaded question:", data.expected_gps);
+        console.log("Loaded question:", data.answer_gps_coordinates);
+        console.log("Loaded question:", data);
 
         setQuestion((prev) => ({
           ...prev,
           text: data.description || "",
-          answer: data.correct_answer || "",
           hint: data.hint || "",
-          // Hier können Sie zusätzliche Felder aus der Datenbank laden
+          answer: data.correct_answer || "",
+          
+          imageFile: data.image_url ? { name: data.image_url } : null,
+          audioFile: data.audio_url ? { name: data.audio_url } : null,
+          questionGpsCoordinates: data.question_gps_coordinates || { lat: "", lng: "" },
+
+          hintType: data.hint_type || "text",
+          hintImageFile: data.hint_image_url ? { name: data.hint_image_url } : null,
+          hintAudioFile: data.hint_audio_url ? { name: data.hint_audio_url } : null,
+          hintGpsCoordinates: data.hint_gps_coordinates || { lat: "", lng: "" },
+          hintGpsRadius: data.hint_gps_radius || null,
+
           questionType: data.question_type || "text",
           answerType: data.answer_type || "text",
-          //questionGpsCoordinates: data.question_gps_coordinates || { lat: "", lng: "" },
-          //answerGpsCoordinates: data.answer_gps_coordinates || { lat: "", lng: "" },
-          //hintGpsCoordinates: data.hint_gps_coordinates || { lat: "", lng: "" },
-          // data.expected_gps returns an undefined object
-          //questionGpsCoordinates: data.expected_gps || { lat: "", lng: "" },
+          answerGpsCoordinates: data.answer_gps_coordinates || { lat: "", lng: "" },
+          answerGpsRadius: data.answer_gps_radius || null,
+          multipleChoiceOptions: data.choices || ["", "", ""],
         }));
+        console.log("Question loaded successfully:", question);
       } catch (error) {
         console.error("Error loading question:", error);
       }
@@ -84,6 +95,7 @@ export default function EditQuestion() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setQuestion((prev) => ({ ...prev, imageFile: file }));
+    console.log("Image file selected:", file);
   };
 
   const handleAudioUpload = (e) => {
@@ -193,6 +205,7 @@ export default function EditQuestion() {
 
   const saveChange = async () => {
     clearOtherFields();
+    console.log(question.multipleChoiceOptions.filter((opt) => opt.trim() !== ""));
     try {
       const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`, {
         method: "PATCH",
@@ -200,14 +213,20 @@ export default function EditQuestion() {
         body: JSON.stringify({
           description: question.text,
           correct_answer: question.answer,
+          hint: question.hint,
           question_type: question.questionType,
           answer_type: question.answerType,
-          //hint_type: question.hintType,
-          hint: question.hint,
-          image_url: question.imageFile ? question.imageFile.name : null,
-          audio_url: question.audioFile ? question.audioFile.name : null,
-          expected_gps: toString(question.questionGpsCoordinates), // Es fehlen im Backend GPS für Frage und Hinweis, deshalb wird vorrübergehend hier nur die Frage-GPS-Koordinate gespeichert
-          //hint_gps_coordinates: question.hintGpsCoordinates,
+          hint_type: question.hintType,
+          image_url: question.imageFile,
+          audio_url: question.audioFile,
+          question_gps_coordinates: question.questionGpsCoordinates,
+          answer_gps_coordinates: question.answerGpsCoordinates,
+          answer_gps_radius: question.answerGpsRadius || null,
+          hint_image_url: question.hintImageFile ? question.hintImageFile.name : null,
+          hint_audio_url: question.hintAudioFile ? question.hintAudioFile.name : null,
+          hint_gps_coordinates: question.hintGpsCoordinates,
+          hint_gps_radius: question.hintGpsRadius || null,
+          choices: question.multipleChoiceOptions,
         }),
       });
 
@@ -554,8 +573,8 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          {/* <option value="image">Bild</option> */}
-          {/* <option value="audio">Audio</option> */}
+          <option value="image">Bild</option>
+          <option value="audio">Audio</option>
           <option value="gps">GPS</option>
         </select>
       </div>
@@ -588,8 +607,8 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          {/* <option value="multiple_choice">Multiple Choice</option> */}
-          {/* <option value="gps">GPS</option> */}
+          <option value="multiple_choice">Multiple Choice</option>
+          <option value="gps">GPS</option>
         </select>
       </div>
 
@@ -614,9 +633,9 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          {/* <option value="image">Bild</option> */}
-          {/* <option value="audio">Audio</option> */}
-          {/* <option value="gps">GPS</option> */}
+          <option value="image">Bild</option>
+          <option value="audio">Audio</option>
+          <option value="gps">GPS</option>
         </select>
         <div className="hint-content">
           <label htmlFor="hint-input">Hinweis (optional):</label>
