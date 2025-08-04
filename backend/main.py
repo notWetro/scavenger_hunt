@@ -55,11 +55,16 @@ AsyncSessionLocal = async_sessionmaker(
 Base = declarative_base()
 
 # === FastAPI App ===
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:3000", "http://werwoelfe.fun:3000"],
+  allow_origins=[
+    "http://localhost:3000",
+    "http://werwoelfe.fun:3000",
+    "https://werwoelfe.fun",
+    "https://www.werwoelfe.fun"
+  ],
   allow_credentials=True,
   allow_methods=["*"],
   allow_headers=["*"],
@@ -98,7 +103,7 @@ class UserManager(BaseUserManager[User, int]):
     verification_token_secret = SECRET
 
     def parse_id(self, user_id: str | int) -> int:  # or UUID, etc.
-        
+
         return int(user_id)
 
 async def get_user_manager(user_db=Depends(get_user_db)):
@@ -122,31 +127,31 @@ fastapi_users = FastAPIUsers(
 
 # Auth (login + refresh)
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend), 
+    fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt", tags=["auth"]
 )
 
 # Register + verify
 app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),      
+    fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth", tags=["auth"]
 )
 app.include_router(
-    fastapi_users.get_verify_router(UserRead),        
+    fastapi_users.get_verify_router(UserRead),
     prefix="/auth", tags=["auth"]
 )
 
 
 # Password reset
 app.include_router(
-    fastapi_users.get_reset_password_router(),  
+    fastapi_users.get_reset_password_router(),
     prefix="/auth", tags=["auth"]
 )
 
 
 # User management (read, update, delete)
 app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),         
+    fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users", tags=["users"]
 )
 
@@ -179,20 +184,20 @@ class Clue(Base):
 
     image_url          = Column(String)
     audio_url          = Column(String)
-    question_gps_coordinates =  Column(JSON, nullable=True) 
+    question_gps_coordinates =  Column(JSON, nullable=True)
 
-    hint_type               = Column(String, nullable=True)    # "text" | "image" | "audio"
-    hint_image_file         = Column(String, nullable=True)    
+    hint_type               = Column(String, nullable=True)
+    hint_image_file         = Column(String, nullable=True)
     hint_audio_file         = Column(String, nullable=True)
-    hint_gps_coordinates    =  Column(JSON, nullable=True)    # "48.123,11.456"
-    hint_gps_radius         = Column(Float, nullable=True)     
+    hint_gps_coordinates    =  Column(JSON, nullable=True)
+    hint_gps_radius         = Column(Float, nullable=True)
 
-    question_type           = Column(String)                   
-    answer_type             = Column(String)                   
-    answer_gps_coordinates  = Column(JSON, nullable=True)    
+    question_type           = Column(String)
+    answer_type             = Column(String)
+    answer_gps_coordinates  = Column(JSON, nullable=True)
     answer_gps_radius       = Column(Float, nullable=True)
 
-    choices                  = Column(JSON, nullable=True)     
+    choices                  = Column(JSON, nullable=True)
     created_at               = Column(DateTime, default=datetime.utcnow)
 
 
@@ -252,9 +257,9 @@ def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
  """
 
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = "uploads/clue-images"
 
-# Endpoint to upload images
+# Endpoint to upload images for general use
 @app.post("/images/upload", summary="Upload an image", status_code=201)
 async def upload_image(
     file: UploadFile = File(...),
@@ -276,6 +281,84 @@ async def upload_image(
     # return the URL path clients can use to fetch it
     return {"filename": fname, "url": f"/images/{fname}"}
 
+# Endpoint to upload question images for clues
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/image",summary="Upload an image for a specific clue",status_code=201)
+async def upload_clue_image(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify the hunt exists & belongs to this user
+    r = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = r.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(404, "Not found or not yours")
+
+    # verify the clue exists under that hunt
+    r2 = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = r2.scalars().first()
+    if not clue:
+        raise HTTPException(404, "Clue not found")
+
+    # save the file
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_{int(datetime.utcnow().timestamp())}{ext}"
+    dest = os.path.join(UPLOAD_DIR, fname)
+    with open(dest, "wb") as buf:
+        buf.write(await file.read())
+
+    # update the clue’s image_url column
+    clue.image_url = f"/images/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    return {"image_url": clue.image_url}
+
+# Endpoint to upload a hint image for a clue
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/hint-image",summary="Upload or replace a clues hint image",status_code=201,)
+async def upload_clue_hint_image(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify the hunt and clue exist and belong to you
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(404, "Hunt not found or not yours")
+
+    result = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = result.scalars().first()
+    if not clue:
+        raise HTTPException(404, "Clue not found")
+
+    # save the file
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    ext   = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_hint_{int(datetime.utcnow().timestamp())}{ext}"
+    path  = os.path.join(UPLOAD_DIR, fname)
+    content = await file.read()
+    with open(path, "wb") as out:
+        out.write(content)
+
+    # update the database
+    clue.hint_image_file = f"/images/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    # return the URL
+    return {"hint_image_file": clue.hint_image_file}
+
+# Endpoint to serve uploaded images
 @app.get("/images/{filename}",summary="Serve an uploaded image",responses={200: {"content": {"image/*": {}}}})
 async def serve_image(filename: str):
     """
@@ -331,7 +414,7 @@ class HuntRead(BaseModel):
     private:       bool
     created_by:    int
     created_at:    datetime
-    creator_username: Optional[str] = None  
+    creator_username: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -365,7 +448,7 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
     hunt = result.scalars().first()
     if not hunt:
         return {"error": "Hunt not found"}
-    
+
     creator_res = await db.execute(
         select(User.username).where(User.id == hunt.created_by)
     )
@@ -395,7 +478,7 @@ class ClueRead(BaseModel):
 
     image_url:           Optional[str]
     audio_url:           Optional[str]
-    question_gps_coordinates: Optional[dict[str, str]]  
+    question_gps_coordinates: Optional[dict[str, str]]
 
     hint_type:           Optional[str]
     hint_image_file:     Optional[str]
@@ -429,7 +512,7 @@ async def get_clue(
         raise HTTPException(404, "Hunt not found")
     if hunt.created_by != current_user.id:
         raise HTTPException(403, "You are not allowed to access this hunt")
-    
+
     result = await db.execute(
         select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
     )
@@ -475,7 +558,7 @@ async def create_empty_clue(
         return {"error": "Hunt not found"}
     if hunt.created_by != current_user.id:
         return {"error": "You are not allowed to create clues for this hunt"}
-    
+
     if payload.clue_order is None:
         # count existing clues
         count = (
@@ -486,7 +569,7 @@ async def create_empty_clue(
         order = count + 1
     else:
         order = payload.clue_order
-    
+
     new_clue = Clue(
         hunt_id=hunt_id,
         title="",
@@ -562,7 +645,7 @@ async def update_clue(
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
     if hunt.created_by != current_user.id:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "Not allowed to modify this hunt")
-    
+
 
     # check clue exists in hunt
     result = await db.execute(
@@ -605,7 +688,7 @@ async def join_hunt(
         raise HTTPException(404, "Hunt not found")
 
     if current_user:
-        
+
         progress = UserHuntProgress(
             hunt_id=hunt_id,
             user_id=current_user.id,
@@ -660,7 +743,7 @@ async def leave_hunt(
     await db.commit()
 
     return {"message": "Left the hunt successfully"}
-  
+
 
 
 class CurrentClueResponse(BaseModel):
@@ -677,7 +760,7 @@ async def get_current_clue(
         fastapi_users.current_user(optional=True)
     ),
     db: AsyncSession = Depends(get_db),
-):  
+):
     if current_user:
         result = await db.execute(
             select(UserHuntProgress)
@@ -686,7 +769,7 @@ async def get_current_clue(
                 UserHuntProgress.user_id == current_user.id,
             )
         )
-    
+
         progress = result.scalars().first()
         if not progress:
             raise HTTPException(
@@ -696,7 +779,7 @@ async def get_current_clue(
         return {"current_clue_id": progress.current_clue_id}
     else:
         return {"current_clue_id": 0}
-    
+
 class ProgressPayload(BaseModel):
     clue_id: int
 
@@ -711,7 +794,7 @@ async def save_progress(
     db: AsyncSession = Depends(get_db),
 ):
     if not current_user:
-        return 
+        return
 
     result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
     hunt = result.scalars().first()
@@ -750,15 +833,15 @@ async def save_progress(
         )
         clues = r2.scalars().all()
         idx = next((i for i,c in enumerate(clues) if c.id == payload.clue_id), None)
-        
+
         if idx is not None and idx + 1 < len(clues):
             uhp.current_clue_id = clues[idx + 1].id
         else:
-            uhp.current_clue_id = None  
+            uhp.current_clue_id = None
 
-    
+
     await db.commit()
-    
+
 
 # List hunts the current user has joined
 @app.get("/hunts/search/joined",response_model=List[HuntRead],summary="List hunts the current user has joined")
