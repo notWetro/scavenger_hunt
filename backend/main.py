@@ -184,30 +184,22 @@ class Clue(Base):
 
     image_url          = Column(String)
     audio_url          = Column(String)
-    question_gps_coordinates =  Column(JSON, nullable=True) 
+    question_gps_coordinates =  Column(JSON, nullable=True)
 
-    hint_type               = Column(String, nullable=True)    # "text" | "image" | "audio"
-    hint_image_file         = Column(String, nullable=True)    
+    hint_type               = Column(String, nullable=True)
+    hint_image_file         = Column(String, nullable=True)
     hint_audio_file         = Column(String, nullable=True)
-    hint_gps_coordinates    =  Column(JSON, nullable=True)    # "48.123,11.456"
-    hint_gps_radius         = Column(Float, nullable=True)     
+    hint_gps_coordinates    =  Column(JSON, nullable=True)
+    hint_gps_radius         = Column(Float, nullable=True)
 
-    question_type           = Column(String)                   
-    answer_type             = Column(String)                   
-    answer_gps_coordinates  = Column(JSON, nullable=True)    
+    question_type           = Column(String)
+    answer_type             = Column(String)
+    answer_gps_coordinates  = Column(JSON, nullable=True)
     answer_gps_radius       = Column(Float, nullable=True)
 
-    choices                  = Column(JSON, nullable=True)     
+    choices                  = Column(JSON, nullable=True)
     created_at               = Column(DateTime, default=datetime.utcnow)
 
-<<<<<<< HEAD
-    question_type = Column(String)
-    answer_type = Column(String)
-    choices = Column(Text)                 # JSON
-    expected_gps = Column(String)
-    gps_radius = Column(Float)
-=======
->>>>>>> 7c467d7d4ea5d2c4e1dd31ab9e607d942741c1b1
 
 
 class UserHuntProgress(Base):
@@ -265,9 +257,9 @@ def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
  """
 
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = "uploads/clue-images"
 
-# Endpoint to upload images
+# Endpoint to upload images for general use
 @app.post("/images/upload", summary="Upload an image", status_code=201)
 async def upload_image(
     file: UploadFile = File(...),
@@ -289,6 +281,84 @@ async def upload_image(
     # return the URL path clients can use to fetch it
     return {"filename": fname, "url": f"/images/{fname}"}
 
+# Endpoint to upload question images for clues
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/image",summary="Upload an image for a specific clue",status_code=201)
+async def upload_clue_image(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify the hunt exists & belongs to this user
+    r = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = r.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(404, "Not found or not yours")
+
+    # verify the clue exists under that hunt
+    r2 = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = r2.scalars().first()
+    if not clue:
+        raise HTTPException(404, "Clue not found")
+
+    # save the file
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_{int(datetime.utcnow().timestamp())}{ext}"
+    dest = os.path.join(UPLOAD_DIR, fname)
+    with open(dest, "wb") as buf:
+        buf.write(await file.read())
+
+    # update the clue’s image_url column
+    clue.image_url = f"/images/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    return {"image_url": clue.image_url}
+
+# Endpoint to upload a hint image for a clue
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/hint-image",summary="Upload or replace a clues hint image",status_code=201,)
+async def upload_clue_hint_image(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify the hunt and clue exist and belong to you
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(404, "Hunt not found or not yours")
+
+    result = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = result.scalars().first()
+    if not clue:
+        raise HTTPException(404, "Clue not found")
+
+    # save the file
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    ext   = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_hint_{int(datetime.utcnow().timestamp())}{ext}"
+    path  = os.path.join(UPLOAD_DIR, fname)
+    content = await file.read()
+    with open(path, "wb") as out:
+        out.write(content)
+
+    # update the database
+    clue.hint_image_file = f"/images/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    # return the URL
+    return {"hint_image_file": clue.hint_image_file}
+
+# Endpoint to serve uploaded images
 @app.get("/images/{filename}",summary="Serve an uploaded image",responses={200: {"content": {"image/*": {}}}})
 async def serve_image(filename: str):
     """
@@ -408,7 +478,7 @@ class ClueRead(BaseModel):
 
     image_url:           Optional[str]
     audio_url:           Optional[str]
-    question_gps_coordinates: Optional[dict[str, str]]  
+    question_gps_coordinates: Optional[dict[str, str]]
 
     hint_type:           Optional[str]
     hint_image_file:     Optional[str]
@@ -451,24 +521,6 @@ async def get_clue(
         raise HTTPException(404, "Clue not found")
     return clue
 
-<<<<<<< HEAD
-# response schema for a clue
-class ClueRead(BaseModel):
-    id:             int
-    description:    str | None
-    correct_answer: str | None
-    clue_order:    int | None
-    hint:           str | None
-    question_type:   str | None
-    answer_type:     str | None
-    choices:        str | None
-    image_url:      str | None
-    audio_url:      str | None
-    video_url:      str | None
-    expected_gps:   str | None
-    gps_radius:     float | None
-=======
->>>>>>> 7c467d7d4ea5d2c4e1dd31ab9e607d942741c1b1
 
 
 # List clues for a specific hunt
@@ -691,98 +743,7 @@ async def leave_hunt(
     await db.commit()
 
     return {"message": "Left the hunt successfully"}
-<<<<<<< HEAD
 
-# Start hunt with skipping solved clues and return all current clue details
-@app.post("/start-hunt/{hunt_id}")
-async def start_hunt(hunt_id: int, user_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Hunt).filter(Hunt.id == hunt_id))
-    hunt = result.scalars().first()
-    if not hunt:
-        return {"error": "Hunt not found"}
-
-    result = await db.execute(select(UserHuntProgress).filter(
-        UserHuntProgress.hunt_id == hunt_id, UserHuntProgress.user_id == user_id
-    ))
-    user_hunt_progress = result.scalars().first()
-
-    if not user_hunt_progress:
-        return {"error": "User is not part of this hunt"}
-
-    result = await db.execute(select(Clue).filter(Clue.hunt_id == hunt_id).order_by(Clue.clue_order))
-    clues = result.scalars().all()
-    if not clues:
-        return {"error": "No clues available for this hunt"}
-
-    for clue in clues:
-        result = await db.execute(select(UserClueProgress).filter(
-            UserClueProgress.user_id == user_id,
-            UserClueProgress.clue_id == clue.id,
-            UserClueProgress.is_solved == True
-        ))
-        solved = result.scalars().first()
-        if not solved:
-            user_hunt_progress.current_clue_id = clue.id
-            await db.commit()
-            await db.refresh(user_hunt_progress)
-
-            return {
-                "message": "Hunt started successfully",
-                "current_clue": {
-                    "id": clue.id,
-                    "title": clue.title,
-                    "description": clue.description,
-                    "hint": clue.hint,
-                    "clue_order": clue.clue_order,
-                    "question_type": clue.question_type,
-                    "answer_type": clue.answer_type,
-                    "choices": clue.choices,
-                    "image_url": clue.image_url,
-                    "audio_url": clue.audio_url,
-                    "video_url": clue.video_url,
-                    "expected_gps": clue.expected_gps,
-                    "gps_radius": clue.gps_radius
-                }
-            }
-
-    return {"message": "All clues have already been solved"}
-
-# Check if the answer is correct
-@app.post("/check-answer/{clue_id}")
-async def check_if_answer_true(clue_id: int, user_id: int, answer: str, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Clue).filter(Clue.id == clue_id))
-    clue = result.scalars().first()
-    if not clue:
-        return {"error": "Clue not found"}
-
-    if clue.correct_answer.lower() == answer.lower():
-        result = await db.execute(select(UserClueProgress).filter(
-            UserClueProgress.user_id == user_id,
-            UserClueProgress.clue_id == clue_id
-        ))
-        user_clue_progress = result.scalars().first()
-
-        if not user_clue_progress:
-            user_clue_progress = UserClueProgress(
-                user_id=user_id,
-                clue_id=clue_id,
-                is_solved=True,
-                solved_at=datetime.utcnow()
-            )
-            db.add(user_clue_progress)
-        else:
-            user_clue_progress.is_solved = True
-            user_clue_progress.solved_at = datetime.utcnow()
-
-        await db.commit()
-        await db.refresh(user_clue_progress)
-
-        return {"message": "Correct answer", "is_correct": True}
-
-    return {"message": "Incorrect answer", "is_correct": False}
-=======
-  
->>>>>>> 7c467d7d4ea5d2c4e1dd31ab9e607d942741c1b1
 
 
 class CurrentClueResponse(BaseModel):
