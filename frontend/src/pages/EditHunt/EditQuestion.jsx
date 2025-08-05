@@ -39,7 +39,7 @@ export default function EditQuestion() {
     answerGpsRadius: null,
     hintGpsCoordinates: { lat: "", lng: "" },
     multipleChoiceOptions: ["", "", ""],
-    correctOptionIndex: 0, // for multiple choice
+    currentOptionIndex: 0, // for multiple choice
   });
 
   useEffect(() => {
@@ -63,7 +63,10 @@ export default function EditQuestion() {
 
           imageFile: data.image_url || null,
           audioFile: data.audio_url || null,
-          questionGpsCoordinates: data.question_gps_coordinates || { lat: "", lng: "" },
+          questionGpsCoordinates: data.question_gps_coordinates || {
+            lat: "",
+            lng: "",
+          },
 
           hintType: data.hint_type || "text",
           hintImageFile: data.hint_image_file || null,
@@ -73,9 +76,15 @@ export default function EditQuestion() {
 
           questionType: data.question_type || "text",
           answerType: data.answer_type || "text",
-          answerGpsCoordinates: data.answer_gps_coordinates || { lat: "", lng: "" },
+          answerGpsCoordinates: data.answer_gps_coordinates || {
+            lat: "",
+            lng: "",
+          },
           answerGpsRadius: data.answer_gps_radius || null,
           multipleChoiceOptions: data.choices || ["", "", ""],
+          currentOptionIndex: data.choices.findIndex(
+            (choice) => choice === data.correct_answer,
+          ),
         }));
         setPreviewUrl(`${API_BASE}${data.image_url || ""}`);
         setPreviewHuntUrl(`${API_BASE}${data.hint_image_file || ""}`);
@@ -99,7 +108,7 @@ export default function EditQuestion() {
     setQuestion((prev) => ({ ...prev, hintType: type }));
   };
 
-   const handleHintImageChange = e => {
+  const handleHintImageChange = (e) => {
     const file = e.target.files[0];
     console.log("Selected file:", file);
     setHintImageFile(file);
@@ -107,13 +116,12 @@ export default function EditQuestion() {
   };
 
   const handleHintImageUpload = async (e) => {
-
     const form = new FormData();
     form.append("file", hintImageFile);
 
     const res = await authFetch(
       `/hunts/${huntId}/clues/${questionId}/hint-image`,
-      { method: "POST", body: form }
+      { method: "POST", body: form },
     );
 
     if (!res.ok) {
@@ -121,12 +129,11 @@ export default function EditQuestion() {
       return console.error("Hint upload failed:", err);
     }
     const { hint_image_file } = await res.json();
-    setQuestion(q => ({ ...q, hintImageFile: hint_image_file }));
+    setQuestion((q) => ({ ...q, hintImageFile: hint_image_file }));
     return hint_image_file;
   };
 
-
-  const handleImageChange = e => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     console.log("Selected file:", file);
     setImageFile(file);
@@ -138,10 +145,10 @@ export default function EditQuestion() {
     const formData = new FormData();
     formData.append("file", imageFile);
 
-    const res = await authFetch(
-      `/hunts/${huntId}/clues/${questionId}/image`,
-      { method: "POST", body: formData }
-    );
+    const res = await authFetch(`/hunts/${huntId}/clues/${questionId}/image`, {
+      method: "POST",
+      body: formData,
+    });
     if (!res.ok) {
       const err = await res.text();
       return console.error("Upload failed:", err);
@@ -149,7 +156,6 @@ export default function EditQuestion() {
     const { image_url } = await res.json();
     setQuestion((prev) => ({ ...prev, imageFile: image_url }));
     return image_url;
-   
   };
 
   const handleImageUpload = (e) => {
@@ -227,7 +233,8 @@ export default function EditQuestion() {
         question.answerGpsCoordinates = { lat: "", lng: "" };
         break;
       case "multiple_choice":
-        question.answer = "";
+        question.answer =
+          question.multipleChoiceOptions[parseInt(question.currentOptionIndex)];
         question.answerGpsCoordinates = { lat: "", lng: "" };
         break;
       case "gps":
@@ -266,7 +273,7 @@ export default function EditQuestion() {
   const saveChange = async () => {
     clearOtherFields();
     try {
-      let finalQuestionImageUrl = question.imageFile;  
+      let finalQuestionImageUrl = question.imageFile;
       if (imageFile instanceof File) {
         finalQuestionImageUrl = await uploadQuestionImage();
       }
@@ -326,7 +333,7 @@ export default function EditQuestion() {
         return (
           <div>
             <input type="file" onChange={handleImageChange} />
-            {previewUrl && <img src={previewUrl} style={{maxWidth:200}} />}
+            {previewUrl && <img src={previewUrl} style={{ maxWidth: 200 }} />}
           </div>
         );
       case "audio":
@@ -383,7 +390,7 @@ export default function EditQuestion() {
               />
             </div>
             <div>
-              <h4>Position</h4>
+              <h4>Position:</h4>
               <MapComponent
                 latitude={
                   question.questionGpsCoordinates.lat == ""
@@ -444,17 +451,16 @@ export default function EditQuestion() {
       case "multiple_choice":
         return (
           <div className="multiple-choice-container">
-            <label>Antwortoptionen:</label>
             {question.multipleChoiceOptions.map((option, index) => (
               <div key={index} className="multiple-choice-option">
                 <input
                   type="radio"
                   name="correct-answer"
-                  checked={question.correctOptionIndex === index}
+                  checked={question.currentOptionIndex === index}
                   onChange={() =>
                     setQuestion((prev) => ({
                       ...prev,
-                      correctOptionIndex: index,
+                      currentOptionIndex: index,
                     }))
                   }
                 />
@@ -481,7 +487,7 @@ export default function EditQuestion() {
             <button
               type="button"
               onClick={addMultipleChoiceOption}
-              className="add-option-btn"
+              className="main-button main-button-green"
             >
               + Option hinzufügen
             </button>
@@ -517,22 +523,54 @@ export default function EditQuestion() {
               />
             </div>
             <div>
-              <h4>Position</h4>
+              <h4>Position:</h4>
               <MapComponent
                 latitude={
                   question.answerGpsCoordinates.lat == ""
                     ? 0
-                    : parseInt(question.answerGpsCoordinates.lat)
+                    : parseFloat(question.answerGpsCoordinates.lat)
                 }
                 longitude={
                   question.answerGpsCoordinates.lng == ""
                     ? 0
-                    : parseInt(question.answerGpsCoordinates.lng)
+                    : parseFloat(question.answerGpsCoordinates.lng)
                 }
                 zoom={15}
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+              />
+              <button
+                className="main-button main-button-blue"
+                onClick={async () => {
+                  const position = await getCurrentLocation();
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      answerGpsCoordinates: {
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
+                      },
+                    });
+                  }
+                }}
+              >
+                Get your Position
+              </button>
+              <h4>Radius für die Antwort in Metern:</h4>
+              <input
+                id="answer-input"
+                type="text"
+                className="EditQuestion-input"
+                value={question.answerGpsRadius}
+                onChange={(e) =>
+                  setQuestion((prev) => ({
+                    ...prev,
+                    answerGpsRadius: e.target.value,
+                  }))
+                }
+                placeholder="Radius in Metern eingeben"
               />
             </div>
           </div>
@@ -560,7 +598,9 @@ export default function EditQuestion() {
         return (
           <div>
             <input type="file" onChange={handleHintImageChange} />
-            {previewHuntUrl && <img src={previewHuntUrl} style={{maxWidth:200}} />}
+            {previewHuntUrl && (
+              <img src={previewHuntUrl} style={{ maxWidth: 200 }} />
+            )}
           </div>
         );
       case "audio":
@@ -612,6 +652,41 @@ export default function EditQuestion() {
                 placeholder="z.B. 13.4050"
                 className="EditQuestion-input"
               />
+              <h4>Position:</h4>
+              <MapComponent
+                latitude={
+                  question.hintGpsCoordinates.lat == ""
+                    ? 0
+                    : parseFloat(question.hintGpsCoordinates.lat)
+                }
+                longitude={
+                  question.hintGpsCoordinates.lng == ""
+                    ? 0
+                    : parseFloat(question.hintGpsCoordinates.lng)
+                }
+                zoom={15}
+                height="300px"
+                popupText="Antwort Ort"
+                className="map-container"
+              />
+              <button
+                className="main-button main-button-blue"
+                onClick={async () => {
+                  const position = await getCurrentLocation();
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      hintGpsCoordinates: {
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
+                      },
+                    });
+                  }
+                }}
+              >
+                Get your Position
+              </button>
             </div>
           </div>
         );
