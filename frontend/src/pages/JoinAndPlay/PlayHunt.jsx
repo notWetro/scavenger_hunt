@@ -7,7 +7,7 @@ import "./PlayHunt.css";
 export default function PlayHunt() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { huntId } = useParams();
+  const { huntCode } = useParams();
   const { authFetch } = useContext(AuthContext);
 
   const [hunt, setHunt] = useState(null);
@@ -19,7 +19,7 @@ export default function PlayHunt() {
   const [gameCompleted, setGameCompleted] = useState(false);
 
   useEffect(() => {
-    if (!huntId) {
+    if (!huntCode) {
       navigate("/");
       return;
     }
@@ -28,9 +28,9 @@ export default function PlayHunt() {
       try {
         setIsLoading(true);
         const [huntRes, cluesRes, nextClueRes] = await Promise.all([
-          authFetch(`/hunts/${huntId}`),
-          authFetch(`/hunts/${huntId}/clues`),
-          authFetch(`/hunts/${huntId}/current-clue`),
+          authFetch(`/hunts/by-code/${huntCode}`),
+          authFetch(`/hunts/by-code/${huntCode}/clues`),
+          authFetch(`/hunts/by-code/${huntCode}/current-clue`),
         ]);
 
         if (!huntRes.ok || !cluesRes.ok) {
@@ -39,6 +39,7 @@ export default function PlayHunt() {
 
         const huntData = await huntRes.json();
         const cluesData = await cluesRes.json();
+        console.log("Hunt data:", huntData);
 
         setHunt(huntData);
         setQuestions(cluesData);
@@ -63,10 +64,10 @@ export default function PlayHunt() {
     }
 
     loadHunt();
-  }, [huntId, authFetch, navigate]);
+  }, [huntCode, authFetch, navigate]);
 
-  async function saveClueProgress(huntId, clueId) {
-    const res = await authFetch(`/hunts/${huntId}/progress`, {
+  async function saveClueProgress(huntCode, clueId) {
+    const res = await authFetch(`/hunts/by-code/${huntCode}/progress`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ clue_id: clueId }),
@@ -92,7 +93,7 @@ export default function PlayHunt() {
     if (isCorrect) {
       // Richtige Antwort
 
-      saveClueProgress(huntId, currentQuestion.id);
+      saveClueProgress(huntCode, currentQuestion.id);
 
       if (currentQuestionIndex + 1 < questions.length) {
         // Nächste Frage laden

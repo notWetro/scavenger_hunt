@@ -14,6 +14,7 @@ export default function EditHunt() {
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
   const [huntNameState, setHuntNameState] = useState("");
+  const [huntCode, setHuntCode] = useState("");
   // Array für alle Fragen
 
   const { huntId } = useParams();
@@ -45,6 +46,7 @@ export default function EditHunt() {
         setHuntLocation(hunt.place_to_play || "");
         setStartPoint(hunt.start_point || "");
         setHuntNameState(hunt.name || "");
+        setHuntCode(hunt.code || "");
 
         setQuestions(
           clues.map((clue) => ({
@@ -53,6 +55,7 @@ export default function EditHunt() {
             answer: clue.correct_answer ?? "",
             order: clue.clue_order ?? 0,
             open: false,
+            answer_type: clue.answer_type,
           })),
         );
       } catch (err) {
@@ -294,7 +297,7 @@ export default function EditHunt() {
         </button>
         {showDetails && (
           <div className="accordion-content">
-            <label>Hunt ID: {huntId}</label>
+            <label>Hunt ID: {huntCode}</label>
             {/*             <label>
               Hunt Name:
               <input
@@ -399,7 +402,7 @@ export default function EditHunt() {
                                   Antwort:
                                   <br />
                                   <label>
-                                    {question.answer || "answer text"}
+                                    {question.answer_type || "answer text"}
                                     <br />
                                   </label>
                                 </label>

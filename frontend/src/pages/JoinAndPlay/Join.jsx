@@ -5,7 +5,7 @@ import "./Join.css";
 import { AuthContext } from "../../AuthContext";
 
 export default function Join() {
-  const [huntId, setHuntId] = useState("");
+  const [huntCode, setHuntCode] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ export default function Join() {
     
     try {
       const res = await authFetch(
-        `/hunts/${huntId}/join`,
+        `/hunts/${huntCode}/join`,
         { method: "POST" }
       );
 
@@ -30,7 +30,7 @@ export default function Join() {
 
       const data = await res.json();
       console.log(data);
-      navigate(`/StartHunt/${huntId}`, { state: data });
+      navigate(`/StartHunt/${huntCode}`, { state: data });
     } catch (err) {
       console.error(err);
       setError(t("join_failed"));
@@ -44,14 +44,14 @@ export default function Join() {
       <form className="join-form" onSubmit={handleJoin}>
         <input
           type="text"
-          placeholder={t("enter_hunt_id")}
-          value={huntId}
-          onChange={(e) => setHuntId(e.target.value)}
+          placeholder={t("enter_hunt_code")}
+          value={huntCode}
+          onChange={(e) => setHuntCode(e.target.value)}
           required
           className="join-input"
         />
         {error && (
-          <div className="error-message-hunt-ID">
+          <div className="error-message-hunt-code">
             {error}
           </div>
         )}
