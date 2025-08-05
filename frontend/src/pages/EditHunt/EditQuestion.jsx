@@ -19,7 +19,9 @@ export default function EditQuestion() {
   const { authFetch } = useContext(AuthContext);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [previewHintUrl, setPreviewHintUrl] = useState("");
+
+  const [previewHuntUrl, setPreviewHuntUrl] = useState("");
+  const [hintImageFile, setHintImageFile] = useState(null);
 
   const [question, setQuestion] = useState({
     text: "",
@@ -76,7 +78,7 @@ export default function EditQuestion() {
           multipleChoiceOptions: data.choices || ["", "", ""],
         }));
         setPreviewUrl(`${API_BASE}${data.image_url || ""}`);
-        setPreviewHintUrl(`${API_BASE}${data.hint_image_file || ""}`);
+        setPreviewHuntUrl(`${API_BASE}${data.hint_image_file || ""}`);
         console.log("Question loaded successfully:", question);
       } catch (error) {
         console.error("Error loading question:", error);
@@ -97,13 +99,17 @@ export default function EditQuestion() {
     setQuestion((prev) => ({ ...prev, hintType: type }));
   };
 
-  const handleHintImageUpload = async (e) => {
+   const handleHintImageChange = e => {
     const file = e.target.files[0];
-    if (!file) return alert("Pick a hint image first");
+    console.log("Selected file:", file);
+    setHintImageFile(file);
+    setPreviewHuntUrl(URL.createObjectURL(file));
+  };
 
-    setPreviewHintUrl(URL.createObjectURL(file));
+  const handleHintImageUpload = async (e) => {
+
     const form = new FormData();
-    form.append("file", file);
+    form.append("file", hintImageFile);
 
     const res = await authFetch(
       `/hunts/${huntId}/clues/${questionId}/hint-image`,
@@ -114,10 +120,9 @@ export default function EditQuestion() {
       const err = await res.text();
       return console.error("Hint upload failed:", err);
     }
-    const { hint_image_url } = await res.json();
-    setQuestion(q => ({ ...q, hintImageFile: hint_image_url }));
-    setPreviewHintUrl(`${API_BASE}${hint_image_url}`);
-    console.log("Hint image uploaded successfully:", hint_image_url);
+    const { hint_image_file } = await res.json();
+    setQuestion(q => ({ ...q, hintImageFile: hint_image_file }));
+    return hint_image_file;
   };
 
 
@@ -265,6 +270,11 @@ export default function EditQuestion() {
       if (imageFile instanceof File) {
         finalQuestionImageUrl = await uploadQuestionImage();
       }
+
+      let finalHintImageUrl = question.hintImageFile;
+      if (hintImageFile instanceof File) {
+        finalHintImageUrl = await handleHintImageUpload();
+      }
       const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -280,7 +290,7 @@ export default function EditQuestion() {
           question_gps_coordinates: question.questionGpsCoordinates,
           answer_gps_coordinates: question.answerGpsCoordinates,
           answer_gps_radius: question.answerGpsRadius || null,
-          hint_image_url: question.hintImageFile || null,
+          hint_image_file: finalHintImageUrl,
           hint_audio_url: question.hintAudioFile || null,
           hint_gps_coordinates: question.hintGpsCoordinates,
           hint_gps_radius: question.hintGpsRadius || null,
@@ -295,7 +305,7 @@ export default function EditQuestion() {
         question_gps_coordinates: question.questionGpsCoordinates,
         answer_gps_coordinates: question.answerGpsCoordinates,
         answer_gps_radius: question.answerGpsRadius || null,
-        hint_image_url: question.hintImageFile || null,
+        hint_image_file: finalHintImageUrl,
         hint_audio_url: question.hintAudioFile || null,
         hint_gps_coordinates: question.hintGpsCoordinates,
         hint_gps_radius: question.hintGpsRadius || null,
@@ -315,7 +325,6 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <h2>Edit Clue #{questionId}</h2>
             <input type="file" onChange={handleImageChange} />
             {previewUrl && <img src={previewUrl} style={{maxWidth:200}} />}
           </div>
@@ -550,10 +559,8 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <h2>Hint Clue #{questionId}</h2>
-            <input type="file" onChange={handleHintImageUpload} />
-            {previewHintUrl && <img src={previewHintUrl} style={{maxWidth:200}} />}
-            <div>{previewHintUrl}</div>
+            <input type="file" onChange={handleHintImageChange} />
+            {previewHuntUrl && <img src={previewHuntUrl} style={{maxWidth:200}} />}
           </div>
         );
       case "audio":

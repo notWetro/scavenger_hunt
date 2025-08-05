@@ -74,10 +74,7 @@ app.add_middleware(
 class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
 
-    # --- primary key (required when you use SQLAlchemyBaseUserTable[int]) ---
     id: int = Column(Integer, primary_key=True, autoincrement=True)
-
-    # --- your extra fields --------------------------------------------------
     username   = Column(String, nullable=False)
     language   = Column(String, default="en")
     dark_mode  = Column(Boolean, default=False)
@@ -120,8 +117,8 @@ auth_backend = AuthenticationBackend(
 )
 
 fastapi_users = FastAPIUsers(
-    get_user_manager,   # your new manager factory
-    [auth_backend],     # authentication backend(s)
+    get_user_manager,   
+    [auth_backend],     
 )
 
 
@@ -268,7 +265,7 @@ async def upload_image(
     # ensure uploads/ exists
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-    # generate safe filename, e.g. prefix with user ID and timestamp
+    # generate safe filename, prefix with user ID and timestamp
     ext = os.path.splitext(file.filename)[1]
     fname = f"{current_user.id}_{int(datetime.utcnow().timestamp())}{ext}"
     path = os.path.join(UPLOAD_DIR, fname)
