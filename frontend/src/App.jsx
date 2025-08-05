@@ -21,12 +21,12 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/hunts" element={<Hunts />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/starthunt/:huntId" element={<StartHunt />} />
+          <Route path="/starthunt/:huntCode" element={<StartHunt />} />
           <Route path="/edithunt/:huntId" element={<EditHunt />} />
           <Route path="/editquestion" element={<EditQuestion />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/playhunt/:huntId" element={<PlayHunt />} />
+          <Route path="/playhunt/:huntCode" element={<PlayHunt />} />
         </Routes>
       </div>
       <Navbar />

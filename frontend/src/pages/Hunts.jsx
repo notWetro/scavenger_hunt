@@ -126,12 +126,12 @@ export default function Hunts() {
         ) : hunts.length > 0 ? (
           hunts.map((hunt) => (
             <button
-              key={hunt.id}
+              key={hunt.code}
               className="hunt-card"
               onClick={() => {
                 selectedTab == "own"
                   ? navigate(`/EditHunt/${hunt.id}`)
-                  : navigate(`/StartHunt/${hunt.id}`);
+                  : navigate(`/StartHunt/${hunt.code}`);
               }}
             >
               <h3>{hunt.name}</h3>

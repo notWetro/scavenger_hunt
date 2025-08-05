@@ -3,18 +3,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./StartHunt.css";
 import { AuthContext } from "../../AuthContext";
+import QRCode from "react-qr-code";
 
 export default function StartHunt() {
-  const { huntId } = useParams();
+  const { huntCode } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [hunt, setHunt] = useState({});
   const { user, authFetch, logout } = useContext(AuthContext);
+  const [showSharePopup, setShowSharePopup] = useState(false);
+  const [copySuccess, setCopySuccess] = useState("");
 
+  const shareUrl = `${window.location.origin}/StartHunt/${huntCode}`;
+  
   useEffect(() => {
+    console.log(huntCode);
     const fetchHunt = async () => {
       try {
-        const response = await authFetch(`/hunts/${huntId}`);
+        const response = await authFetch(`/hunts/by-code/${huntCode}`);
         if (!response.ok) {
           throw new Error("Failed to fetch hunt details");
         }
@@ -26,13 +32,33 @@ export default function StartHunt() {
       }
     };
     fetchHunt();
-  }, [huntId]);
+  }, [huntCode]);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopySuccess(t("link_copied"));
+    } catch {
+      setCopySuccess(t("copy_failed"));
+    }
+  };
+  
+
+  const handlePublish = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert(t("link_copied", { link: shareUrl }));
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+      alert(t("copy_failed"));
+    }
+  };
 
   //ToDo: add translation and change alerts to notifications from our side
   const removeHunt = async () => {
     if (!window.confirm("Are you sure you want to leave this hunt?")) return;
     try {
-      const response = await authFetch(`/hunts/${huntId}/leave`, {
+      const response = await authFetch(`/hunts/by-code/${hunt.code}/leave`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -52,7 +78,7 @@ export default function StartHunt() {
 
       <div className="hunt-details">
         <p>
-          <strong>{t("hunt_id")}:</strong> {hunt.id}
+          <strong>{t("hunt_code")}:</strong> {hunt.code}
         </p>
         <p>
           <strong>{t("hunt_info")}:</strong> {hunt.description}
@@ -71,7 +97,7 @@ export default function StartHunt() {
       <div className="button-column">
         <button
           className="main-button main-button-green"
-          onClick={() => navigate(`/PlayHunt/${huntId.trim()}`)}
+          onClick={() => navigate(`/PlayHunt/${huntCode.trim()}`)}
         >
           {t("start_hunt")}
         </button>
@@ -90,6 +116,41 @@ export default function StartHunt() {
         >
           {t("back")}
         </button>
+        <button
+          className="main-button main-button-blue"
+          onClick={() => {
+            setCopySuccess("");
+            setShowSharePopup(true);
+          }}
+        >
+          {t("publish_hunt")}
+        </button>
+
+        {showSharePopup && (
+          <div className="popup-overlay">
+            <div className="popup">
+              <h2>{t("share_link")}</h2>
+              <p>{shareUrl}</p>
+              <div>
+                <QRCode value={shareUrl} size={128} />
+              </div>
+              <div className="popup-buttons">
+                <button className="main-button" onClick={handleCopyLink}>
+                  {t("copy_link")}
+                </button>
+                <button
+                  className="main-button"
+                  onClick={() => setShowSharePopup(false)}
+                >
+                  {t("close")}
+                </button>
+              </div>
+              {copySuccess && (
+                <p className="copy-feedback">{copySuccess}</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
