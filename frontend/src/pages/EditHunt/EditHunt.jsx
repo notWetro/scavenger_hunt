@@ -53,6 +53,7 @@ export default function EditHunt() {
             answer: clue.correct_answer ?? "",
             order: clue.clue_order ?? 0,
             open: false,
+            answerType: clue.answerType ?? "",
           })),
         );
       } catch (err) {
@@ -388,18 +389,13 @@ export default function EditHunt() {
                               <div className="question-content">
                                 <div className="drag-icon">⋮⋮</div>
                                 <label>
-                                  Frage:
+                                  Frage: {question.text}
                                   <br />
-                                  <label>
-                                    {question.text || "question text"}
-                                    <br />
-                                  </label>
                                 </label>
                                 <label>
-                                  Antwort:
+                                  Antwortart: {question.answerType}
                                   <br />
                                   <label>
-                                    {question.answer || "answer text"}
                                     <br />
                                   </label>
                                 </label>

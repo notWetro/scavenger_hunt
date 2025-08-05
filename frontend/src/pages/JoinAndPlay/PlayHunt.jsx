@@ -173,6 +173,43 @@ export default function PlayHunt() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const renderQuestionReturn = () => {
+    switch (currentQuestion.quesionType) {
+      case "text":
+        return <div></div>;
+      case "Bild":
+        return (
+          <div>
+            {currentQuestion.imageURL && (
+              <img src={currentQuestion.imageURL} style={{ maxWidth: 200 }} />
+            )}
+          </div>
+        );
+      case "Audio":
+      case "GPS":
+        return (
+          <MapComponent
+            latitude={
+              currentQuestion.questionGpsCoordinates.lat == ""
+                ? 0
+                : parseFloat(currentQuestion.questionGpsCoordinates.lat)
+            }
+            longitude={
+              currentQuestion.questionGpsCoordinates.lng == ""
+                ? 0
+                : parseFloat(currentQuestion.questionGpsCoordinates.lng)
+            }
+            zoom={15}
+            height="300px"
+            popupText="Antwort Ort"
+            className="map-container"
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="play-hunt-container">
       <h1>{hunt.name}</h1>
@@ -184,23 +221,8 @@ export default function PlayHunt() {
       <div className="question-section">
         <div className="question-text">
           <h2>{currentQuestion.description}</h2>
-          {currentQuestion.image_url && ( // Aktuell noch fehlerhaft
-            <div className="image-container">
-              <p>Debug: {currentQuestion.image_url}</p>
-              <p>Full URL: `{`./${currentQuestion.image_url}`}`</p>
-              <img
-                src={`./${currentQuestion.image_url}`}
-                alt="Frage Bild"
-                style={{ maxWidth: "100%", height: "auto" }}
-                onError={(e) => {
-                  console.error("Image load error:", e.target.src);
-                  e.target.style.border = "2px solid red";
-                }}
-                onLoad={() => console.log("Image loaded successfully")}
-              />
-            </div>
-          )}
         </div>
+        {renderQuestionReturn()}
         <hr className="section-divider" /> {/* css Code in EditQuestion.css */}
         <div className="answer-section">
           <input
