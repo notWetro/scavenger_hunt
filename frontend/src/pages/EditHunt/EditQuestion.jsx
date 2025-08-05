@@ -81,10 +81,10 @@ export default function EditQuestion() {
             lng: "",
           },
           answerGpsRadius: data.answer_gps_radius || null,
-          multipleChoiceOptions: data.choices || ["", "", ""],
-          currentOptionIndex: data.choices.findIndex(
-            (choice) => choice === data.correct_answer,
-          ),
+          multipleChoiceOptions: Array.isArray(data.choices) ? data.choices : ["", "", ""],
+          currentOptionIndex: Array.isArray(data.choices)
+            ? data.choices.findIndex((choice) => choice === data.correct_answer)
+            : 0,
         }));
         setPreviewUrl(`${API_BASE}${data.image_url || ""}`);
         setPreviewHuntUrl(`${API_BASE}${data.hint_image_file || ""}`);
