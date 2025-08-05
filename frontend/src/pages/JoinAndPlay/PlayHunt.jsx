@@ -2,7 +2,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../AuthContext";
+import MapComponent from "../../components/MapComponent.jsx";
+import { getCurrentLocation } from "../../utils/geolocation";
+import { getDistanceFromLatLonInMeters } from "../../utils/distance";
 import "./PlayHunt.css";
+
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function PlayHunt() {
   const { t } = useTranslation();
@@ -17,6 +22,7 @@ export default function PlayHunt() {
   const [showHint, setShowHint] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
 
   useEffect(() => {
     if (!huntCode) {
@@ -80,39 +86,61 @@ export default function PlayHunt() {
   }
 
   const handleAnswer = () => {
-    if (!userAnswer.trim()) {
-      alert("Bitte geben Sie eine Antwort ein");
-      return;
-    }
-
     const currentQuestion = questions[currentQuestionIndex];
-    const isCorrect =
-      userAnswer.toLowerCase().trim() ===
-      currentQuestion.correct_answer.toLowerCase().trim();
+
+    let isCorrect = false;
+
+    if (currentQuestion.answer_type === "gps") {
+      if (!userAnswer.lat || !userAnswer.lng) {
+        alert("Bitte holen Sie Ihre aktuelle Position ein.");
+        return;
+      }
+
+      const correctCoords = currentQuestion.answer_gps_coordinates;
+      const tolerance = parseFloat(currentQuestion.answer_gps_radius); // in Metern
+
+      const distance = getDistanceFromLatLonInMeters(
+        userAnswer.lat,
+        userAnswer.lng,
+        parseFloat(correctCoords.lat),
+        parseFloat(correctCoords.lng),
+      );
+
+      console.log("Distanz zur richtigen Position:", distance, "Meter");
+
+      isCorrect = distance <= tolerance;
+    } else {
+      // TEXT & MULTIPLE CHOICE
+      if (!userAnswer.trim()) {
+        alert("Bitte geben Sie eine Antwort ein");
+        return;
+      }
+
+      isCorrect =
+        userAnswer.toLowerCase().trim() ===
+        currentQuestion.correct_answer.toLowerCase().trim();
+    }
 
     if (isCorrect) {
       // Richtige Antwort
-
       saveClueProgress(huntCode, currentQuestion.id);
 
       if (currentQuestionIndex + 1 < questions.length) {
-        // Nächste Frage laden
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setUserAnswer("");
         setShowHint(false);
-        // Wenn user angemeldet ist, kann hier ein Fortschritt gespeichert werden (HuntProgressNumber)
         alert("Richtig! Nächste Frage wird geladen.");
       } else {
-        // Schnitzeljagd beendet
         setGameCompleted(true);
         alert(
           "Herzlichen Glückwunsch! Sie haben die Schnitzeljagd erfolgreich beendet!",
         );
       }
     } else {
-      // Falsche Antwort
       alert(
-        "Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.",
+        currentQuestion.answer_type === "gps"
+          ? "Sie sind nicht nah genug am Zielort. Versuchen Sie es erneut."
+          : "Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.",
       );
     }
   };
@@ -175,30 +203,33 @@ export default function PlayHunt() {
   const currentQuestion = questions[currentQuestionIndex];
 
   const renderQuestionReturn = () => {
-    switch (currentQuestion.quesionType) {
+    switch (currentQuestion.question_type) {
       case "text":
         return <div></div>;
-      case "Bild":
+      case "image":
+        console.log(currentQuestion.image_url);
         return (
           <div>
-            {currentQuestion.imageURL && (
-              <img src={currentQuestion.imageURL} style={{ maxWidth: 200 }} />
-            )}
+            <img
+              src={`${API_BASE}${currentQuestion.image_url}`}
+              style={{ maxWidth: 200 }}
+            />
           </div>
         );
-      case "Audio":
-      case "GPS":
+      case "audio":
+        return <div></div>;
+      case "gps":
         return (
           <MapComponent
             latitude={
-              currentQuestion.questionGpsCoordinates.lat == ""
+              currentQuestion.question_gps_coordinates.lat == ""
                 ? 0
-                : parseFloat(currentQuestion.questionGpsCoordinates.lat)
+                : parseFloat(currentQuestion.question_gps_coordinates.lat)
             }
             longitude={
-              currentQuestion.questionGpsCoordinates.lng == ""
+              currentQuestion.question_gps_coordinates.lng == ""
                 ? 0
-                : parseFloat(currentQuestion.questionGpsCoordinates.lng)
+                : parseFloat(currentQuestion.question_gps_coordinates.lng)
             }
             zoom={15}
             height="300px"
@@ -208,6 +239,165 @@ export default function PlayHunt() {
         );
       default:
         return null;
+    }
+  };
+
+  const renderAnswerReturn = () => {
+    switch (currentQuestion.answer_type) {
+      case "text":
+        return (
+          <div className="answer-section">
+            <input
+              type="text"
+              className="answer-input"
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              placeholder="Ihre Antwort hier eingeben..."
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleAnswer();
+                }
+              }}
+            />
+          </div>
+        );
+      case "multiple_choice":
+        return (
+          <div className="answer-section">
+            <div className="multiple-choice-options">
+              {currentQuestion.choices.map((option, index) => (
+                <div key={index} className="radio-option">
+                  <input
+                    type="radio"
+                    id={`option-${index}`}
+                    name="multiple-choice-answer"
+                    value={option}
+                    checked={userAnswer === option}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                  />
+                  <label htmlFor={`option-${index}`} className="radio-label">
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      case "gps":
+        return (
+          <div className="answer-section">
+            <h4>Position:</h4>
+            <MapComponent
+              latitude={userAnswer.lat == null ? 0 : parseFloat(userAnswer.lat)}
+              longitude={
+                userAnswer.lng == null ? 0 : parseFloat(userAnswer.lng)
+              }
+              zoom={15}
+              height="300px"
+              popupText="Antwort Ort"
+              className="map-container"
+            />
+            <button
+              className="main-button main-button-blue"
+              onClick={async () => {
+                const position = await getCurrentLocation();
+                console.log(position);
+                if (position) {
+                  setUserAnswer({
+                    lat: position.latitude,
+                    lng: position.longitude,
+                  });
+                }
+              }}
+            >
+              Get your Position
+            </button>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const renderHintReturn = () => {
+    switch (currentQuestion.hint_type) {
+      case "text":
+        return (
+          <div>
+            <p>
+              {currentQuestion.hint ||
+                "Kein Hinweis verfügbar für diese Frage."}
+            </p>
+          </div>
+        );
+      case "image":
+        return (
+          <div>
+            <p>
+              {currentQuestion.hint_image_file
+                ? ""
+                : "Kein Hinweis verfügbar für diese Frage."}
+            </p>
+            {currentQuestion.hint_image_file && (
+              <img
+                src={`${API_BASE}${currentQuestion.hint_image_file}`}
+                style={{ maxWidth: 200 }}
+              />
+            )}
+          </div>
+        );
+      case "audio":
+        return (
+          <div>
+            <p>
+              {currentQuestion.hint_audio_file
+                ? ""
+                : "Kein Hinweis verfügbar für diese Frage."}
+            </p>
+            {currentQuestion.hint_audio_file && (
+              <audio controls style={{ width: "100%", marginTop: "10px" }}>
+                <source
+                  src={currentQuestion.hint_audio_file}
+                  type="audio/mpeg"
+                />
+                Ihr Browser unterstützt das Audio-Element nicht.
+              </audio>
+            )}
+          </div>
+        );
+      case "gps":
+        return (
+          <div>
+            <p>
+              {currentQuestion.hint_gps_coordinates
+                ? ""
+                : "Kein Hinweis verfügbar für diese Frage."}
+            </p>
+            {currentQuestion.hint_gps_coordinates && (
+              <MapComponent
+                latitude={
+                  parseFloat(currentQuestion.hint_gps_coordinates.lat) || 0
+                }
+                longitude={
+                  parseFloat(currentQuestion.hint_gps_coordinates.lng) || 0
+                }
+                zoom={15}
+                height="250px"
+                popupText="Hinweis Ort"
+                className="map-container"
+              />
+            )}
+          </div>
+        );
+      default:
+        return (
+          <div>
+            <p>
+              {currentQuestion.hint ||
+                "Kein Hinweis verfügbar für diese Frage."}
+            </p>
+          </div>
+        );
     }
   };
 
@@ -225,43 +415,25 @@ export default function PlayHunt() {
         </div>
         {renderQuestionReturn()}
         <hr className="section-divider" /> {/* css Code in EditQuestion.css */}
-        <div className="answer-section">
-          <input
-            type="text"
-            className="answer-input"
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="Ihre Antwort hier eingeben..."
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleAnswer();
-              }
-            }}
-          />
-
-          <div className="button-group">
-            <button
-              className="main-button main-button-green"
-              onClick={handleAnswer}
-            >
-              Antworten
-            </button>
-
-            <button
-              className="main-button main-button-blue"
-              onClick={handleHint}
-            >
-              Hinweis
-            </button>
-
-            <button className="main-button" onClick={handleBack}>
-              Zurück
-            </button>
-
-            <button className="main-button main-button-red" onClick={handleEnd}>
-              Beenden
-            </button>
-          </div>
+        {renderAnswerReturn()}
+        <div className="button-group">
+          <button
+            className="main-button main-button-green"
+            onClick={handleAnswer}
+          >
+            Antworten
+          </button>
+          <button className="main-button main-button-blue" onClick={handleHint}>
+            Hinweis
+          </button>
+          <hr className="section-divider" />{" "}
+          {/* css Code in EditQuestion.css */}
+          <button className="main-button" onClick={handleBack}>
+            Zurück
+          </button>
+          <button className="main-button main-button-red" onClick={handleEnd}>
+            Beenden
+          </button>
         </div>
       </div>
 
@@ -271,10 +443,7 @@ export default function PlayHunt() {
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="hint-content">
               <h3>Hinweis</h3>
-              <p>
-                {currentQuestion.hint ||
-                  "Kein Hinweis verfügbar für diese Frage."}
-              </p>
+              {renderHintReturn()}
               <button
                 className="main-button main-button-gray"
                 onClick={closeHintPopup}
