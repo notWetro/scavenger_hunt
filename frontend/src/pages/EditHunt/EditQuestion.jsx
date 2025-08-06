@@ -374,7 +374,7 @@ export default function EditQuestion() {
               }
               zoom={15}
               height="300px"
-              popupText="Antwort Ort"
+              popupText="Frage Ort"
               className="map-container"
               allowManualPin={true}
               onMapClick={(lat, lng) => {
@@ -604,7 +604,7 @@ export default function EditQuestion() {
               }
               zoom={15}
               height="300px"
-              popupText="Antwort Ort"
+              popupText="Hinweis Ort"
               className="map-container"
               allowManualPin={true}
               onMapClick={(lat, lng) => {
