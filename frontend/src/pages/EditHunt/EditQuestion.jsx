@@ -408,6 +408,16 @@ export default function EditQuestion() {
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    questionGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"
@@ -542,6 +552,16 @@ export default function EditQuestion() {
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    answerGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"
@@ -671,6 +691,16 @@ export default function EditQuestion() {
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    hintGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"

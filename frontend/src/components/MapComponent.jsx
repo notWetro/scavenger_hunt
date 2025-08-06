@@ -7,6 +7,7 @@ import {
   Popup,
   useMap,
   Circle,
+  useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -47,6 +48,18 @@ const MapUpdater = ({ latitude, longitude, zoom }) => {
   return null;
 };
 
+// für manuelle Pin-Setzung
+const ClickHandler = ({ onMapClick, allowManualPin }) => {
+  useMapEvents({
+    click: (e) => {
+      if (allowManualPin && onMapClick) {
+        onMapClick(e.latlng.lat, e.latlng.lng);
+      }
+    },
+  });
+  return null;
+};
+
 /**
  * MapComponent - Wiederverwendbare Karten-Komponente mit OpenStreetMap
  *
@@ -54,6 +67,8 @@ const MapUpdater = ({ latitude, longitude, zoom }) => {
  * @param {number} props.latitude - Breitengrad für die Marker-Position
  * @param {number} props.longitude - Längengrad für die Marker-Position
  * @param {number} [props.radius] - Radius in Metern für einen Kreis um den Marker (optional)
+ * @param {boolean} [props.allowManualPin=false] - Erlaubt manuelle Pin-Setzung durch Klick (optional)
+ * @param {function} [props.onMapClick] - Callback-Funktion wenn auf Karte geklickt wird (lat, lng)
  * @param {number} [props.zoom=13] - Zoom-Level der Karte (optional, Standard: 13)
  * @param {string} [props.width="100%"] - Breite der Karte (optional, Standard: "100%")
  * @param {string} [props.height="400px"] - Höhe der Karte (optional, Standard: "400px")
@@ -65,6 +80,8 @@ const MapComponent = ({
   latitude,
   longitude,
   radius,
+  allowManualPin = false,
+  onMapClick,
   zoom = 13,
   width = "100%",
   height = "400px",
@@ -137,6 +154,12 @@ const MapComponent = ({
         keyboard={interactive}
       >
         <MapUpdater latitude={latitude} longitude={longitude} zoom={zoom} />
+        {allowManualPin && (
+          <ClickHandler
+            allowManualPin={allowManualPin}
+            onMapClick={onMapClick}
+          />
+        )}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
