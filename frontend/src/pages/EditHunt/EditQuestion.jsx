@@ -81,7 +81,9 @@ export default function EditQuestion() {
             lng: "",
           },
           answerGpsRadius: data.answer_gps_radius || null,
-          multipleChoiceOptions: Array.isArray(data.choices) ? data.choices : ["", "", ""],
+          multipleChoiceOptions: Array.isArray(data.choices)
+            ? data.choices
+            : ["", "", ""],
           currentOptionIndex: Array.isArray(data.choices)
             ? data.choices.findIndex((choice) => choice === data.correct_answer)
             : 0,
@@ -406,6 +408,16 @@ export default function EditQuestion() {
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    questionGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"
@@ -535,10 +547,21 @@ export default function EditQuestion() {
                     ? 0
                     : parseFloat(question.answerGpsCoordinates.lng)
                 }
+                radius={question.answerGpsRadius}
                 zoom={15}
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    answerGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"
@@ -668,6 +691,16 @@ export default function EditQuestion() {
                 height="300px"
                 popupText="Antwort Ort"
                 className="map-container"
+                allowManualPin={true}
+                onMapClick={(lat, lng) => {
+                  setQuestion({
+                    ...question,
+                    hintGpsCoordinates: {
+                      lat,
+                      lng,
+                    },
+                  });
+                }}
               />
               <button
                 className="main-button main-button-blue"
