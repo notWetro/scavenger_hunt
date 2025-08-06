@@ -15,8 +15,8 @@ export default function EditHunt() {
   const [startPoint, setStartPoint] = useState("");
   const [huntNameState, setHuntNameState] = useState("");
   const [huntCode, setHuntCode] = useState("");
-  const [privateHunt, setPrivateHunt] = useState([]);
-  const [is_active, setIsActive] = useState([]);
+  const [privateHunt, setPrivateHunt] = useState(true);
+  const [is_active, setIsActive] = useState(true);
 
   const { huntId } = useParams();
 
@@ -48,6 +48,8 @@ export default function EditHunt() {
         setStartPoint(hunt.start_point || "");
         setHuntNameState(hunt.name || "");
         setHuntCode(hunt.code || "");
+        setIsActive(hunt.is_active ?? true);
+        setPrivateHunt(hunt.private ?? true);
 
         setQuestions(
           clues.map((clue) => ({
@@ -243,7 +245,8 @@ export default function EditHunt() {
             description: creatorName,
             place_to_play: huntLocation,
             start_point: startPoint,
-            is_active: true,
+            is_active: is_active,
+            private: privateHunt,
           }),
         });
         if (!res.ok) throw new Error("Failed to save hunt");
