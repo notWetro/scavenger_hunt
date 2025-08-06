@@ -42,15 +42,12 @@ export default function StartHunt() {
       setCopySuccess(t("copy_failed"));
     }
   };
-  
 
-  const handlePublish = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      alert(t("link_copied", { link: shareUrl }));
-    } catch (err) {
-      console.error("Failed to copy link:", err);
-      alert(t("copy_failed"));
+  const handleStartHunt = () => {
+    if (hunt.is_active === false) {
+      alert(t("hunt_inactive"));
+    } else {
+      navigate(`/PlayHunt/${huntCode.trim()}`);
     }
   };
 
@@ -92,12 +89,18 @@ export default function StartHunt() {
         <p>
           <strong>{t("creator")}:</strong> {hunt.creator_username}
         </p>
+        <p>
+          <strong>{t("hunt_status")}:</strong> {hunt.is_active ? t("active") : t("inactive")}
+        </p>
+        <p>
+          <strong>{t("private_hunt")}:</strong> {hunt.private ? t("yes") : t("no")}
+        </p>
       </div>
 
       <div className="button-column">
         <button
           className="main-button main-button-green"
-          onClick={() => navigate(`/PlayHunt/${huntCode.trim()}`)}
+          onClick={handleStartHunt}
         >
           {t("start_hunt")}
         </button>
