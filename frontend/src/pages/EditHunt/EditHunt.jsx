@@ -15,7 +15,8 @@ export default function EditHunt() {
   const [startPoint, setStartPoint] = useState("");
   const [huntNameState, setHuntNameState] = useState("");
   const [huntCode, setHuntCode] = useState("");
-  // Array für alle Fragen
+  const [privateHunt, setPrivateHunt] = useState([]);
+  const [is_active, setIsActive] = useState([]);
 
   const { huntId } = useParams();
 
@@ -351,6 +352,24 @@ export default function EditHunt() {
                 }}
               />
             </label>
+            <label>
+              Privat:
+              <input
+                className="EditHunt-checkbox"
+                type="checkbox"
+                checked={privateHunt}
+                onChange={(e) => setPrivateHunt(e.target.checked)}
+              />
+            </label>
+            <label>
+              Aktiv:
+              <input
+                className="EditHunt-checkbox"
+                type="checkbox"
+                checked={is_active}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />
+            </label>
           </div>
         )}
       </div>
@@ -398,7 +417,6 @@ export default function EditHunt() {
                                 <label>
                                   Antwortart: {question.answerType}
                                   <br />
-                                  
                                 </label>
                                 <div className="question-actions">
                                   <button
