@@ -13,6 +13,7 @@ export default function StartHunt() {
   const { user, authFetch, logout } = useContext(AuthContext);
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [copySuccess, setCopySuccess] = useState("");
+  const [error, setError] = useState("");
 
   const shareUrl = `${window.location.origin}/StartHunt/${huntCode}`;
   
@@ -43,10 +44,30 @@ export default function StartHunt() {
     }
   };
 
-  const handleStartHunt = () => {
+  const handleStartHunt = async () => {
     if (hunt.is_active === false) {
       alert(t("hunt_inactive"));
     } else {
+      try {
+        const res = await authFetch(
+          `/hunts/${huntCode}/join`,
+          { method: "POST" }
+        );
+
+        if (!res.ok) {
+          const errorData = await res.json(); 
+          const errorDetail = errorData.detail || t("join_failed"); 
+          setError(errorDetail); 
+          return;
+        }
+
+        const data = await res.json();
+        console.log(data);
+        
+      } catch (err) {
+        console.error(err);
+        setError(t("join_failed"));
+      }
       navigate(`/PlayHunt/${huntCode.trim()}`);
     }
   };
@@ -96,7 +117,11 @@ export default function StartHunt() {
           <strong>{t("private_hunt")}:</strong> {hunt.private ? t("yes") : t("no")}
         </p>
       </div>
-
+      {error && (
+          <div className="error-message-hunt-code">
+            {error}
+          </div>
+        )}
       <div className="button-column">
         <button
           className="main-button main-button-green"

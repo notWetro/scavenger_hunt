@@ -724,15 +724,22 @@ async def join_hunt(
 
     if current_user:
 
-        progress = UserHuntProgress(
-            hunt_id=hunt_id,
-            user_id=current_user.id,
-            current_clue_id=None,
-            finished_at=None,
+        existing = await db.execute(
+            select(UserHuntProgress).where(
+                UserHuntProgress.hunt_id == hunt_id,
+                UserHuntProgress.user_id == current_user.id,
+            )
         )
-        db.add(progress)
-        await db.commit()
-        await db.refresh(progress)
+        if not existing.scalars().first():
+            progress = UserHuntProgress(
+                hunt_id=hunt_id,
+                user_id=current_user.id,
+                current_clue_id=None,
+                finished_at=None,
+            )
+            db.add(progress)
+            await db.commit()
+            await db.refresh(progress)
 
     creator_res = await db.execute(
         select(User.username).where(User.id == hunt.created_by)
