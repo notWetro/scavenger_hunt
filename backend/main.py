@@ -164,7 +164,7 @@ class Hunt(Base):
     start_point = Column(Text)
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_active = Column(Boolean, default=True)
-    private = Column(Boolean, default=False)
+    private = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     code = Column(String(6), unique=True, index=True, nullable=False, default=lambda: "".join(random.choices(string.digits, k=6)))
 
@@ -173,7 +173,7 @@ class Clue(Base):
     __tablename__ = "clue"
 
     id                 = Column(Integer, primary_key=True, index=True)
-    hunt_id            = Column(Integer, ForeignKey("hunt.id"), nullable=False)
+    hunt_id            = Column(Integer, ForeignKey("hunt.id", ondelete="CASCADE"), nullable=False)
     title              = Column(String, nullable=False)
     description        = Column(Text)
     hint               = Column(Text)
@@ -381,8 +381,8 @@ async def create_hunt(
         place_to_play="",
         start_point="",
         created_by=current_user.id,
-        is_active=False,
-        private=False,
+        is_active=True,
+        private=True,
         created_at=datetime.utcnow()
     )
     db.add(new_hunt)
@@ -467,6 +467,22 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
         "code": hunt.code
         
     }
+
+# Delete Hunt
+@app.delete("/hunts/{hunt_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_hunt(
+    hunt_id: int,
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+
+    await db.delete(hunt)
+    await db.commit()
+    return {"message": "Hunt deleted successfully"}
 
 
 # response schema for a clue

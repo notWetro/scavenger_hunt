@@ -469,9 +469,8 @@ export default function EditHunt() {
         <button
           className="main-button main-button-red"
           onClick={handleDeleteHunt}
-          disabled={true}
         >
-          {t("delete_Hunt")} (disabled)
+          {t("delete_Hunt")}
         </button>
       </div>
     </div>
