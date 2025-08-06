@@ -274,6 +274,9 @@ export default function EditQuestion() {
 
   const saveChange = async () => {
     clearOtherFields();
+    if (question.answerGpsRadius <= 5) {
+      question.answerGpsRadius = 5;
+    }
     try {
       let finalQuestionImageUrl = question.imageFile;
       if (imageFile instanceof File) {
@@ -357,87 +360,51 @@ export default function EditQuestion() {
       case "gps":
         return (
           <div className="gps-input">
-            <div className="gps-field">
-              <label>Breitengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.questionGpsCoordinates.lat}
-                onChange={(e) =>
-                  handleGpsChange(
-                    "questionGpsCoordinates",
-                    "lat",
-                    e.target.value,
-                  )
-                }
-                placeholder="z.B. 52.5200"
-                className="EditQuestion-input"
-              />
-            </div>
-            <div className="gps-field">
-              <label>Längengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.questionGpsCoordinates.lng}
-                onChange={(e) =>
-                  handleGpsChange(
-                    "questionGpsCoordinates",
-                    "lng",
-                    e.target.value,
-                  )
-                }
-                placeholder="z.B. 13.4050"
-                className="EditQuestion-input"
-              />
-            </div>
-            <div>
-              <h4>Position:</h4>
-              <MapComponent
-                latitude={
-                  question.questionGpsCoordinates.lat == ""
-                    ? 0
-                    : parseFloat(question.questionGpsCoordinates.lat)
-                }
-                longitude={
-                  question.questionGpsCoordinates.lng == ""
-                    ? 0
-                    : parseFloat(question.questionGpsCoordinates.lng)
-                }
-                zoom={15}
-                height="300px"
-                popupText="Antwort Ort"
-                className="map-container"
-                allowManualPin={true}
-                onMapClick={(lat, lng) => {
+            <h4>Position:</h4>
+            <MapComponent
+              latitude={
+                question.questionGpsCoordinates.lat == ""
+                  ? 0
+                  : parseFloat(question.questionGpsCoordinates.lat)
+              }
+              longitude={
+                question.questionGpsCoordinates.lng == ""
+                  ? 0
+                  : parseFloat(question.questionGpsCoordinates.lng)
+              }
+              zoom={15}
+              height="300px"
+              popupText="Antwort Ort"
+              className="map-container"
+              allowManualPin={true}
+              onMapClick={(lat, lng) => {
+                setQuestion({
+                  ...question,
+                  questionGpsCoordinates: {
+                    lat: String(lat),
+                    lng: String(lng),
+                  },
+                });
+              }}
+            />
+            <button
+              className="main-button main-button-blue"
+              onClick={async () => {
+                const position = await getCurrentLocation();
+                console.log(position);
+                if (position) {
                   setQuestion({
                     ...question,
                     questionGpsCoordinates: {
-                      lat,
-                      lng,
+                      lat: String(position.latitude),
+                      lng: String(position.longitude),
                     },
                   });
-                }}
-              />
-              <button
-                className="main-button main-button-blue"
-                onClick={async () => {
-                  const position = await getCurrentLocation();
-                  console.log(position);
-                  if (position) {
-                    setQuestion({
-                      ...question,
-                      questionGpsCoordinates: {
-                        lat: String(position.latitude),
-                        lng: String(position.longitude),
-                      },
-                    });
-                  }
-                }}
-              >
-                Get your Position
-              </button>
-            </div>
+                }
+              }}
+            >
+              Get your Position
+            </button>
           </div>
         );
       default:
@@ -508,94 +475,67 @@ export default function EditQuestion() {
       case "gps":
         return (
           <div className="gps-input">
-            <div className="gps-field">
-              <label>Breitengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.answerGpsCoordinates.lat}
-                onChange={(e) =>
-                  handleGpsChange("answerGpsCoordinates", "lat", e.target.value)
-                }
-                placeholder="z.B. 52.5200"
-                className="EditQuestion-input"
-              />
-            </div>
-            <div className="gps-field">
-              <label>Längengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.answerGpsCoordinates.lng}
-                onChange={(e) =>
-                  handleGpsChange("answerGpsCoordinates", "lng", e.target.value)
-                }
-                placeholder="z.B. 13.4050"
-                className="EditQuestion-input"
-              />
-            </div>
-            <div>
-              <h4>Position:</h4>
-              <MapComponent
-                latitude={
-                  question.answerGpsCoordinates.lat == ""
-                    ? 0
-                    : parseFloat(question.answerGpsCoordinates.lat)
-                }
-                longitude={
-                  question.answerGpsCoordinates.lng == ""
-                    ? 0
-                    : parseFloat(question.answerGpsCoordinates.lng)
-                }
-                radius={question.answerGpsRadius}
-                zoom={15}
-                height="300px"
-                popupText="Antwort Ort"
-                className="map-container"
-                allowManualPin={true}
-                onMapClick={(lat, lng) => {
+            <h4>Position:</h4>
+            <MapComponent
+              latitude={
+                question.answerGpsCoordinates.lat == ""
+                  ? 0
+                  : parseFloat(question.answerGpsCoordinates.lat)
+              }
+              longitude={
+                question.answerGpsCoordinates.lng == ""
+                  ? 0
+                  : parseFloat(question.answerGpsCoordinates.lng)
+              }
+              radius={question.answerGpsRadius}
+              zoom={15}
+              height="300px"
+              popupText="Antwort Ort"
+              className="map-container"
+              allowManualPin={true}
+              onMapClick={(lat, lng) => {
+                setQuestion({
+                  ...question,
+                  answerGpsCoordinates: {
+                    lat: String(lat),
+                    lng: String(lng),
+                  },
+                });
+              }}
+            />
+            <button
+              className="main-button main-button-blue"
+              onClick={async () => {
+                const position = await getCurrentLocation();
+                console.log(position);
+                if (position) {
                   setQuestion({
                     ...question,
                     answerGpsCoordinates: {
-                      lat,
-                      lng,
+                      lat: String(position.latitude),
+                      lng: String(position.longitude),
                     },
                   });
-                }}
-              />
-              <button
-                className="main-button main-button-blue"
-                onClick={async () => {
-                  const position = await getCurrentLocation();
-                  console.log(position);
-                  if (position) {
-                    setQuestion({
-                      ...question,
-                      answerGpsCoordinates: {
-                        lat: String(position.latitude),
-                        lng: String(position.longitude),
-                      },
-                    });
-                  }
-                }}
-              >
-                Get your Position
-              </button>
-              <h4>Radius für die Antwort in Metern:</h4>
-              <input
-                id="answer-input"
-                type="text"
-                className="EditQuestion-input"
-                value={question.answerGpsRadius}
-                onChange={(e) =>
-                  setQuestion((prev) => ({
-                    ...prev,
-                    answerGpsRadius: e.target.value,
-                  }))
                 }
-                placeholder="Radius in Metern eingeben"
-              />
-            </div>
+              }}
+            >
+              Get your Position
+            </button>
+            <h4>Radius für die Antwort in Metern:</h4>
+            <input
+              id="answer-input"
+              type="text"
+              className="EditQuestion-input"
+              value={question.answerGpsRadius}
+              onChange={(e) =>
+                setQuestion((prev) => ({
+                  ...prev,
+                  answerGpsRadius: e.target.value,
+                }))
+              }
+              placeholder="mindestens 5 Meter"
+              required
+            />
           </div>
         );
       default:
@@ -650,77 +590,51 @@ export default function EditQuestion() {
       case "gps":
         return (
           <div className="gps-input">
-            <div className="gps-field">
-              <label>Breitengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.hintGpsCoordinates.lat}
-                onChange={(e) =>
-                  handleGpsChange("hintGpsCoordinates", "lat", e.target.value)
-                }
-                placeholder="z.B. 52.5200"
-                className="EditQuestion-input"
-              />
-            </div>
-            <div className="gps-field">
-              <label>Längengrad:</label>
-              <input
-                type="number"
-                step="any"
-                value={question.hintGpsCoordinates.lng}
-                onChange={(e) =>
-                  handleGpsChange("hintGpsCoordinates", "lng", e.target.value)
-                }
-                placeholder="z.B. 13.4050"
-                className="EditQuestion-input"
-              />
-              <h4>Position:</h4>
-              <MapComponent
-                latitude={
-                  question.hintGpsCoordinates.lat == ""
-                    ? 0
-                    : parseFloat(question.hintGpsCoordinates.lat)
-                }
-                longitude={
-                  question.hintGpsCoordinates.lng == ""
-                    ? 0
-                    : parseFloat(question.hintGpsCoordinates.lng)
-                }
-                zoom={15}
-                height="300px"
-                popupText="Antwort Ort"
-                className="map-container"
-                allowManualPin={true}
-                onMapClick={(lat, lng) => {
+            <h4>Position:</h4>
+            <MapComponent
+              latitude={
+                question.hintGpsCoordinates.lat == ""
+                  ? 0
+                  : parseFloat(question.hintGpsCoordinates.lat)
+              }
+              longitude={
+                question.hintGpsCoordinates.lng == ""
+                  ? 0
+                  : parseFloat(question.hintGpsCoordinates.lng)
+              }
+              zoom={15}
+              height="300px"
+              popupText="Antwort Ort"
+              className="map-container"
+              allowManualPin={true}
+              onMapClick={(lat, lng) => {
+                setQuestion({
+                  ...question,
+                  hintGpsCoordinates: {
+                    lat: String(lat),
+                    lng: String(lng),
+                  },
+                });
+              }}
+            />
+            <button
+              className="main-button main-button-blue"
+              onClick={async () => {
+                const position = await getCurrentLocation();
+                console.log(position);
+                if (position) {
                   setQuestion({
                     ...question,
                     hintGpsCoordinates: {
-                      lat,
-                      lng,
+                      lat: String(position.latitude),
+                      lng: String(position.longitude),
                     },
                   });
-                }}
-              />
-              <button
-                className="main-button main-button-blue"
-                onClick={async () => {
-                  const position = await getCurrentLocation();
-                  console.log(position);
-                  if (position) {
-                    setQuestion({
-                      ...question,
-                      hintGpsCoordinates: {
-                        lat: String(position.latitude),
-                        lng: String(position.longitude),
-                      },
-                    });
-                  }
-                }}
-              >
-                Get your Position
-              </button>
-            </div>
+                }
+              }}
+            >
+              Get your Position
+            </button>
           </div>
         );
       default:
