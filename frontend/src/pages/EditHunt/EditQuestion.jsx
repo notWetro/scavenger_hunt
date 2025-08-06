@@ -81,7 +81,9 @@ export default function EditQuestion() {
             lng: "",
           },
           answerGpsRadius: data.answer_gps_radius || null,
-          multipleChoiceOptions: Array.isArray(data.choices) ? data.choices : ["", "", ""],
+          multipleChoiceOptions: Array.isArray(data.choices)
+            ? data.choices
+            : ["", "", ""],
           currentOptionIndex: Array.isArray(data.choices)
             ? data.choices.findIndex((choice) => choice === data.correct_answer)
             : 0,
@@ -535,6 +537,7 @@ export default function EditQuestion() {
                     ? 0
                     : parseFloat(question.answerGpsCoordinates.lng)
                 }
+                radius={question.answerGpsRadius}
                 zoom={15}
                 height="300px"
                 popupText="Antwort Ort"

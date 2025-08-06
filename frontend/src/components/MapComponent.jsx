@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  Circle,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -46,6 +53,7 @@ const MapUpdater = ({ latitude, longitude, zoom }) => {
  * @param {Object} props
  * @param {number} props.latitude - Breitengrad für die Marker-Position
  * @param {number} props.longitude - Längengrad für die Marker-Position
+ * @param {number} [props.radius] - Radius in Metern für einen Kreis um den Marker (optional)
  * @param {number} [props.zoom=13] - Zoom-Level der Karte (optional, Standard: 13)
  * @param {string} [props.width="100%"] - Breite der Karte (optional, Standard: "100%")
  * @param {string} [props.height="400px"] - Höhe der Karte (optional, Standard: "400px")
@@ -56,6 +64,7 @@ const MapUpdater = ({ latitude, longitude, zoom }) => {
 const MapComponent = ({
   latitude,
   longitude,
+  radius,
   zoom = 13,
   width = "100%",
   height = "400px",
@@ -112,7 +121,6 @@ const MapComponent = ({
 
   const position = [latitude, longitude];
 
-  // TODO: css und classNames überarbeiten
   return (
     <div style={{ width, height }} className="map-container">
       <MapContainer
@@ -136,6 +144,17 @@ const MapComponent = ({
         <Marker position={position}>
           {popupText && <Popup>{popupText}</Popup>}
         </Marker>
+        {radius && (
+          <Circle
+            center={position}
+            radius={radius}
+            pathOptions={{
+              color: "orange",
+              fillColor: "orange",
+              fillOpacity: 0.4,
+            }}
+          />
+        )}
       </MapContainer>
     </div>
   );
