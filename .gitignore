@@ -186,3 +186,4 @@ _NCrunch*
 /backend/__pycache__/*
 *.pyc
 /backend/uploads/clue-images/*
+/backend/uploads/clue-audio/*
