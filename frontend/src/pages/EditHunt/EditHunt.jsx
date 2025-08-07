@@ -20,6 +20,10 @@ export default function EditHunt() {
     usePopup();
   // Array für alle Fragen
 
+  const [huntCode, setHuntCode] = useState("");
+  const [privateHunt, setPrivateHunt] = useState(true);
+  const [is_active, setIsActive] = useState(true);
+
   const { huntId } = useParams();
 
   const { authFetch } = useContext(AuthContext);
@@ -49,6 +53,9 @@ export default function EditHunt() {
         setHuntLocation(hunt.place_to_play || "");
         setStartPoint(hunt.start_point || "");
         setHuntNameState(hunt.name || "");
+        setHuntCode(hunt.code || "");
+        setIsActive(hunt.is_active ?? true);
+        setPrivateHunt(hunt.private ?? true);
 
         setQuestions(
           clues.map((clue) => ({
@@ -57,7 +64,8 @@ export default function EditHunt() {
             answer: clue.correct_answer ?? "",
             order: clue.clue_order ?? 0,
             open: false,
-            answerType: clue.answerType ?? "",
+
+            answerType: clue.answer_type ?? "",
           })),
         );
       } catch (err) {
@@ -245,7 +253,8 @@ export default function EditHunt() {
             description: creatorName,
             place_to_play: huntLocation,
             start_point: startPoint,
-            is_active: true,
+            is_active: is_active,
+            private: privateHunt,
           }),
         });
         if (!res.ok) throw new Error("Failed to save hunt");
@@ -301,7 +310,7 @@ export default function EditHunt() {
         </button>
         {showDetails && (
           <div className="accordion-content">
-            <label>Hunt ID: {huntId}</label>
+            <label>Hunt ID: {huntCode}</label>
             {/*             <label>
               Hunt Name:
               <input
@@ -354,6 +363,24 @@ export default function EditHunt() {
                 }}
               />
             </label>
+            <label>
+              Privat:
+              <input
+                className="EditHunt-checkbox"
+                type="checkbox"
+                checked={privateHunt}
+                onChange={(e) => setPrivateHunt(e.target.checked)}
+              />
+            </label>
+            <label>
+              Aktiv:
+              <input
+                className="EditHunt-checkbox"
+                type="checkbox"
+                checked={is_active}
+                onChange={(e) => setIsActive(e.target.checked)}
+              />
+            </label>
           </div>
         )}
       </div>
@@ -401,9 +428,6 @@ export default function EditHunt() {
                                 <label>
                                   Antwortart: {question.answerType}
                                   <br />
-                                  <label>
-                                    <br />
-                                  </label>
                                 </label>
                                 <div className="question-actions">
                                   <button
@@ -453,9 +477,8 @@ export default function EditHunt() {
         <button
           className="main-button main-button-red"
           onClick={handleDeleteHunt}
-          disabled={true}
         >
-          {t("delete_Hunt")} (disabled)
+          {t("delete_Hunt")}
         </button>
       </div>
       <Popup

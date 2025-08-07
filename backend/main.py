@@ -19,7 +19,7 @@ from sqlalchemy import (
     DateTime,
     select
 )
-
+import random,string
 
 from datetime import datetime
 from fastapi_users.manager import BaseUserManager
@@ -164,15 +164,16 @@ class Hunt(Base):
     start_point = Column(Text)
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_active = Column(Boolean, default=True)
-    private = Column(Boolean, default=False)
+    private = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    code = Column(String(6), unique=True, index=True, nullable=False, default=lambda: "".join(random.choices(string.digits, k=6)))
 
 
 class Clue(Base):
     __tablename__ = "clue"
 
     id                 = Column(Integer, primary_key=True, index=True)
-    hunt_id            = Column(Integer, ForeignKey("hunt.id"), nullable=False)
+    hunt_id            = Column(Integer, ForeignKey("hunt.id", ondelete="CASCADE"), nullable=False)
     title              = Column(String, nullable=False)
     description        = Column(Text)
     hint               = Column(Text)
@@ -380,8 +381,8 @@ async def create_hunt(
         place_to_play="",
         start_point="",
         created_by=current_user.id,
-        is_active=False,
-        private=False,
+        is_active=True,
+        private=True,
         created_at=datetime.utcnow()
     )
     db.add(new_hunt)
@@ -412,6 +413,7 @@ class HuntRead(BaseModel):
     created_by:    int
     created_at:    datetime
     creator_username: Optional[str] = None
+    code:          str
 
     class Config:
         orm_mode = True
@@ -461,8 +463,26 @@ async def get_specific_hunt(hunt_id: int, db: AsyncSession = Depends(get_db)):
         "created_by": hunt.created_by,
         "created_at": hunt.created_at,
         "private": hunt.private,
-        "creator_username": creator_username
+        "creator_username": creator_username,
+        "code": hunt.code
+        
     }
+
+# Delete Hunt
+@app.delete("/hunts/{hunt_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_hunt(
+    hunt_id: int,
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = result.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+
+    await db.delete(hunt)
+    await db.commit()
+    return {"message": "Hunt deleted successfully"}
 
 
 # response schema for a clue
@@ -519,7 +539,6 @@ async def get_clue(
     return clue
 
 
-
 # List clues for a specific hunt
 @app.get("/hunts/{hunt_id}/clues", response_model=List[ClueRead])
 async def list_clues_for_hunt(
@@ -529,6 +548,24 @@ async def list_clues_for_hunt(
     result = await db.execute(
         select(Clue)
         .where(Clue.hunt_id == hunt_id)
+        .order_by(Clue.clue_order)
+    )
+    return result.scalars().all()
+
+# List clues for a hunt by its code
+@app.get("/hunts/by-code/{hunt_code}/clues", response_model=List[ClueRead])
+async def list_clues_by_code(
+    hunt_code: str,
+    db: AsyncSession = Depends(get_db),
+):
+    res = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
+    hunt = res.scalars().first()
+    if not hunt:
+        raise HTTPException(404, "Hunt not found")
+    
+    result = await db.execute(
+        select(Clue)
+        .where(Clue.hunt_id == hunt.id)
         .order_by(Clue.clue_order)
     )
     return result.scalars().all()
@@ -671,30 +708,38 @@ class JoinHuntResponse(BaseModel):
         orm_mode = True
 
 # Join hunt
-@app.post("/hunts/{hunt_id}/join",response_model=JoinHuntResponse,status_code=status.HTTP_201_CREATED)
+@app.post("/hunts/{hunt_code}/join",response_model=JoinHuntResponse,status_code=status.HTTP_201_CREATED)
 async def join_hunt(
-    hunt_id: int,
+    hunt_code: str,
     current_user: Optional[User] = Depends(
         fastapi_users.current_user(optional=True)
     ),
     db: AsyncSession = Depends(get_db),
 ):
-    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    result = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
     hunt = result.scalars().first()
     if not hunt:
         raise HTTPException(404, "Hunt not found")
+    hunt_id = hunt.id
 
     if current_user:
 
-        progress = UserHuntProgress(
-            hunt_id=hunt_id,
-            user_id=current_user.id,
-            current_clue_id=None,
-            finished_at=None,
+        existing = await db.execute(
+            select(UserHuntProgress).where(
+                UserHuntProgress.hunt_id == hunt_id,
+                UserHuntProgress.user_id == current_user.id,
+            )
         )
-        db.add(progress)
-        await db.commit()
-        await db.refresh(progress)
+        if not existing.scalars().first():
+            progress = UserHuntProgress(
+                hunt_id=hunt_id,
+                user_id=current_user.id,
+                current_clue_id=None,
+                finished_at=None,
+            )
+            db.add(progress)
+            await db.commit()
+            await db.refresh(progress)
 
     creator_res = await db.execute(
         select(User.username).where(User.id == hunt.created_by)
@@ -709,27 +754,51 @@ async def join_hunt(
         creator_username=creator_username,
     )
 
+# get hunt by code
+@app.get("/hunts/by-code/{hunt_code}", response_model=HuntRead, summary="Lookup a hunt by its 6-digit code")
+async def get_hunt_by_code(
+    hunt_code: str,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
+    hunt: Optional[ Hunt ] = result.scalars().first()
+    if not hunt:
+        raise HTTPException(404, "Hunt not found")
+
+    creator_res = await db.execute(
+        select(User.username).where(User.id == hunt.created_by)
+    )
+    creator_username = creator_res.scalars().first() or "Unknown"
+
+    setattr(hunt, "creator_username", creator_username)
+
+    return hunt
+
 # Remove user from hunt
-@app.delete("/hunts/{hunt_id}/leave",response_model=BaseModel, status_code=status.HTTP_200_OK)
-async def leave_hunt(
-    hunt_id: int,
+@app.delete("/hunts/by-code/{hunt_code}/leave",status_code=status.HTTP_200_OK,summary="Leave a hunt by its 6-digit code")
+async def leave_hunt_by_code(
+    hunt_code: str,
     current_user: Optional[User] = Depends(
         fastapi_users.current_user(optional=True)
     ),
     db: AsyncSession = Depends(get_db),
 ):
     if not current_user:
-        # you could also return 204 No Content to be idempotent for anonymous
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Not authenticated")
 
-    # find their progress record
-    result = await db.execute(
+    hunt_res = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
+    hunt = hunt_res.scalars().first()
+    if not hunt:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+    hunt_id = hunt.id
+
+    progress_res = await db.execute(
         select(UserHuntProgress).where(
             UserHuntProgress.hunt_id == hunt_id,
             UserHuntProgress.user_id == current_user.id,
         )
     )
-    progress = result.scalars().first()
+    progress = progress_res.scalars().first()
     if not progress:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND,
@@ -740,6 +809,7 @@ async def leave_hunt(
     await db.commit()
 
     return {"message": "Left the hunt successfully"}
+
 
 
 
@@ -776,14 +846,46 @@ async def get_current_clue(
         return {"current_clue_id": progress.current_clue_id}
     else:
         return {"current_clue_id": 0}
+    
+# Get current clue for user in a hunt by its code
+@app.get("/hunts/by-code/{hunt_code}/current-clue",response_model=CurrentClueResponse,summary="Get the current clue for this user in a hunt (by share-code)",)
+async def get_current_clue_by_code(
+    hunt_code: str,
+    current_user: Optional[User] = Depends(
+        fastapi_users.current_user(optional=True)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    hunt_res = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
+    hunt = hunt_res.scalars().first()
+    if not hunt:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
+
+    if current_user:
+        prog_res = await db.execute(
+            select(UserHuntProgress).where(
+                UserHuntProgress.hunt_id == hunt.id,
+                UserHuntProgress.user_id == current_user.id,
+            )
+        )
+        progress = prog_res.scalars().first()
+        if not progress:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND, "User has not joined this hunt"
+            )
+        return {"current_clue_id": progress.current_clue_id}
+
+    return {"current_clue_id": None}
+
+
 
 class ProgressPayload(BaseModel):
     clue_id: int
 
 # Save progress when user solves a clue
-@app.post("/hunts/{hunt_id}/progress",status_code=status.HTTP_204_NO_CONTENT,summary="Record that the user reached/solved a clue")
-async def save_progress(
-    hunt_id: int,
+@app.post("/hunts/by-code/{hunt_code}/progress",status_code=status.HTTP_204_NO_CONTENT,summary="Record that the user reached/solved a clue (by share-code)")
+async def save_progress_by_code(
+    hunt_code: str,
     payload: ProgressPayload,
     current_user: Optional[User] = Depends(
         fastapi_users.current_user(optional=True)
@@ -791,20 +893,23 @@ async def save_progress(
     db: AsyncSession = Depends(get_db),
 ):
     if not current_user:
+        
         return
 
-    result = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
-    hunt = result.scalars().first()
+    hunt_res = await db.execute(select(Hunt).where(Hunt.code == hunt_code))
+    hunt = hunt_res.scalars().first()
     if not hunt:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found")
 
-    res = await db.execute(
+    hunt_id = hunt.id
+
+    ucp_res = await db.execute(
         select(UserClueProgress).where(
             UserClueProgress.user_id == current_user.id,
             UserClueProgress.clue_id == payload.clue_id,
         )
     )
-    ucp = res.scalars().first()
+    ucp = ucp_res.scalars().first()
     if not ucp:
         ucp = UserClueProgress(
             user_id=current_user.id,
@@ -817,25 +922,25 @@ async def save_progress(
         ucp.is_solved = True
         ucp.solved_at = datetime.utcnow()
 
-    res = await db.execute(
+    uhp_res = await db.execute(
         select(UserHuntProgress).where(
             UserHuntProgress.user_id == current_user.id,
             UserHuntProgress.hunt_id == hunt_id,
         )
     )
-    uhp = res.scalars().first()
+    uhp = uhp_res.scalars().first()
     if uhp:
-        r2 = await db.execute(
-            select(Clue).where(Clue.hunt_id == hunt_id).order_by(Clue.clue_order)
+        clues_res = await db.execute(
+            select(Clue)
+            .where(Clue.hunt_id == hunt_id)
+            .order_by(Clue.clue_order)
         )
-        clues = r2.scalars().all()
-        idx = next((i for i,c in enumerate(clues) if c.id == payload.clue_id), None)
-
+        clues = clues_res.scalars().all()
+        idx = next((i for i, c in enumerate(clues) if c.id == payload.clue_id), None)
         if idx is not None and idx + 1 < len(clues):
             uhp.current_clue_id = clues[idx + 1].id
         else:
             uhp.current_clue_id = None
-
 
     await db.commit()
 
