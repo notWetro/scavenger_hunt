@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import usePopup from "../../components/usePopup";
+import Popup from "../../components/Popup";
 import "./EditHunt.css";
 import { AuthContext } from "../../AuthContext";
 
@@ -14,6 +16,8 @@ export default function EditHunt() {
   const [huntLocation, setHuntLocation] = useState("");
   const [startPoint, setStartPoint] = useState("");
   const [huntNameState, setHuntNameState] = useState("");
+  const { popup, showAlert, showConfirm, handleClose, handleConfirm } =
+    usePopup();
   // Array für alle Fragen
 
   const { huntId } = useParams();
@@ -140,6 +144,7 @@ export default function EditHunt() {
     } catch (err) {
       console.error("Failed to delete question", err);
       alert("Could not remove question.");
+      await showAlert("Could not remove question.");
     }
   };
 
@@ -158,7 +163,8 @@ export default function EditHunt() {
     }
 
     if (errors.length > 0) {
-      alert("Bitte füllen Sie alle Pflichtfelder aus:\n" + errors.join("\n"));
+      showAlert("Bitte füllen Sie alle Pflichtfelder aus:\n");
+
       return false;
     }
     return true;
@@ -452,6 +458,13 @@ export default function EditHunt() {
           {t("delete_Hunt")} (disabled)
         </button>
       </div>
+      <Popup
+        open={popup.open}
+        text={popup.text}
+        confirmMode={popup.confirmMode}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
