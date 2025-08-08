@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { AuthContext } from "../AuthContext";
+import config from "../../config.js";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
   const [huntName, setHuntName] = useState("");
   const [error, setError] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleCreate = async () => {
     setError("");
@@ -56,6 +58,25 @@ export default function Home() {
   return (
     <div className="home-container">
       <h1 className="heading">{t("scavenger_hunt")}</h1>
+      {config.linkOfImage && (
+        <img
+          src={config.linkOfImage}
+          alt="Scavenger Hunt"
+          className="home-image"
+        />
+      )}
+      <button
+          onClick={() => setShowInfo(!showInfo)}
+          className="info-button"
+        >
+          i
+        </button>
+        {showInfo && (
+          <div className="info-text">
+            {config.infoText}
+          </div>
+        )}
+      
       <div className="button-row">
         <button
           className="main-button main-button-green"
