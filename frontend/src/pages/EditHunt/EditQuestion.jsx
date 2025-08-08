@@ -411,7 +411,6 @@ export default function EditQuestion() {
                 Your browser does not support the audio element.
               </audio>
             )}
-            <div> {previewAudioUrl} </div>
           </div>
         );
       case "gps":
@@ -651,7 +650,6 @@ export default function EditQuestion() {
                 Your browser does not support the audio element.
               </audio>
             )}
-            <div> {previewHintAudioUrl} </div>
           </div>
         );
       case "gps":

@@ -99,7 +99,7 @@ class UserManager(BaseUserManager[User, int]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
 
-    def parse_id(self, user_id: str | int) -> int:  # or UUID, etc.
+    def parse_id(self, user_id: str | int) -> int:  
 
         return int(user_id)
 
@@ -108,7 +108,7 @@ async def get_user_manager(user_db=Depends(get_user_db)):
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=3600)
+    return JWTStrategy(secret=SECRET, lifetime_seconds=7200)  # 2 hours
 
 auth_backend = AuthenticationBackend(
     name="jwt",
