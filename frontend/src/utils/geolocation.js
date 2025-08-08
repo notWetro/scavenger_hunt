@@ -17,7 +17,7 @@ export const getCurrentLocation = () => {
     const options = {
       enableHighAccuracy: true, // Hohe Genauigkeit anfordern
       timeout: 10000, // 10 Sekunden Timeout
-      maximumAge: 60000, // Cache für 1 Minute akzeptieren
+      maximumAge: 5000, // Cache für 1 Minute akzeptieren
     };
 
     // Standort abfragen
