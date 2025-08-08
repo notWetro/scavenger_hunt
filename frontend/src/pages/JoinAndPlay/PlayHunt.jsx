@@ -218,7 +218,17 @@ export default function PlayHunt() {
           </div>
         );
       case "audio":
-        return <div></div>;
+        return (
+          <div>
+            <audio
+              controls
+              src={`${API_BASE}${currentQuestion.audio_url}`}
+              style={{ width: 300 }}
+            >
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        );
       case "gps":
         return (
           <MapComponent
@@ -350,20 +360,13 @@ export default function PlayHunt() {
       case "audio":
         return (
           <div>
-            <p>
-              {currentQuestion.hint_audio_file
-                ? ""
-                : "Kein Hinweis verfügbar für diese Frage."}
-            </p>
-            {currentQuestion.hint_audio_file && (
-              <audio controls style={{ width: "100%", marginTop: "10px" }}>
-                <source
-                  src={currentQuestion.hint_audio_file}
-                  type="audio/mpeg"
-                />
-                Ihr Browser unterstützt das Audio-Element nicht.
-              </audio>
-            )}
+            <audio
+              controls
+              src={`${API_BASE}${currentQuestion.hint_audio_file}`}
+              style={{ width: 300 }}
+            >
+              Your browser does not support the audio element.
+            </audio>
           </div>
         );
       case "gps":
