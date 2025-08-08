@@ -1,15 +1,17 @@
 /**
  * Fragt den aktuellen Standort des Gerätes ab
+ * @param {Function} showAlert - Optional: Funktion zum Anzeigen von Fehlermeldungen
  * @returns {Promise<{latitude: number, longitude: number}>} Promise mit Längen- und Breitengrad
  * @throws {Error} Wenn Geolocation nicht verfügbar ist oder verweigert wird
  */
-export const getCurrentLocation = () => {
+export const getCurrentLocation = (showAlert = null) => {
   return new Promise((resolve, reject) => {
     // Prüfen ob Geolocation API verfügbar ist
     if (!navigator.geolocation) {
-      reject(
-        new Error("Geolocation wird von diesem Browser nicht unterstützt"),
-      );
+      const errorMessage =
+        "Geolocation wird von diesem Browser nicht unterstützt";
+      if (showAlert) showAlert(errorMessage);
+      reject(new Error(errorMessage));
       return;
     }
 
@@ -17,7 +19,7 @@ export const getCurrentLocation = () => {
     const options = {
       enableHighAccuracy: true, // Hohe Genauigkeit anfordern
       timeout: 10000, // 10 Sekunden Timeout
-      maximumAge: 5000, // Cache für 1 Minute akzeptieren
+      maximumAge: 5000, // Cache für 5 Sekunden akzeptieren
     };
 
     // Standort abfragen
@@ -47,6 +49,7 @@ export const getCurrentLocation = () => {
             errorMessage = "Unbekannter Fehler bei der Standortabfrage";
             break;
         }
+        if (showAlert) showAlert(errorMessage);
         reject(new Error(errorMessage));
       },
       options,
