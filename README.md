@@ -131,10 +131,6 @@ scavenger_hunt/
 
 Contributions are welcome! Please create an issue or pull request.
 
-## 📄 License
-
-[Insert license here]
-
 ---
 
 🎯 **Live Demo**: https://werwoelfe.fun
