@@ -583,7 +583,7 @@ export default function EditQuestion() {
             <h4>Radius für die Antwort in Metern:</h4>
             <input
               id="answer-input"
-              type="text"
+              type="number"
               className="EditQuestion-input"
               value={question.answerGpsRadius}
               onChange={(e) =>
