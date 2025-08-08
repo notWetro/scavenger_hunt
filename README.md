@@ -7,14 +7,13 @@ A modern web application for creating and playing scavenger hunts with geolocati
 ### For Hunt Creators
 - 🗺️ **Interactive Maps**: Create scavenger hunts with Leaflet map integration
 - 🎵 **Multimedia Clues**: Add audio files and images to clues
+- 🎯 **Drag & Drop**: Easy interaction with @hello-pangea/dnd
 - 📱 **QR Code Generation**: Automatic QR code creation for easy sharing
 - 👥 **User Management**: Secure authentication with FastAPI-Users
-- 📊 **Progress Tracking**: Monitor game progress in real-time
 
 ### For Players
 - 🎮 **Intuitive Interface**: Modern React-based gaming interface
 - 🌍 **Geolocation**: Location-based clues and verification
-- 🎯 **Drag & Drop**: Easy interaction with @hello-pangea/dnd
 - 🌐 **Multi-language**: i18next integration for international support
 - 📱 **Mobile-Optimized**: Responsive design for all devices
 
@@ -46,41 +45,46 @@ A modern web application for creating and playing scavenger hunts with geolocati
 - Node.js 18+ (for local development)
 - Python 3.8+ (for local development)
 
-### Production Deployment
-
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/notWetro/scavenger_hunt.git
    cd scavenger_hunt
    ```
 
-2. **Start production environment**
+### Production Deployment
+
+2. **Configure your domain** (Replace `your.domain` with your actual domain):
+   - **Backend** (`backend/main.py`): Update CORS origins, remove `localhost:3000`
+   - **Frontend** (`frontend/vite.config.js`): Update `allowedHosts: ['your.domain']`
+   - **Docker Compose** (`docker-compose.yaml`):
+     ```yaml
+     frontend:
+       environment:
+         - VITE_API_BASE=https://your.domain/api
+       labels:
+         - "traefik.http.routers.frontend.rule=Host(`your.domain`)"
+
+     backend:
+       labels:
+         - "traefik.http.routers.backend.rule=Host(`your.domain`) && PathPrefix(`/api`)"
+
+     traefik:
+       command:
+         - "--certificatesresolvers.letsencrypt.acme.email=your-email@domain.com"
+     ```
+
+3. **Start production environment**
    ```bash
    docker-compose up -d
    ```
 
-The application will be available at `https://werwoelfe.fun`.
+The application will be available at `https://your.domain`.
 
 ### Local Development
 
-1. **Start local development environment**
-   ```bash
-   docker-compose -f docker-compose-local.yaml up -d
-   ```
-
-2. **Backend development** (optional, for local API development)
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-3. **Frontend development** (optional, for local UI development)
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+```bash
+docker-compose -f docker-compose-local.yaml up -d
+```
 
 ## 🔧 Configuration
 
@@ -91,7 +95,7 @@ The application will be available at `https://werwoelfe.fun`.
 - `SECRET` - JWT secret for authentication
 
 **Frontend:**
-- `VITE_API_BASE` - Backend API URL
+- `VITE_API_BASE=https://your.domain/api` - Backend API URL
 
 ### Docker Compose Services
 
@@ -104,18 +108,18 @@ The application will be available at `https://werwoelfe.fun`.
 
 ```
 scavenger_hunt/
-├── backend/                 # FastAPI Backend
-│   ├── main.py             # Main API file
-│   ├── schemas.py          # Pydantic models
-│   ├── requirements.txt    # Python dependencies
-│   └── dockerfile          # Backend Docker image
-├── frontend/               # React Frontend
-│   ├── src/               # Source code
-│   ├── public/            # Static assets
-│   ├── package.json       # Node.js dependencies
-│   └── Dockerfile         # Frontend Docker image
-├── media/                 # Upload directory for media
-├── docker-compose.yaml    # Production setup
+├── backend/                  # FastAPI Backend
+│   ├── main.py              # Main API file
+│   ├── schemas.py           # Pydantic models
+│   ├── requirements.txt     # Python dependencies
+│   └── dockerfile           # Backend Docker image
+├── frontend/                 # React Frontend
+│   ├── src/                 # Source code
+│   ├── public/              # Static assets
+│   ├── package.json         # Node.js dependencies
+│   └── Dockerfile           # Frontend Docker image
+├── media/                    # Upload directory for media
+├── docker-compose.yaml       # Production setup
 └── docker-compose-local.yaml # Development setup
 ```
 
