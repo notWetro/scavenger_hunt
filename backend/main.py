@@ -255,7 +255,98 @@ def get_user_clue_progress(db: Session = Depends(get_db)):
     return db.query(UserClueProgress).all()
  """
 
-UPLOAD_DIR = "uploads/clue-images"
+IMAGE_UPLOAD_DIR = "uploads/clue-images"
+AUDIO_UPLOAD_DIR = "uploads/clue-audio"
+
+# Endpoint to upload audio for clues
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/audio",summary="Upload or replace a clue’s question audio",status_code=status.HTTP_201_CREATED)
+async def upload_clue_audio(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify that the hunt exists & belongs to this user
+    r = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = r.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Hunt not found or not yours")
+
+    # verify that the clue exists under that hunt
+    r2 = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = r2.scalars().first()
+    if not clue:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Clue not found")
+
+    # save the uploaded file
+    os.makedirs(AUDIO_UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_audio_{int(datetime.utcnow().timestamp())}{ext}"
+    path = os.path.join(AUDIO_UPLOAD_DIR, fname)
+    with open(path, "wb") as out:
+        out.write(await file.read())
+
+    # update the clue’s audio_url column
+    clue.audio_url = f"/audio/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    # return the new public URL so the frontend can play it
+    return {"audio_url": clue.audio_url}
+
+# Endpoint to upload a clue’s hint audio
+@app.post("/hunts/{hunt_id}/clues/{clue_id}/hint-audio",summary="Upload or replace a clue’s hint audio",status_code=201)
+async def upload_clue_hint_audio(
+    hunt_id: int,
+    clue_id: int,
+    file: UploadFile = File(...),
+    current_user: User = Depends(fastapi_users.current_user(active=True)),
+    db: AsyncSession = Depends(get_db),
+):
+    # verify hunt ownership
+    r = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
+    hunt = r.scalars().first()
+    if not hunt or hunt.created_by != current_user.id:
+        raise HTTPException(404, "Hunt not found or not yours")
+
+    # verify clue exists under that hunt
+    r2 = await db.execute(
+        select(Clue).where(Clue.id == clue_id, Clue.hunt_id == hunt_id)
+    )
+    clue = r2.scalars().first()
+    if not clue:
+        raise HTTPException(404, "Clue not found")
+
+    # save the uploaded file
+    os.makedirs(AUDIO_UPLOAD_DIR, exist_ok=True)
+    ext = os.path.splitext(file.filename)[1]
+    fname = f"hunt{hunt_id}_clue{clue_id}_hint_audio_{int(datetime.utcnow().timestamp())}{ext}"
+    path = os.path.join(AUDIO_UPLOAD_DIR, fname)
+    content = await file.read()
+    with open(path, "wb") as out:
+        out.write(content)
+
+    # update the DB column
+    clue.hint_audio_file = f"/audio/{fname}"
+    await db.commit()
+    await db.refresh(clue)
+
+    # respond with the URL clients can use to fetch it
+    return {"hint_audio_file": clue.hint_audio_file}
+
+# Endpoint to serve uploaded audio files
+@app.get("/audio/{filename}",summary="Serve an uploaded clue audio file",responses={200: {"content": {"audio/*": {}}}})
+async def serve_clue_audio(filename: str):
+    
+    path = os.path.join(AUDIO_UPLOAD_DIR, filename)
+    if not os.path.isfile(path):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Audio not found")
+    return FileResponse(path)
+
+
 
 # Endpoint to upload images for general use
 @app.post("/images/upload", summary="Upload an image", status_code=201)
@@ -264,12 +355,12 @@ async def upload_image(
     current_user: User = Depends(fastapi_users.current_user(active=True)),
 ):
     # ensure uploads/ exists
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
 
     # generate safe filename, prefix with user ID and timestamp
     ext = os.path.splitext(file.filename)[1]
     fname = f"{current_user.id}_{int(datetime.utcnow().timestamp())}{ext}"
-    path = os.path.join(UPLOAD_DIR, fname)
+    path = os.path.join(IMAGE_UPLOAD_DIR, fname)
 
     # write file to disk
     with open(path, "wb") as out:
@@ -303,10 +394,10 @@ async def upload_clue_image(
         raise HTTPException(404, "Clue not found")
 
     # save the file
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
     ext = os.path.splitext(file.filename)[1]
     fname = f"hunt{hunt_id}_clue{clue_id}_{int(datetime.utcnow().timestamp())}{ext}"
-    dest = os.path.join(UPLOAD_DIR, fname)
+    dest = os.path.join(IMAGE_UPLOAD_DIR, fname)
     with open(dest, "wb") as buf:
         buf.write(await file.read())
 
@@ -340,10 +431,10 @@ async def upload_clue_hint_image(
         raise HTTPException(404, "Clue not found")
 
     # save the file
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(IMAGE_UPLOAD_DIR, exist_ok=True)
     ext   = os.path.splitext(file.filename)[1]
     fname = f"hunt{hunt_id}_clue{clue_id}_hint_{int(datetime.utcnow().timestamp())}{ext}"
-    path  = os.path.join(UPLOAD_DIR, fname)
+    path  = os.path.join(IMAGE_UPLOAD_DIR, fname)
     content = await file.read()
     with open(path, "wb") as out:
         out.write(content)
@@ -362,7 +453,7 @@ async def serve_image(filename: str):
     """
     Read the file `uploads/{filename}` and stream it back.
     """
-    path = os.path.join(UPLOAD_DIR, filename)
+    path = os.path.join(IMAGE_UPLOAD_DIR, filename)
     if not os.path.isfile(path):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Image not found")
     # Let Starlette guess the correct media type

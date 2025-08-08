@@ -25,6 +25,12 @@ export default function EditQuestion() {
 
   const [previewHuntUrl, setPreviewHuntUrl] = useState("");
   const [hintImageFile, setHintImageFile] = useState(null);
+  
+  const [audioFile, setAudioFile] = useState(null);
+  const [previewAudioUrl ,  setPreviewAudioUrl]  = useState("");
+
+  const [hintAudioFile, setHintAudioFile] = useState(null);
+  const [previewHintAudioUrl, setPreviewHintAudioUrl] = useState("");
 
   const [question, setQuestion] = useState({
     text: "",
@@ -93,6 +99,8 @@ export default function EditQuestion() {
         }));
         setPreviewUrl(`${API_BASE}${data.image_url || ""}`);
         setPreviewHuntUrl(`${API_BASE}${data.hint_image_file || ""}`);
+        setPreviewAudioUrl(`${API_BASE}${data.audio_url || ""}`);
+        setPreviewHintAudioUrl(`${API_BASE}${data.hint_audio_file || ""}`);
         console.log("Question loaded successfully:", question);
       } catch (error) {
         console.error("Error loading question:", error);
@@ -163,22 +171,18 @@ export default function EditQuestion() {
     return image_url;
   };
 
-  const handleImageUpload = (e) => {
+  const handleAudioChange = (e) => {
     const file = e.target.files[0];
-    setQuestion((prev) => ({ ...prev, imageFile: file }));
-    console.log("Image file selected:", file);
+    console.log("Selected audio file:", file);
+    setAudioFile(file);
+    setPreviewAudioUrl(URL.createObjectURL(file));
   };
 
-  const handleAudioUpload = (e) => {
+  const handleHintAudioChange = (e) => {
     const file = e.target.files[0];
-    setQuestion((prev) => ({ ...prev, audioFile: file }));
-  };
-
-  const handleGpsChange = (coordinateType, field, value) => {
-    setQuestion((prev) => ({
-      ...prev,
-      [coordinateType]: { ...prev[coordinateType], [field]: value },
-    }));
+    console.log("Selected hint audio file:", file);
+    setHintAudioFile(file);
+    setPreviewHintAudioUrl(URL.createObjectURL(file));
   };
 
   const handleMultipleChoiceChange = (index, value) => {
@@ -275,6 +279,42 @@ export default function EditQuestion() {
     }
   };
 
+  const uploadQuestionAudio = async () => {
+    if (!audioFile) throw new Error("No audio selected");
+    const formData = new FormData();
+    formData.append("file", audioFile);
+
+    const res = await authFetch(
+      `/hunts/${huntId}/clues/${questionId}/audio`,
+      { method: "POST", body: formData }
+    );
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error("Audio upload failed: " + txt);
+    }
+    const { audio_url } = await res.json();
+    return audio_url;
+  };
+
+  const uploadHintAudio = async () => {
+    if (!hintAudioFile) throw new Error("No hint audio selected");
+    const formData = new FormData();
+    formData.append("file", hintAudioFile);
+
+    const res = await authFetch(
+      `/hunts/${huntId}/clues/${questionId}/hint-audio`,
+      { method: "POST", body: formData }
+    );
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error("Hint audio upload failed: " + txt);
+    }
+    const { hint_audio_file } = await res.json();
+    return hint_audio_file;
+  };
+
+
+
   const saveChange = async () => {
     clearOtherFields();
     if (question.answerGpsRadius <= 5) {
@@ -290,6 +330,17 @@ export default function EditQuestion() {
       if (hintImageFile instanceof File) {
         finalHintImageUrl = await handleHintImageUpload();
       }
+
+      let finalQuestionAudioUrl = question.audioFile;
+      if (audioFile instanceof File) {
+        finalQuestionAudioUrl = await uploadQuestionAudio();
+      }
+
+      let finalHintAudioUrl = question.hintAudioFile;
+      if (hintAudioFile instanceof File) {
+        finalHintAudioUrl = await uploadHintAudio();
+      }
+
       const res = await authFetch(`/hunts/${huntId}/clues/${questionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -301,12 +352,12 @@ export default function EditQuestion() {
           answer_type: question.answerType,
           hint_type: question.hintType,
           image_url: finalQuestionImageUrl,
-          audio_url: question.audioFile,
+          audio_url: finalQuestionAudioUrl,
           question_gps_coordinates: question.questionGpsCoordinates,
           answer_gps_coordinates: question.answerGpsCoordinates,
           answer_gps_radius: question.answerGpsRadius || null,
           hint_image_file: finalHintImageUrl,
-          hint_audio_url: question.hintAudioFile || null,
+          hint_audio_url: finalHintAudioUrl,
           hint_gps_coordinates: question.hintGpsCoordinates,
           hint_gps_radius: question.hintGpsRadius || null,
           choices: question.multipleChoiceOptions,
@@ -340,7 +391,7 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <input type="file" onChange={handleImageChange} />
+            <input type="file" onChange={handleImageChange} className="file-input"/>
             {previewUrl && <img src={previewUrl} style={{ maxWidth: 200 }} />}
           </div>
         );
@@ -350,14 +401,19 @@ export default function EditQuestion() {
             <input
               type="file"
               accept="audio/*"
-              onChange={handleAudioUpload}
+              onChange={handleAudioChange}
               className="file-input"
             />
-            {question.audioFile && (
-              <div className="file-preview">
-                <p>Ausgewählte Datei: {question.audioFile.name}</p>
-              </div>
+            {previewAudioUrl && (
+              <audio
+                controls
+                src={previewAudioUrl}
+                style={{ width: 300}}
+              >
+                Your browser does not support the audio element.
+              </audio>
             )}
+            <div> {previewAudioUrl} </div>
           </div>
         );
       case "gps":
@@ -563,7 +619,7 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <input type="file" onChange={handleHintImageChange} />
+            <input type="file" onChange={handleHintImageChange} className="file-input"/>
             {previewHuntUrl && (
               <img src={previewHuntUrl} style={{ maxWidth: 200 }} />
             )}
@@ -575,19 +631,20 @@ export default function EditQuestion() {
             <input
               type="file"
               accept="audio/*"
-              onChange={(e) =>
-                setQuestion((prev) => ({
-                  ...prev,
-                  hintAudioFile: e.target.files[0],
-                }))
-              }
+              onChange={handleHintAudioChange}
               className="file-input"
             />
-            {question.hintAudioFile && (
-              <div className="file-preview">
-                <p>Ausgewählte Datei: {question.hintAudioFile.name}</p>
-              </div>
+            {previewHintAudioUrl && (
+              <audio
+                controls
+                src={previewHintAudioUrl}
+                style={{ width: 300 }}
+              >
+                Your browser does not support the audio element.
+              </audio>
+              
             )}
+            <div> {previewHintAudioUrl} </div>
           </div>
         );
       case "gps":
@@ -658,7 +715,7 @@ export default function EditQuestion() {
         >
           <option value="text">Text</option>
           <option value="image">Bild</option>
-          {/* <option value="audio">Audio</option> */}
+          <option value="audio">Audio</option>
           <option value="gps">GPS</option>
         </select>
       </div>
@@ -718,7 +775,7 @@ export default function EditQuestion() {
         >
           <option value="text">Text</option>
           <option value="image">Bild</option>
-          {/* <option value="audio">Audio</option> */}
+          <option value="audio">Audio</option>
           <option value="gps">GPS</option>
         </select>
         <div className="hint-content">
