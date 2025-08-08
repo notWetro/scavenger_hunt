@@ -311,13 +311,18 @@ export default function PlayHunt() {
             <button
               className="main-button main-button-blue"
               onClick={async () => {
-                const position = await getCurrentLocation();
-                console.log(position);
-                if (position) {
-                  setUserAnswer({
-                    lat: position.latitude,
-                    lng: position.longitude,
-                  });
+                try {
+                  const position = await getCurrentLocation(showAlert);
+                  console.log(position);
+                  if (position) {
+                    setUserAnswer({
+                      lat: position.latitude,
+                      lng: position.longitude,
+                    });
+                  }
+                } catch (error) {
+                  // Error is already handled by showAlert in getCurrentLocation
+                  console.error("Geolocation error:", error);
                 }
               }}
             >

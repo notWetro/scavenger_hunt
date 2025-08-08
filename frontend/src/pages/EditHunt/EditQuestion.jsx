@@ -25,9 +25,9 @@ export default function EditQuestion() {
 
   const [previewHuntUrl, setPreviewHuntUrl] = useState("");
   const [hintImageFile, setHintImageFile] = useState(null);
-  
+
   const [audioFile, setAudioFile] = useState(null);
-  const [previewAudioUrl ,  setPreviewAudioUrl]  = useState("");
+  const [previewAudioUrl, setPreviewAudioUrl] = useState("");
 
   const [hintAudioFile, setHintAudioFile] = useState(null);
   const [previewHintAudioUrl, setPreviewHintAudioUrl] = useState("");
@@ -284,10 +284,10 @@ export default function EditQuestion() {
     const formData = new FormData();
     formData.append("file", audioFile);
 
-    const res = await authFetch(
-      `/hunts/${huntId}/clues/${questionId}/audio`,
-      { method: "POST", body: formData }
-    );
+    const res = await authFetch(`/hunts/${huntId}/clues/${questionId}/audio`, {
+      method: "POST",
+      body: formData,
+    });
     if (!res.ok) {
       const txt = await res.text();
       throw new Error("Audio upload failed: " + txt);
@@ -303,7 +303,7 @@ export default function EditQuestion() {
 
     const res = await authFetch(
       `/hunts/${huntId}/clues/${questionId}/hint-audio`,
-      { method: "POST", body: formData }
+      { method: "POST", body: formData },
     );
     if (!res.ok) {
       const txt = await res.text();
@@ -312,8 +312,6 @@ export default function EditQuestion() {
     const { hint_audio_file } = await res.json();
     return hint_audio_file;
   };
-
-
 
   const saveChange = async () => {
     clearOtherFields();
@@ -391,7 +389,11 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <input type="file" onChange={handleImageChange} className="file-input"/>
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="file-input"
+            />
             {previewUrl && <img src={previewUrl} style={{ maxWidth: 200 }} />}
           </div>
         );
@@ -405,11 +407,7 @@ export default function EditQuestion() {
               className="file-input"
             />
             {previewAudioUrl && (
-              <audio
-                controls
-                src={previewAudioUrl}
-                style={{ width: 300}}
-              >
+              <audio controls src={previewAudioUrl} style={{ width: 300 }}>
                 Your browser does not support the audio element.
               </audio>
             )}
@@ -448,16 +446,21 @@ export default function EditQuestion() {
             <button
               className="main-button main-button-blue"
               onClick={async () => {
-                const position = await getCurrentLocation();
-                console.log(position);
-                if (position) {
-                  setQuestion({
-                    ...question,
-                    questionGpsCoordinates: {
-                      lat: String(position.latitude),
-                      lng: String(position.longitude),
-                    },
-                  });
+                try {
+                  const position = await getCurrentLocation(showAlert);
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      questionGpsCoordinates: {
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
+                      },
+                    });
+                  }
+                } catch (error) {
+                  // Error is already handled by showAlert in getCurrentLocation
+                  console.error("Geolocation error:", error);
                 }
               }}
             >
@@ -564,16 +567,21 @@ export default function EditQuestion() {
             <button
               className="main-button main-button-blue"
               onClick={async () => {
-                const position = await getCurrentLocation();
-                console.log(position);
-                if (position) {
-                  setQuestion({
-                    ...question,
-                    answerGpsCoordinates: {
-                      lat: String(position.latitude),
-                      lng: String(position.longitude),
-                    },
-                  });
+                try {
+                  const position = await getCurrentLocation(showAlert);
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      answerGpsCoordinates: {
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
+                      },
+                    });
+                  }
+                } catch (error) {
+                  // Error is already handled by showAlert in getCurrentLocation
+                  console.error("Geolocation error:", error);
                 }
               }}
             >
@@ -618,7 +626,11 @@ export default function EditQuestion() {
       case "image":
         return (
           <div>
-            <input type="file" onChange={handleHintImageChange} className="file-input"/>
+            <input
+              type="file"
+              onChange={handleHintImageChange}
+              className="file-input"
+            />
             {previewHuntUrl && (
               <img src={previewHuntUrl} style={{ maxWidth: 200 }} />
             )}
@@ -634,14 +646,9 @@ export default function EditQuestion() {
               className="file-input"
             />
             {previewHintAudioUrl && (
-              <audio
-                controls
-                src={previewHintAudioUrl}
-                style={{ width: 300 }}
-              >
+              <audio controls src={previewHintAudioUrl} style={{ width: 300 }}>
                 Your browser does not support the audio element.
               </audio>
-              
             )}
           </div>
         );
@@ -678,16 +685,21 @@ export default function EditQuestion() {
             <button
               className="main-button main-button-blue"
               onClick={async () => {
-                const position = await getCurrentLocation();
-                console.log(position);
-                if (position) {
-                  setQuestion({
-                    ...question,
-                    hintGpsCoordinates: {
-                      lat: String(position.latitude),
-                      lng: String(position.longitude),
-                    },
-                  });
+                try {
+                  const position = await getCurrentLocation(showAlert);
+                  console.log(position);
+                  if (position) {
+                    setQuestion({
+                      ...question,
+                      hintGpsCoordinates: {
+                        lat: String(position.latitude),
+                        lng: String(position.longitude),
+                      },
+                    });
+                  }
+                } catch (error) {
+                  // Error is already handled by showAlert in getCurrentLocation
+                  console.error("Geolocation error:", error);
                 }
               }}
             >
