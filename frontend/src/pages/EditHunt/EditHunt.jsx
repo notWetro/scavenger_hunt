@@ -133,7 +133,7 @@ export default function EditHunt() {
 
   // Frage entfernen
   const handleRemoveQuestion = async (clueId) => {
-    if (!window.confirm("Delete this question?")) return;
+    if (!(await showConfirm("Delete this question?"))) return;
     try {
       const res = await authFetch(`/hunts/${huntId}/clues/${clueId}`, {
         method: "DELETE",
@@ -151,7 +151,6 @@ export default function EditHunt() {
       await syncOrder(reindexed);
     } catch (err) {
       console.error("Failed to delete question", err);
-      alert("Could not remove question.");
       await showAlert("Could not remove question.");
     }
   };
@@ -171,7 +170,9 @@ export default function EditHunt() {
     }
 
     if (errors.length > 0) {
-      showAlert("Bitte füllen Sie alle Pflichtfelder aus:\n");
+      showAlert(
+        "Bitte füllen Sie alle Pflichtfelder aus:\n" + errors.join("\n"),
+      );
 
       return false;
     }
@@ -268,11 +269,11 @@ export default function EditHunt() {
             }),
           ),
         );
-        alert(t("hunt_saved_successfully"));
+        await showAlert(t("hunt_saved_successfully"));
         navigate(-1);
       } catch (err) {
         console.error("Failed to save hunt", err);
-        alert(t("could_not_save_order"));
+        await showAlert(t("could_not_save_order"));
       }
     }
 
@@ -280,7 +281,10 @@ export default function EditHunt() {
   };
 
   const handleDeleteHunt = async () => {
-    if (!window.confirm("Are you sure you want to delete this hunt?")) return;
+    const confirmed = await showConfirm(
+      "Are you sure you want to delete this hunt?",
+    );
+    if (!confirmed) return;
     try {
       const res = await authFetch(`/hunts/${huntId}`, {
         method: "DELETE",
@@ -288,11 +292,11 @@ export default function EditHunt() {
       if (!res.ok) {
         throw new Error("Failed to delete hunt");
       }
-      alert("Hunt deleted successfully.");
+      await showAlert("Hunt deleted successfully.");
       navigate(-1);
     } catch (error) {
       console.error("Error deleting hunt:", error);
-      alert("Could not delete the hunt.");
+      await showAlert("Could not delete the hunt.");
     }
   };
 

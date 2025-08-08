@@ -5,6 +5,8 @@ import { AuthContext } from "../../AuthContext";
 import MapComponent from "../../components/MapComponent.jsx";
 import { getCurrentLocation } from "../../utils/geolocation";
 import { getDistanceFromLatLonInMeters } from "../../utils/distance";
+import usePopup from "../../components/usePopup";
+import Popup from "../../components/Popup";
 import "./PlayHunt.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -23,6 +25,8 @@ export default function PlayHunt() {
   const [isLoading, setIsLoading] = useState(true);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+  const { popup, showAlert, showConfirm, handleClose, handleConfirm } =
+    usePopup();
 
   useEffect(() => {
     if (!huntCode) {
@@ -62,7 +66,7 @@ export default function PlayHunt() {
         }
       } catch (err) {
         console.error("Failed to load hunt", err);
-        alert("Fehler beim Laden der Schnitzeljagd");
+        await showAlert("Fehler beim Laden der Schnitzeljagd");
         navigate("/");
       } finally {
         setIsLoading(false);
@@ -92,7 +96,7 @@ export default function PlayHunt() {
 
     if (currentQuestion.answer_type === "gps") {
       if (!userAnswer.lat || !userAnswer.lng) {
-        alert("Bitte holen Sie Ihre aktuelle Position ein.");
+        showAlert("Bitte holen Sie Ihre aktuelle Position ein.");
         return;
       }
 
@@ -112,7 +116,7 @@ export default function PlayHunt() {
     } else {
       // TEXT & MULTIPLE CHOICE
       if (!userAnswer.trim()) {
-        alert("Bitte geben Sie eine Antwort ein");
+        showAlert("Bitte geben Sie eine Antwort ein");
         return;
       }
 
@@ -129,15 +133,12 @@ export default function PlayHunt() {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setUserAnswer("");
         setShowHint(false);
-        alert("Richtig! Nächste Frage wird geladen.");
+        showAlert("Richtig! Nächste Frage wird geladen."); // Eventuell weglassen
       } else {
         setGameCompleted(true);
-        alert(
-          "Herzlichen Glückwunsch! Sie haben die Schnitzeljagd erfolgreich beendet!",
-        );
       }
     } else {
-      alert(
+      showAlert(
         currentQuestion.answer_type === "gps"
           ? "Sie sind nicht nah genug am Zielort. Versuchen Sie es erneut."
           : "Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.",
@@ -149,10 +150,10 @@ export default function PlayHunt() {
     setShowHint(true);
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
     if (currentQuestionIndex > 0) {
       if (
-        window.confirm(
+        await showConfirm(
           "Möchten Sie wirklich zur vorherigen Frage zurückkehren? Ihre aktuelle Antwort geht verloren.",
         )
       ) {
@@ -161,12 +162,12 @@ export default function PlayHunt() {
         setShowHint(false);
       }
     } else {
-      alert("Dies ist die erste Frage. Sie können nicht zurückgehen.");
+      showAlert("Dies ist die erste Frage. Sie können nicht zurückgehen.");
     }
   };
 
-  const handleEnd = () => {
-    if (window.confirm("Möchten Sie die Schnitzeljagd wirklich beenden?")) {
+  const handleEnd = async () => {
+    if (await showConfirm("Möchten Sie die Schnitzeljagd wirklich beenden?")) {
       navigate("/");
     }
   };
@@ -454,6 +455,13 @@ export default function PlayHunt() {
           </div>
         </div>
       )}
+      <Popup
+        open={popup.open}
+        text={popup.text}
+        confirmMode={popup.confirmMode}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

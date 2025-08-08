@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
+import usePopup from "../../components/usePopup";
+import Popup from "../../components/Popup";
 import "./EditQuestion.css";
 import MapComponent from "../../components/MapComponent.jsx";
 import { AuthContext } from "../../AuthContext";
@@ -19,6 +21,7 @@ export default function EditQuestion() {
   const { authFetch } = useContext(AuthContext);
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
+  const { popup, showAlert, handleClose, handleConfirm } = usePopup();
 
   const [previewHuntUrl, setPreviewHuntUrl] = useState("");
   const [hintImageFile, setHintImageFile] = useState(null);
@@ -143,7 +146,7 @@ export default function EditQuestion() {
   };
 
   const uploadQuestionImage = async () => {
-    if (!imageFile) return alert("Choose an image first");
+    if (!imageFile) return await showAlert("Choose an image first");
     const formData = new FormData();
     formData.append("file", imageFile);
 
@@ -328,7 +331,7 @@ export default function EditQuestion() {
       navigate(-1);
     } catch (error) {
       console.error("Error saving question:", error);
-      alert("Fehler beim Speichern der Frage");
+      await showAlert("Fehler beim Speichern der Frage");
     }
   };
 
@@ -736,6 +739,13 @@ export default function EditQuestion() {
           Abbrechen
         </button>
       </div>
+      <Popup
+        open={popup.open}
+        text={popup.text}
+        confirmMode={popup.confirmMode}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }

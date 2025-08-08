@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./StartHunt.css";
 import { AuthContext } from "../../AuthContext";
+import usePopup from "../../components/usePopup";
+import Popup from "../../components/Popup";
 import QRCode from "react-qr-code";
 
 export default function StartHunt() {
@@ -14,9 +16,11 @@ export default function StartHunt() {
   const [showSharePopup, setShowSharePopup] = useState(false);
   const [copySuccess, setCopySuccess] = useState("");
   const [error, setError] = useState("");
+  const { popup, showAlert, showConfirm, handleClose, handleConfirm } =
+    usePopup();
 
   const shareUrl = `${window.location.origin}/StartHunt/${huntCode}`;
-  
+
   useEffect(() => {
     console.log(huntCode);
     const fetchHunt = async () => {
@@ -46,24 +50,22 @@ export default function StartHunt() {
 
   const handleStartHunt = async () => {
     if (hunt.is_active === false) {
-      alert(t("hunt_inactive"));
+      await showAlert(t("hunt_inactive"));
     } else {
       try {
-        const res = await authFetch(
-          `/hunts/${huntCode}/join`,
-          { method: "POST" }
-        );
+        const res = await authFetch(`/hunts/${huntCode}/join`, {
+          method: "POST",
+        });
 
         if (!res.ok) {
-          const errorData = await res.json(); 
-          const errorDetail = errorData.detail || t("join_failed"); 
-          setError(errorDetail); 
+          const errorData = await res.json();
+          const errorDetail = errorData.detail || t("join_failed");
+          setError(errorDetail);
           return;
         }
 
         const data = await res.json();
         console.log(data);
-        
       } catch (err) {
         console.error(err);
         setError(t("join_failed"));
@@ -72,9 +74,9 @@ export default function StartHunt() {
     }
   };
 
-  //ToDo: add translation and change alerts to notifications from our side
   const removeHunt = async () => {
-    if (!window.confirm("Are you sure you want to leave this hunt?")) return;
+    if (!(await showConfirm("Are you sure you want to leave this hunt?")))
+      return;
     try {
       const response = await authFetch(`/hunts/by-code/${hunt.code}/leave`, {
         method: "DELETE",
@@ -82,11 +84,11 @@ export default function StartHunt() {
       if (!response.ok) {
         throw new Error("Failed to remove hunt");
       }
-      alert("You’ve left the hunt.");
+      await showAlert("You’ve left the hunt.");
       navigate(-1);
     } catch (error) {
       console.error("Error removing hunt:", error);
-      alert("Could not leave the hunt.");
+      await showAlert("Could not leave the hunt.");
     }
   };
 
@@ -111,17 +113,15 @@ export default function StartHunt() {
           <strong>{t("creator")}:</strong> {hunt.creator_username}
         </p>
         <p>
-          <strong>{t("hunt_status")}:</strong> {hunt.is_active ? t("active") : t("inactive")}
+          <strong>{t("hunt_status")}:</strong>{" "}
+          {hunt.is_active ? t("active") : t("inactive")}
         </p>
         <p>
-          <strong>{t("private_hunt")}:</strong> {hunt.private ? t("yes") : t("no")}
+          <strong>{t("private_hunt")}:</strong>{" "}
+          {hunt.private ? t("yes") : t("no")}
         </p>
       </div>
-      {error && (
-          <div className="error-message-hunt-code">
-            {error}
-          </div>
-        )}
+      {error && <div className="error-message-hunt-code">{error}</div>}
       <div className="button-column">
         <button
           className="main-button main-button-green"
@@ -173,13 +173,18 @@ export default function StartHunt() {
                   {t("close")}
                 </button>
               </div>
-              {copySuccess && (
-                <p className="copy-feedback">{copySuccess}</p>
-              )}
+              {copySuccess && <p className="copy-feedback">{copySuccess}</p>}
             </div>
           </div>
         )}
       </div>
+      <Popup
+        open={popup.open}
+        text={popup.text}
+        confirmMode={popup.confirmMode}
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
