@@ -19,12 +19,15 @@ export default function EditQuestion() {
   const huntId = params.get("hunt");
   const questionId = params.get("clue");
   const { authFetch } = useContext(AuthContext);
+  const { popup, showAlert, handleClose, handleConfirm } = usePopup();
+
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const { popup, showAlert, handleClose, handleConfirm } = usePopup();
+  const [isQuestionVideoFile, setIsQuestionVideoFile] = useState(false);
 
   const [previewHuntUrl, setPreviewHuntUrl] = useState("");
   const [hintImageFile, setHintImageFile] = useState(null);
+  const [isHintVideoFile, setIsHintVideoFile] = useState(false);
 
   const [audioFile, setAudioFile] = useState(null);
   const [previewAudioUrl, setPreviewAudioUrl] = useState("");
@@ -101,6 +104,14 @@ export default function EditQuestion() {
         setPreviewHuntUrl(`${API_BASE}${data.hint_image_file || ""}`);
         setPreviewAudioUrl(`${API_BASE}${data.audio_url || ""}`);
         setPreviewHintAudioUrl(`${API_BASE}${data.hint_audio_file || ""}`);
+        if (data.image_url) {
+          const isVideo = /\.(mp4|webm|ogg)$/i.test(data.image_url);
+          setIsQuestionVideoFile(isVideo);
+        }
+        if (data.hint_image_file) {
+          const isVideo = /\.(mp4|webm|ogg)$/i.test(data.hint_image_file);
+          setIsHintVideoFile(isVideo);
+        }
         console.log("Question loaded successfully:", question);
       } catch (error) {
         console.error("Error loading question:", error);
@@ -124,8 +135,12 @@ export default function EditQuestion() {
   const handleHintImageChange = (e) => {
     const file = e.target.files[0];
     console.log("Selected file:", file);
-    setHintImageFile(file);
-    setPreviewHuntUrl(URL.createObjectURL(file));
+    if (file) {
+      const isVideo = /\.(mp4|webm|ogg)$/i.test(file.name);
+      setIsHintVideoFile(isVideo); 
+      setHintImageFile(file);
+      setPreviewHuntUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleHintImageUpload = async (e) => {
@@ -149,8 +164,12 @@ export default function EditQuestion() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     console.log("Selected file:", file);
-    setImageFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    if (file) {
+      const isVideo = /\.(mp4|webm|ogg)$/i.test(file.name);
+      setIsQuestionVideoFile(isVideo); 
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const uploadQuestionImage = async () => {
@@ -391,10 +410,21 @@ export default function EditQuestion() {
           <div>
             <input
               type="file"
+              accept="image/*,video/*" // Accept both images and videos
               onChange={handleImageChange}
               className="file-input"
             />
-            {previewUrl && <img src={previewUrl} style={{ maxWidth: 200 }} />}
+            {isQuestionVideoFile ? (
+              <video controls src={previewUrl} style={{ width: 200 }}>
+                Your browser does not support the video element.
+              </video>
+            ) : (
+              <img
+                src={previewUrl}
+                style={{ maxWidth: 200 }}
+                alt="Preview"
+              />
+            )}
           </div>
         );
       case "audio":
@@ -628,11 +658,20 @@ export default function EditQuestion() {
           <div>
             <input
               type="file"
+              accept="image/*,video/*" // Accept both images and videos
               onChange={handleHintImageChange}
               className="file-input"
             />
-            {previewHuntUrl && (
-              <img src={previewHuntUrl} style={{ maxWidth: 200 }} />
+            {isHintVideoFile ? (
+              <video controls src={previewHuntUrl} style={{ width: 200 }}>
+                Your browser does not support the video element.
+              </video>
+            ) : (
+              <img
+                src={previewHuntUrl}
+                style={{ maxWidth: 200 }}
+                alt="Preview"
+              />
             )}
           </div>
         );

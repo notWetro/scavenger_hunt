@@ -211,10 +211,16 @@ export default function PlayHunt() {
         console.log(currentQuestion.image_url);
         return (
           <div>
-            <img
-              src={`${API_BASE}${currentQuestion.image_url}`}
-              style={{ maxWidth: 200 }}
-            />
+            {/\.(mp4|webm|ogg)$/i.test(currentQuestion.image_url) ? (
+              <video controls src={`${API_BASE}${currentQuestion.image_url}`} style={{ width: 200 }}>
+                Your browser does not support the video element.
+              </video>
+            ) : (
+              <img
+                src={`${API_BASE}${currentQuestion.image_url}`}
+                style={{ maxWidth: 200 }}
+              />
+            )}
           </div>
         );
       case "audio":
@@ -354,12 +360,18 @@ export default function PlayHunt() {
                 ? ""
                 : "Kein Hinweis verfügbar für diese Frage."}
             </p>
-            {currentQuestion.hint_image_file && (
+            
+            {/\.(mp4|webm|ogg)$/i.test(currentQuestion.hint_image_file) ? (
+              <video controls src={`${API_BASE}${currentQuestion.hint_image_file}`} style={{ width: 200 }}>
+                Your browser does not support the video element.
+              </video>
+            ) : (
               <img
                 src={`${API_BASE}${currentQuestion.hint_image_file}`}
                 style={{ maxWidth: 200 }}
               />
             )}
+            
           </div>
         );
       case "audio":
