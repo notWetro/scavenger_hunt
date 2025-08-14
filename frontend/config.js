@@ -1,6 +1,6 @@
 const config = {
   linkOfImage:
-    "https://www.hs-aalen.de/uploads/mediapool/media/file/43045/image_678_hsaa_logo-english-rgb.jpg",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV-BC_HwD-bWyFF804RBeKgdSgntof6Yel9Q&s",
   infoText:
     "Entwickelt von Hikmet Gözaydin und Niklas Fichtner an der Hochschule Aalen unter der Leitung von Dr. Marc Hermann",
 };

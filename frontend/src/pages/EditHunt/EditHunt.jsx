@@ -18,7 +18,6 @@ export default function EditHunt() {
   const [huntNameState, setHuntNameState] = useState("");
   const { popup, showAlert, showConfirm, handleClose, handleConfirm } =
     usePopup();
-  // Array für alle Fragen
 
   const [huntCode, setHuntCode] = useState("");
   const [privateHunt, setPrivateHunt] = useState(true);
@@ -46,8 +45,6 @@ export default function EditHunt() {
 
         const hunt = await huntRes.json();
         const clues = await cluesRes.json();
-        console.log(" hunt:", hunt);
-        console.log(" clues:", clues);
 
         setCreatorName(hunt.description || "");
         setHuntLocation(hunt.place_to_play || "");
@@ -310,11 +307,11 @@ export default function EditHunt() {
           className="accordion-toggle"
           onClick={() => setShowDetails((prev) => !prev)}
         >
-          Angaben {showDetails ? "▲" : "▼"}
+          {t("details")} {showDetails ? "▲" : "▼"}
         </button>
         {showDetails && (
           <div className="accordion-content">
-            <label>Hunt ID: {huntCode}</label>
+            <label>{t("hunt_id")}: {huntCode}</label>
             {/*             <label>
               Hunt Name:
               <input
@@ -326,49 +323,49 @@ export default function EditHunt() {
               />
             </label> */}
             <label>
-              Kurzinfo: <span style={{ color: "red" }}>*</span>
+              {t("quick_information")}: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={creatorName}
                 onChange={(e) => setCreatorName(e.target.value)}
                 required
-                placeholder="Kurzinfo eingeben"
+                placeholder={t("quick_information")}
                 style={{
                   borderColor: !creatorName.trim() ? "red" : undefined,
                 }}
               />
             </label>
             <label>
-              Ort des Spieles: <span style={{ color: "red" }}>*</span>
+              {t("location_of_the_game")}: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={huntLocation}
                 onChange={(e) => setHuntLocation(e.target.value)}
                 required
-                placeholder="Ort des Spieles"
+                placeholder={t("location_of_the_game")}
                 style={{
                   borderColor: !huntLocation.trim() ? "red" : undefined,
                 }}
               />
             </label>
             <label>
-              Startpunkt: <span style={{ color: "red" }}>*</span>
+              {t("starting_point")}: <span style={{ color: "red" }}>*</span>
               <input
                 className="EditHunt-input"
                 type="text"
                 value={startPoint}
                 onChange={(e) => setStartPoint(e.target.value)}
                 required
-                placeholder="Startpunkt"
+                placeholder={t("starting_point")}
                 style={{
                   borderColor: !startPoint.trim() ? "red" : undefined,
                 }}
               />
             </label>
             <label>
-              Privat:
+              {t("private")}:
               <input
                 className="EditHunt-checkbox"
                 type="checkbox"
@@ -377,7 +374,7 @@ export default function EditHunt() {
               />
             </label>
             <label>
-              Aktiv:
+              {t("active")}:
               <input
                 className="EditHunt-checkbox"
                 type="checkbox"
@@ -389,13 +386,13 @@ export default function EditHunt() {
         )}
       </div>
 
-      {/* Fragen Reiter */}
+      {/* Questions */}
       <div className={`accordion-section ${showQuestions ? "open" : ""}`}>
         <button
           className="accordion-toggle"
           onClick={() => setShowQuestions((prev) => !prev)}
         >
-          Fragen {showQuestions ? "▲" : "▼"}
+          {t("questions")} {showQuestions ? "▲" : "▼"}
         </button>
         {showQuestions && (
           <div className="accordion-content">
@@ -420,17 +417,17 @@ export default function EditHunt() {
                               className={`question-toggle ${question.open ? "corners" : ""}`}
                               onClick={() => handleToggleQuestion(idx)}
                             >
-                              Frage {idx + 1} {question.open ? "▲" : "▼"}
+                              {t("question")} {idx + 1} {question.open ? "▲" : "▼"}
                             </button>
                             {question.open && (
                               <div className="question-content">
                                 <div className="drag-icon">⋮⋮</div>
                                 <label>
-                                  Frage: {question.text}
+                                  {t("question")}: {question.text}
                                   <br />
                                 </label>
                                 <label>
-                                  Antwortart: {question.answerType}
+                                  {t("answer_type")}: {question.answerType}
                                   <br />
                                 </label>
                                 <div className="question-actions">
@@ -438,7 +435,7 @@ export default function EditHunt() {
                                     className="main-button main-button-orange"
                                     onClick={() => handleEditQuestion(idx)}
                                   >
-                                    Edit
+                                    {t("edit")}
                                   </button>
                                   <button
                                     className="main-button main-button-red"
@@ -446,7 +443,7 @@ export default function EditHunt() {
                                       handleRemoveQuestion(questions[idx].id)
                                     }
                                   >
-                                    Remove
+                                    {t("remove")}
                                   </button>
                                 </div>
                               </div>
@@ -464,7 +461,7 @@ export default function EditHunt() {
               className="main-button main-button-blue butt"
               onClick={handleAddQuestion}
             >
-              Frage hinzufügen
+              {t("add_question")}
             </button>
           </div>
         )}

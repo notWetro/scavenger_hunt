@@ -49,24 +49,19 @@ export default function PlayHunt() {
 
         const huntData = await huntRes.json();
         const cluesData = await cluesRes.json();
-        console.log("Hunt data:", huntData);
 
         setHunt(huntData);
         setQuestions(cluesData);
-        console.log("Hunt loaded:", cluesData);
         const nextClue = await nextClueRes.json();
-        console.log(nextClue);
         if (nextClue) {
-          console.log("Next clue found:", nextClue.current_clue_id);
           const idx = cluesData.findIndex(
             (clue) => clue.id === nextClue.current_clue_id,
           );
           setCurrentQuestionIndex(idx >= 0 ? idx : 0);
-          console.log(idx);
         }
       } catch (err) {
         console.error("Failed to load hunt", err);
-        await showAlert("Fehler beim Laden der Schnitzeljagd");
+        await showAlert(t("error_loading_hunt"));
         navigate("/");
       } finally {
         setIsLoading(false);
@@ -96,7 +91,7 @@ export default function PlayHunt() {
 
     if (currentQuestion.answer_type === "gps") {
       if (!userAnswer.lat || !userAnswer.lng) {
-        showAlert("Bitte holen Sie Ihre aktuelle Position ein.");
+        showAlert(t("get_current_location"));
         return;
       }
 
@@ -110,13 +105,11 @@ export default function PlayHunt() {
         parseFloat(correctCoords.lng),
       );
 
-      console.log("Distanz zur richtigen Position:", distance, "Meter");
-
       isCorrect = distance <= tolerance;
     } else {
       // TEXT & MULTIPLE CHOICE
       if (!userAnswer.trim()) {
-        showAlert("Bitte geben Sie eine Antwort ein");
+        showAlert(t("please_enter_answer"));
         return;
       }
 
@@ -133,15 +126,14 @@ export default function PlayHunt() {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setUserAnswer("");
         setShowHint(false);
-        showAlert("Richtig! Nächste Frage wird geladen."); // Eventuell weglassen
       } else {
         setGameCompleted(true);
       }
     } else {
       showAlert(
         currentQuestion.answer_type === "gps"
-          ? "Sie sind nicht nah genug am Zielort. Versuchen Sie es erneut."
-          : "Falsche Antwort. Versuchen Sie es erneut oder nutzen Sie den Hinweis.",
+          ? t("not_close_enough")
+          : t("wrong_answer"),
       );
     }
   };
@@ -154,7 +146,7 @@ export default function PlayHunt() {
     if (currentQuestionIndex > 0) {
       if (
         await showConfirm(
-          "Möchten Sie wirklich zur vorherigen Frage zurückkehren? Ihre aktuelle Antwort geht verloren.",
+          t("leave_question_confirmation"),
         )
       ) {
         setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -162,12 +154,12 @@ export default function PlayHunt() {
         setShowHint(false);
       }
     } else {
-      showAlert("Dies ist die erste Frage. Sie können nicht zurückgehen.");
+      showAlert(t("first_question_alert"));
     }
   };
 
   const handleEnd = async () => {
-    if (await showConfirm("Möchten Sie die Schnitzeljagd wirklich beenden?")) {
+    if (await showConfirm(t("end_hunt_confirmation"))) {
       navigate("/");
     }
   };
@@ -177,25 +169,25 @@ export default function PlayHunt() {
   };
 
   if (isLoading) {
-    return <div className="play-hunt-container">Laden...</div>;
+    return <div className="play-hunt-container">{t("loading")}</div>;
   }
 
   if (!hunt || questions.length === 0) {
-    return <div className="play-hunt-container">Keine Fragen gefunden.</div>;
+    return <div className="play-hunt-container">{t("no_questions_found")}</div>;
   }
 
   if (gameCompleted) {
     return (
       <div className="play-hunt-container">
-        <h1>Schnitzeljagd beendet!</h1>
+        <h1>{t("hunt_completed")}</h1>
         <p>
-          Herzlichen Glückwunsch! Sie haben alle Fragen erfolgreich beantwortet.
+          {t("hunt_completed_message")}
         </p>
         <button
           className="main-button main-button-green"
           onClick={() => navigate("/")}
         >
-          Zurück zur Startseite
+          {t("back_to_home")}
         </button>
       </div>
     );
@@ -269,7 +261,7 @@ export default function PlayHunt() {
               className="answer-input"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Ihre Antwort hier eingeben..."
+              placeholder={t("answer_placeholder")}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   handleAnswer();
@@ -332,7 +324,7 @@ export default function PlayHunt() {
                 }
               }}
             >
-              Get your Position
+              {t("get_your_position")}
             </button>
           </div>
         );
@@ -348,7 +340,7 @@ export default function PlayHunt() {
           <div>
             <p>
               {currentQuestion.hint ||
-                "Kein Hinweis verfügbar für diese Frage."}
+                t("no_hint_available")}
             </p>
           </div>
         );
@@ -358,7 +350,7 @@ export default function PlayHunt() {
             <p>
               {currentQuestion.hint_image_file
                 ? ""
-                : "Kein Hinweis verfügbar für diese Frage."}
+                : t("no_hint_available")}
             </p>
             
             {/\.(mp4|webm|ogg)$/i.test(currentQuestion.hint_image_file) ? (
@@ -392,7 +384,7 @@ export default function PlayHunt() {
             <p>
               {currentQuestion.hint_gps_coordinates
                 ? ""
-                : "Kein Hinweis verfügbar für diese Frage."}
+                : t("no_hint_available")}
             </p>
             {currentQuestion.hint_gps_coordinates && (
               <MapComponent
@@ -415,7 +407,7 @@ export default function PlayHunt() {
           <div>
             <p>
               {currentQuestion.hint ||
-                "Kein Hinweis verfügbar für diese Frage."}
+                t("no_hint_available")}
             </p>
           </div>
         );
@@ -427,7 +419,7 @@ export default function PlayHunt() {
       <h1>{hunt.name}</h1>
 
       <div className="progress-info">
-        {t("Frage")} {currentQuestionIndex + 1} von {questions.length}
+        {t("question")} {currentQuestionIndex + 1} {t("of")} {questions.length}
       </div>
 
       <div className="question-section">
@@ -435,25 +427,24 @@ export default function PlayHunt() {
           <h2>{currentQuestion.description}</h2>
         </div>
         {renderQuestionReturn()}
-        <hr className="section-divider" /> {/* css Code in EditQuestion.css */}
+        <hr className="section-divider" /> 
         {renderAnswerReturn()}
         <div className="button-group">
           <button
             className="main-button main-button-green"
             onClick={handleAnswer}
           >
-            Antworten
+            {t("submit_answer")}
           </button>
           <button className="main-button main-button-blue" onClick={handleHint}>
-            Hinweis
+            {t("hint")}
           </button>
           <hr className="section-divider" />{" "}
-          {/* css Code in EditQuestion.css */}
           <button className="main-button" onClick={handleBack}>
-            Zurück
+            {t("back")}
           </button>
           <button className="main-button main-button-red" onClick={handleEnd}>
-            Beenden
+            {t("end")}
           </button>
         </div>
       </div>
@@ -463,13 +454,13 @@ export default function PlayHunt() {
         <div className="popup-overlay" onClick={closeHintPopup}>
           <div className="popup" onClick={(e) => e.stopPropagation()}>
             <div className="hint-content">
-              <h3>Hinweis</h3>
+              <h3>{t("hint")}</h3>
               {renderHintReturn()}
               <button
                 className="main-button main-button-gray"
                 onClick={closeHintPopup}
               >
-                Schließen
+                {t("close")}
               </button>
             </div>
           </div>

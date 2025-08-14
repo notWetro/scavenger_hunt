@@ -75,7 +75,7 @@ export default function StartHunt() {
   };
 
   const removeHunt = async () => {
-    if (!(await showConfirm("Are you sure you want to leave this hunt?")))
+    if (!(await showConfirm(t("leave_hunt_confirmation"))))
       return;
     try {
       const response = await authFetch(`/hunts/by-code/${hunt.code}/leave`, {
@@ -84,11 +84,11 @@ export default function StartHunt() {
       if (!response.ok) {
         throw new Error("Failed to remove hunt");
       }
-      await showAlert("You’ve left the hunt.");
+      await showAlert(t("left_hunt"));
       navigate(-1);
     } catch (error) {
       console.error("Error removing hunt:", error);
-      await showAlert("Could not leave the hunt.");
+      await showAlert(t("could_not_leave_hunt"));
     }
   };
 
@@ -129,6 +129,15 @@ export default function StartHunt() {
         >
           {t("start_hunt")}
         </button>
+        <button
+          className="main-button main-button-blue"
+          onClick={() => {
+            setCopySuccess("");
+            setShowSharePopup(true);
+          }}
+        >
+          {t("publish_hunt")}
+        </button>
         {user && (
           <button
             className="main-button main-button-red"
@@ -144,15 +153,7 @@ export default function StartHunt() {
         >
           {t("back")}
         </button>
-        <button
-          className="main-button main-button-blue"
-          onClick={() => {
-            setCopySuccess("");
-            setShowSharePopup(true);
-          }}
-        >
-          {t("publish_hunt")}
-        </button>
+        
 
         {showSharePopup && (
           <div className="popup-overlay">

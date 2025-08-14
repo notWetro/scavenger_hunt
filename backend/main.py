@@ -94,6 +94,7 @@ async def get_user_db(session: AsyncSession = Depends(get_db)):
 
 SECRET = os.getenv("SECRET_KEY")
 
+# UserManager
 class UserManager(BaseUserManager[User, int]):
     user_db_model = User
     reset_password_token_secret = SECRET
@@ -153,7 +154,7 @@ app.include_router(
 )
 
 
-
+# === MODELS ===
 class Hunt(Base):
     __tablename__ = "hunt"
 
@@ -205,7 +206,7 @@ class UserHuntProgress(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    hunt_id = Column(Integer, ForeignKey("hunt.id"), nullable=False)
+    hunt_id = Column(Integer, ForeignKey("hunt.id", ondelete="CASCADE"), nullable=False)
     current_clue_id = Column(Integer, ForeignKey("clue.id"))
     finished_at = Column(DateTime)
 
@@ -267,7 +268,7 @@ async def upload_clue_audio(
     current_user: User = Depends(fastapi_users.current_user(active=True)),
     db: AsyncSession = Depends(get_db),
 ):
-    # verify that the hunt exists & belongs to this user
+    # verify that the hunt exists and belongs to this user
     r = await db.execute(select(Hunt).where(Hunt.id == hunt_id))
     hunt = r.scalars().first()
     if not hunt or hunt.created_by != current_user.id:
@@ -345,7 +346,6 @@ async def serve_clue_audio(filename: str):
     if not os.path.isfile(path):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Audio not found")
     return FileResponse(path)
-
 
 
 # Endpoint to upload images for general use
@@ -456,7 +456,6 @@ async def serve_image(filename: str):
     path = os.path.join(IMAGE_UPLOAD_DIR, filename)
     if not os.path.isfile(path):
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Image not found")
-    # Let Starlette guess the correct media type
     return FileResponse(path)
 
 # Create empty hunt
@@ -733,7 +732,6 @@ async def delete_clue(
     # delete it
     await db.delete(clue)
     await db.commit()
-    # 204 → no body
 
 class ClueUpdate(BaseModel):
     description: Optional[str] = None

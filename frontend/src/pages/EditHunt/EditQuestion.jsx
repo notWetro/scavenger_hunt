@@ -410,7 +410,7 @@ export default function EditQuestion() {
           <div>
             <input
               type="file"
-              accept="image/*,video/*" // Accept both images and videos
+              accept="image/*,video/*" 
               onChange={handleImageChange}
               className="file-input"
             />
@@ -489,12 +489,11 @@ export default function EditQuestion() {
                     });
                   }
                 } catch (error) {
-                  // Error is already handled by showAlert in getCurrentLocation
                   console.error("Geolocation error:", error);
                 }
               }}
             >
-              Get your Position
+              {t("get_your_position")}
             </button>
           </div>
         );
@@ -515,7 +514,7 @@ export default function EditQuestion() {
             onChange={(e) =>
               setQuestion((prev) => ({ ...prev, answer: e.target.value }))
             }
-            placeholder="Antwort eingeben"
+            placeholder={t("answer_placeholder")}
           />
         );
       case "multiple_choice":
@@ -559,7 +558,7 @@ export default function EditQuestion() {
               onClick={addMultipleChoiceOption}
               className="main-button main-button-green"
             >
-              + Option hinzufügen
+              + {t("add_option")}
             </button>
           </div>
         );
@@ -615,9 +614,9 @@ export default function EditQuestion() {
                 }
               }}
             >
-              Get your Position
+              {t("get_your_position")}
             </button>
-            <h4>Radius für die Antwort in Metern:</h4>
+            <h4>{t("radius_for_answer_in_meters")}:</h4>
             <input
               id="answer-input"
               type="number"
@@ -629,7 +628,7 @@ export default function EditQuestion() {
                   answerGpsRadius: e.target.value,
                 }))
               }
-              placeholder="mindestens 5 Meter"
+              placeholder={t("min_5_meters")}
               required
             />
           </div>
@@ -742,7 +741,7 @@ export default function EditQuestion() {
                 }
               }}
             >
-              Get your Position
+              {t("get_your_position")}
             </button>
           </div>
         );
@@ -755,7 +754,7 @@ export default function EditQuestion() {
     <div className="edit-question-container">
       {/* Frage Sektion */}
       <div className="input-group">
-        <label htmlFor="question-type">Fragetyp:</label>
+        <label htmlFor="question-type">{t("question_type")}:</label>
         <select
           id="question-type"
           value={question.questionType}
@@ -763,14 +762,14 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          <option value="image">Bild</option>
+          <option value="image">{t("image_and_video")}</option>
           <option value="audio">Audio</option>
-          <option value="gps">GPS</option>
+          <option value="gps">Gps</option>
         </select>
       </div>
 
       <div className="input-group">
-        <label htmlFor="question-input">Frage:</label>
+        <label htmlFor="question-input">{t("question")}:</label>
         <input
           id="question-input"
           type="text"
@@ -779,7 +778,7 @@ export default function EditQuestion() {
           onChange={(e) =>
             setQuestion((prev) => ({ ...prev, text: e.target.value }))
           }
-          placeholder="Frage eingeben"
+          placeholder={t("add_question")}
         />
       </div>
 
@@ -789,7 +788,7 @@ export default function EditQuestion() {
 
       {/* Antwort Sektion */}
       <div className="input-group">
-        <label htmlFor="answer-type">Antworttyp:</label>
+        <label htmlFor="answer-type">{t("answer_type")}:</label>
         <select
           id="answer-type"
           value={question.answerType}
@@ -815,7 +814,7 @@ export default function EditQuestion() {
 
       {/* Hinweis Sektion */}
       <div className="input-group">
-        <label htmlFor="hint-type">Hinweis Typ:</label>
+        <label htmlFor="hint-type">{t("hint_type")}:</label>
         <select
           id="hint-type"
           value={question.hintType}
@@ -823,12 +822,12 @@ export default function EditQuestion() {
           className="type-dropdown"
         >
           <option value="text">Text</option>
-          <option value="image">Bild</option>
+          <option value="image">{t("image_and_video")}</option>
           <option value="audio">Audio</option>
           <option value="gps">GPS</option>
         </select>
         <div className="hint-content">
-          <label htmlFor="hint-input">Hinweis (optional):</label>
+          <label htmlFor="hint-input">{t("hint")} (optional):</label>
           {renderHintContent()}
         </div>
       </div>
@@ -836,13 +835,13 @@ export default function EditQuestion() {
       {/* Aktionen Sektion */}
       <div className="question-actions">
         <button className="main-button main-button-green" onClick={saveChange}>
-          Speichern und zurück
+          {t("save_and_exit")}
         </button>
         <button
           className="main-button main-button-red"
           onClick={() => navigate(-1)}
         >
-          Abbrechen
+          {t("cancel")}
         </button>
       </div>
       <Popup

@@ -42,7 +42,7 @@ export default function Home() {
     } catch (err) {
       console.error(err);
       if (err.message.includes("Unauthorized")) {
-        setError(t("Error: You should be logged in to create a hunt"));
+        setError(t("please_login"));
         <button
           className="main-button main-button-green"
           onClick={() => navigate("/login")}

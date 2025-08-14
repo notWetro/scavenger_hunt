@@ -27,7 +27,6 @@ export default function Login() {
     });
     const data = await res.json();
     if (res.ok) {
-      console.log("Login successful:", data);
       login(data.access_token);
       navigate("/profile");
     } else {

@@ -114,7 +114,7 @@ export default function Hunts() {
         ) : !user && (selectedTab === "joined" || selectedTab === "own") ? (
           <div className="please-login">
             <p>
-              {t("please_login_to_view")} {t(selectedTab)} {t("hunts")}
+              {t("please_login_to_view")}
             </p>
             <button
               className="main-button main-button-green"
